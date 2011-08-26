@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.commons.collections.CollectionUtils;
 
 public class ArrayUtil {
@@ -37,11 +35,13 @@ public class ArrayUtil {
     }
 
     public static void assertArraysContainSame(String[] expected, String[] actual) {
-        Assert.assertEquals(new HashSet(Arrays.asList(expected)), new HashSet(Arrays.asList(actual)));
+    	if (!new HashSet(Arrays.asList(expected)).equals(new HashSet(Arrays.asList(actual))))
+    		throw new AssertionError();
     }
 
     public static <T> void assertArraysEquals(T[] expected, T[] actual) {
-        Assert.assertTrue("Expected " + Arrays.asList(expected) + " but was " + Arrays.asList(actual), Arrays.equals(expected, actual));
+    	if (!Arrays.equals(expected, actual))
+    		throw new AssertionError("Expected " + Arrays.asList(expected) + " but was " + Arrays.asList(actual));
     }
 
     public static <T,U> T[] copyOfRange(U[] original, int from, int to, Class<? extends T[]> newType) {

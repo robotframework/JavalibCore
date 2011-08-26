@@ -149,7 +149,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>com.googlecode.robotframework-maven-plugin</groupId>
         <artifactId>robotframework-maven-plugin</artifactId>
@@ -160,9 +159,9 @@
               <goal>run</goal>
             </goals>
           </execution>
-        </executions>        
+        </executions>
       </plugin>
-          </plugins>
+    </plugins>
   </build>
 
   <reporting>

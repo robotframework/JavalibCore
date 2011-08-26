@@ -1,0 +1,7 @@
+*Setting*	*Value*
+Variables	variables.py
+
+*Test Case*	*Action*	*Argument*
+Duplicate Keywords Prevents Importing Library
+	runKeywordAndExpectError	Two keywords with name 'myFailingKeyword' found!
+	...	Import Library	org.robotframework.javalib.library.AnnotationLibrary	${DUPLICATE KEYWORD PATTERNS}

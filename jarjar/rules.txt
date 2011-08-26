@@ -1,0 +1,27 @@
+rule com.thoughtworks.** org.robotframework.jvmconnector.@0
+rule edu.emory.** org.robotframework.jvmconnector.@0
+rule junit.** org.robotframework.jvmconnector.@0
+rule org.aopalliance.** org.robotframework.jvmconnector.@0
+rule org.hamcrest.** org.robotframework.jvmconnector.@0
+rule org.junit.** org.robotframework.jvmconnector.@0
+rule org.laughingpanda.** org.robotframework.jvmconnector.@0
+rule org.apache.ws.commons.util.** org.robotframework.jvmconnector.@0
+rule org.apache.ws.commons.serialize.** org.robotframework.jvmconnector.@0
+rule org.apache.log.** org.robotframework.jvmconnector.@0
+rule org.apache.wml.** org.robotframework.jvmconnector.@0
+rule org.apache.xml.serialize.** org.robotframework.jvmconnector.@0
+rule org.apache.html.dom.** org.robotframework.jvmconnector.@0
+rule org.apache.commons.io.** org.robotframework.jvmconnector.@0
+rule org.apache.commons.codec.** org.robotframework.jvmconnector.@0
+rule org.apache.commons.logging.** org.robotframework.jvmconnector.@0
+rule org.apache.commons.collections.** org.robotframework.jvmconnector.@0
+rule org.apache.commons.httpclient.** org.robotframework.jvmconnector.@0
+rule org.apache.xmlcommons.** org.robotframework.jvmconnector.@0
+rule org.apache.log4j.** org.robotframework.jvmconnector.@0
+rule org.apache.avalon.framework.** org.robotframework.jvmconnector.@0
+rule org.apache.xmlrpc.** org.robotframework.jvmconnector.@0
+rule org.springframework.** org.robotframework.jvmconnector.@0
+rule javax.servlet.** org.robotframework.jvmconnector.@0
+zap org.w3c.dom.**
+zap org.xml.sax.**
+zap javax.xml.**

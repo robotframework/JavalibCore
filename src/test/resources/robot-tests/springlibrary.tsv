@@ -1,0 +1,10 @@
+*Setting*	*Value*
+library	org.robotframework.javalib.library.SpringLibrary	org/**/keywords.xml
+
+*Variable*	*Value*
+
+*Test Case*	*Action*	*Argument*
+Acceptance Test
+	keywordWiredFromSpring				
+
+*Keyword*	*Action*	*Argument*

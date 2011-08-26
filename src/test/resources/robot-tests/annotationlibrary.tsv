@@ -1,0 +1,22 @@
+*Setting*	*Value*
+library	org.robotframework.javalib.library.AnnotationLibrary	org/**/keyword/**/**.class
+library	Collections
+
+*Variable*	*Value*
+${testArgument}	some argument
+
+*Test Case*	*Action*	*Argument*
+Finds Annotated Keywords
+	${retVal}=	keywordThatReturnsItsArguments	${testArgument}
+	shouldBeEqual	${testArgument}	${retVal}
+
+Extracts Inner Exception From Failing Keywords
+	runKeywordAndExpectError	Assertion failed	failingKeyword
+
+Creates Keywords That Can Handle Variable Number Of Arguments
+	${stackedArguments}=	keywordWithVariableArgumentCount	arg1	arg2	arg3	arg4
+	${expected}=	createList	arg2	arg3	arg4
+	listsShouldBeEqual	${expected}	${stackedArguments}
+	${stackedArguments}=	keywordWithVariableArgumentCount	arg1
+	${expected}=	createList
+	listsShouldBeEqual	${expected}	${stackedArguments}

@@ -1,0 +1,10 @@
+*Setting*	*Value*
+library	JavaTools
+
+*Variable*	*Value*
+
+*Test Case*	*Action*	*Argument*
+Sets And Gets System Properties
+	setSystemProperty	someKey	someValue
+	${propValue}=	getSystemProperty	someKey
+	shouldBeEqual	someValue	${propValue}

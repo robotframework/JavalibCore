@@ -1,0 +1,18 @@
+*Setting*	*Value*
+Variables	variables.py
+library	org.robotframework.javalib.library.AnnotationLibrary	${KEYWORD PATTERNS}
+library	Collections
+
+*Variable*	*Value*
+${testArgument}	some argument
+
+*Test Case*	*Action*	*Argument*
+Finds Annotated Keywords
+	${retVal}=	keywordThatReturnsItsArguments	${testArgument}
+	shouldBeEqual	${testArgument}	${retVal}
+	${retVal}=	myKeywordThatReturnsItsArguments	${testArgument}
+	shouldBeEqual	${testArgument}	${retVal}
+
+Extracts Inner Exception From Failing Keywords
+	runKeywordAndExpectError	Assertion failed	failingKeyword
+	runKeywordAndExpectError	Assertion failed	myFailingKeyword

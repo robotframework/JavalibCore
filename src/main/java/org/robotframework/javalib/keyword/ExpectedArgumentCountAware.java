@@ -1,6 +1,6 @@
 /*
  * Copyright 2008 Nokia Siemens Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,10 +20,11 @@ public interface ExpectedArgumentCountAware {
 
     /**
      * Returns the number of arguments the keyword expects to get from
-     * Robot. Before the call to {@link #operate}, the return value of this
+     * Robot. Before the call to org.robotframework.javalib.keyword.Keyword#execute,
+     * the return value of this
      * method is used to check whether we have the correct number of
      * arguments. All subclasses must implement.
-     * 
+     *
      * @return number of arguments expected from Robot
      */
     int getExpectedArgumentCount();

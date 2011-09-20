@@ -7,3 +7,6 @@ Java.
 Usage instructions can be found on the project Wiki:
 https://github.com/robotframework/JavalibCore/wiki
 
+The project was orginally hosted at `Google Code`__
+
+__ http://code.google.com/p/robotframework-javalibcore/

@@ -7,5 +7,3 @@ Java.
 Usage instructions can be found on the project Wiki:
 https://github.com/robotframework/JavalibCore/wiki
 
-Rest of this document describes how Javalib-core is developed.
-

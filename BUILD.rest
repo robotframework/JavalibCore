@@ -1,0 +1,13 @@
+Building
+--------
+
+Maven is used as build tool for Javalib-core.
+Source code layout follows the normal Maven convention of `src/main` and
+`src/test.` JUnit and JMock are used in the unit tests.
+
+Robot Tests
+-----------
+
+There are some number of robot tests under src/test/resources/robotframework;
+these are executed for example with `mvn integration-test`
+

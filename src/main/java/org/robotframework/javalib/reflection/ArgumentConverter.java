@@ -10,6 +10,17 @@ public class ArgumentConverter implements IArgumentConverter {
 
     /** {@inheritDoc} */
     public Object[] convertArguments(Object[] args) {
+        if (!shouldConvert(args)) {
+            return args;
+        }
+        return internalConvert(args);
+    }
+
+    /**
+     * @param args
+     * @return
+     */
+    private Object[] internalConvert(Object[] args) {
         Object[] convertedArgs = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
             if (!isArrayArgument(args[i])) {
@@ -19,6 +30,14 @@ public class ArgumentConverter implements IArgumentConverter {
             }
         }
         return convertedArgs;
+    }
+
+    /**
+     * @param args
+     * @return
+     */
+    private boolean shouldConvert(Object[] args) {
+        return args != null;
     }
 
     private boolean isArrayArgument(Object object) {

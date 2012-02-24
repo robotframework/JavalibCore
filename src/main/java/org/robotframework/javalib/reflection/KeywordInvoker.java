@@ -46,7 +46,8 @@ public class KeywordInvoker implements IKeywordInvoker {
     public Object invoke(Object[] args) {
         try {
             Object[] groupedArguments = createArgumentGrouper().groupArguments(args);
-            return method.invoke(obj, groupedArguments);
+            Object[] convertedArguments = createArgumentConverter().convertArguments(groupedArguments);
+            return method.invoke(obj, convertedArguments);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -56,6 +57,10 @@ public class KeywordInvoker implements IKeywordInvoker {
         return method.getAnnotation(RobotKeyword.class).value();
     }
 
+    IArgumentConverter createArgumentConverter() {
+        return new ArgumentConverter(method.getParameterTypes());
+    }
+    
     IArgumentGrouper createArgumentGrouper() {
         return new ArgumentGrouper(method.getParameterTypes());
     }

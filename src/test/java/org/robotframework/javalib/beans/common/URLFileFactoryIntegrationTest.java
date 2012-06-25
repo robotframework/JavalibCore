@@ -56,7 +56,13 @@ public class URLFileFactoryIntegrationTest {
     @Test
     public void retrievesFileWhenURLHasChanged() throws Exception {
         File localFile = new URLFileFactory(localDirectoryPath).createFileFromUrl(url);
-        localFile.setLastModified(1000);
+        try {
+            localFile.setLastModified(1000);
+        } catch (Exception e) {
+            // Hack to let windows filesystem to catch up
+            Thread.sleep(100);
+            localFile.setLastModified(1000);
+        }
         long oldLastModified = localFile.lastModified();
 
         updateURLContent();

@@ -19,9 +19,9 @@ import static org.junit.Assert.assertTrue;
 public class URLFileFactoryIntegrationTest {
     private String localDirectoryPath = System.getProperty("java.io.tmpdir");
     private String fileSeparator = System.getProperty("file.separator");
-    private String localFilePath = localDirectoryPath + "/network_file.txt";
+    private String localFilePath = new File(localDirectoryPath , "network_file.txt").getPath();
     private String url = FileServer.URL_BASE + "/network_file.txt";
-    
+
     @BeforeClass
     public static void startFileServer() throws Exception {
         FileServer.start();
@@ -31,7 +31,7 @@ public class URLFileFactoryIntegrationTest {
     public void deleteTemporaryResources() {
         new File(localFilePath).delete();
     }
-    
+
     @AfterClass
     public static void stopServer() throws Exception {
         FileServer.stop();
@@ -49,24 +49,24 @@ public class URLFileFactoryIntegrationTest {
         File localFile = new URLFileFactory(localDirectoryPath).createFileFromUrl(url);
         long lastModified = localFile.lastModified();
         localFile = new URLFileFactory(localDirectoryPath).createFileFromUrl(url);
-        
+
         assertEquals(lastModified, localFile.lastModified());
     }
-    
+
     @Test
     public void retrievesFileWhenURLHasChanged() throws Exception {
         File localFile = new URLFileFactory(localDirectoryPath).createFileFromUrl(url);
         localFile.setLastModified(1000);
         long oldLastModified = localFile.lastModified();
-        
+
         updateURLContent();
-        
+
         localFile = new URLFileFactory(localDirectoryPath).createFileFromUrl(url);
         long newLastModified = localFile.lastModified();
-        
+
         assertTrue("Expected " + oldLastModified + " to be less than " + newLastModified, oldLastModified < newLastModified);
     }
-    
+
     private void assertFileEqualsToUrl(File file) throws Exception {
         assertStreamsEqual(new FileInputStream(file), new URL(url).openStream());
     }
@@ -79,7 +79,7 @@ public class URLFileFactoryIntegrationTest {
             expectedStream.close();
         }
     }
-    
+
     private void updateURLContent() throws IOException {
         FileUtils.touch(new File(FileServer.RESOURCE_BASE + fileSeparator + "network_file.txt"));
     }

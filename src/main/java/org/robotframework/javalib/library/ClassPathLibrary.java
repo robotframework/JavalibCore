@@ -18,14 +18,9 @@ package org.robotframework.javalib.library;
 
 import org.robotframework.javalib.beans.annotation.KeywordBeanLoader;
 import org.robotframework.javalib.beans.classpath.InterfaceBasedKeywordFilter;
-import org.robotframework.javalib.beans.common.IKeywordBeanDefintionReader;
-import org.robotframework.javalib.beans.common.KeywordBeanDefinitionReader;
-import org.robotframework.javalib.context.KeywordApplicationContext;
-import org.robotframework.javalib.factory.ApplicationContextKeywordFactory;
 import org.robotframework.javalib.factory.ClassPathKeywordFactory;
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.Keyword;
-import org.robotframework.javalib.util.KeywordNameNormalizer;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 

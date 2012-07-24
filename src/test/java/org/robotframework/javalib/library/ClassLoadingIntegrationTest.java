@@ -2,8 +2,6 @@ package org.robotframework.javalib.library;
 
 import junit.framework.TestCase;
 
-import org.robotframework.javalib.factory.ApplicationContextKeywordFactory;
-import org.robotframework.javalib.factory.CompositeKeywordFactory;
 
 public class ClassLoadingIntegrationTest extends TestCase {
     private MockClassLoader mockClassLoader;

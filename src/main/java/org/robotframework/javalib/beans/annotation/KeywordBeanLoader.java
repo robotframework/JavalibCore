@@ -16,12 +16,24 @@
 
 package org.robotframework.javalib.beans.annotation;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 import org.robotframework.javalib.beans.common.IClassFilter;
 import org.robotframework.javalib.beans.common.IKeywordBeanDefintionReader;
 import org.robotframework.javalib.beans.common.KeywordBeanDefinitionReader;
 import org.robotframework.javalib.context.KeywordApplicationContext;
+import org.robotframework.javalib.util.AntPathMatcher;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
 import org.springframework.context.support.GenericApplicationContext;
 
@@ -34,9 +46,89 @@ public class KeywordBeanLoader implements IBeanLoader {
         this.keywordPattern = keywordPattern;
     }
 
+    private String getRoot() {
+        return keywordPattern.substring(0, keywordPattern.indexOf('*'));
+    }
+
     public Map loadBeanDefinitions(IClassFilter classFilter) {
-        beanDefinitionReader.loadBeanDefinitions(keywordPattern, classFilter);
-        context.refresh();
-        return context.getBeansOfType(Object.class);
+        Map kws = new HashMap();
+        String root = getRoot();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            Enumeration<URL> entries = loader.getResources(root);
+            while (entries.hasMoreElements()) {
+                URL url = entries.nextElement();
+                if (url.getProtocol().startsWith("jar")) {
+                    JarInputStream is = null;
+                    try {
+                        JarURLConnection connection =
+                                (JarURLConnection) url.openConnection();
+                        File jar = new File(connection.getJarFileURL().getFile());
+                        is = new JarInputStream(new FileInputStream(jar));
+                    } catch (IOException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+
+                    JarEntry entry;
+                    try {
+                        while( (entry = is.getNextJarEntry()) != null) {
+                            if(entry.getName().endsWith(".class")) {
+                                addKeyword(classFilter, kws, entry.getName());
+
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                }
+                else {
+                    if (new File(url.getFile()).isDirectory()) {
+                        for (String f: getChildrenFrom(getRoot(), new File(url.getFile())))
+                               addKeyword(classFilter, kws, f);
+
+                    }
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return kws;
+    }
+
+    private ArrayList<String> getChildrenFrom(String root, File file) {
+        ArrayList<String> classes = new ArrayList<String>();
+        for (File f: file.listFiles()) {
+            if (f.isFile()) {
+                if (f.getName().endsWith(".class"))
+                    classes.add(root + f.getName());
+            }
+            else
+                classes.addAll(getChildrenFrom(root + f.getName() + "/", f));
+        }
+        return classes;
+    }
+
+
+    private void addKeyword(IClassFilter classFilter, Map kws, String className) {
+        if (className.indexOf("$")!=-1)
+            return;
+        if (!new AntPathMatcher().match(keywordPattern, className))
+            return;
+        try {
+            if (className.startsWith("java"))
+                return;
+            String name = className.substring(0, className.length() - 6);
+            Class cls = Class.forName(name.replace("/", "."));
+            if (classFilter.accept(cls))
+                kws.put(new KeywordNameNormalizer().normalize(name), cls.newInstance());
+
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);  //To change body of catch statement use File | Settings | File Templates.
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 }

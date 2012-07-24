@@ -4,6 +4,7 @@ import org.robotframework.javalib.beans.annotation.KeywordBeanLoader;
 import org.robotframework.javalib.beans.classpath.InterfaceBasedKeywordFilter;
 import org.robotframework.javalib.beans.common.BasicKeywordFilter;
 import org.robotframework.javalib.keyword.Keyword;
+import org.robotframework.javalib.keyword.KeywordMap;
 import org.robotframework.javalib.util.IKeywordNameNormalizer;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
 
@@ -13,21 +14,19 @@ import java.util.Map;
 
 public class ClassPathKeywordFactory implements KeywordFactory<Keyword> {
 
-    private Map<String, Object> map;
-    private IKeywordNameNormalizer keywordNameNormalizer = new KeywordNameNormalizer();
+    private KeywordMap map = new KeywordMap();
 
     public ClassPathKeywordFactory(KeywordBeanLoader loader) {
         Map<String, Object> kws = loader.loadBeanDefinitions(new InterfaceBasedKeywordFilter());
-        this.map = remapNames(kws);
+        remapNames(kws);
     }
 
-    private Map<String, Object> remapNames(Map<String, Object> kws) {
-        Map<String, Object> result = new HashMap<String, Object>();
+    private void remapNames(Map<String, Object> kws) {
         for (String key: kws.keySet()) {
             String lastPart = getKwName(key);
-            result.put(lastPart, kws.get(key));
+            map.add(lastPart, kws.get(key));
+            // FIXME: test for duplicates
         }
-        return result;
     }
 
     private String getKwName(String name) {
@@ -37,11 +36,11 @@ public class ClassPathKeywordFactory implements KeywordFactory<Keyword> {
     }
 
     public Keyword createKeyword(String keywordName) {
-        return (Keyword)map.get(keywordNameNormalizer.normalize(keywordName));
+        return (Keyword)map.get(keywordName);
     }
 
     public String[] getKeywordNames() {
-        return map.keySet().toArray(new String[0]);
+        return map.getKeywordNames();
     }
 
 }

@@ -21,7 +21,6 @@ import org.robotframework.javalib.beans.classpath.InterfaceBasedKeywordFilter;
 import org.robotframework.javalib.factory.ClassPathKeywordFactory;
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.Keyword;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 
 /**
@@ -40,7 +39,6 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
  * set it as restrictive as possible in order to avoid keyword name collisions
  * with other libraries using javalib-core. For example, it is perhaps not
  * a good idea to set it to <code>com/&#42;&#42;/&#42;&#42;.class</code>.
- * The pattern is resolved by {@link PathMatchingResourcePatternResolver}.
  * </p>
  *
  * <p>

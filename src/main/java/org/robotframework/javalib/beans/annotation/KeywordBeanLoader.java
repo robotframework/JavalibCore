@@ -16,7 +16,6 @@
 
 package org.robotframework.javalib.beans.annotation;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,16 +29,10 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.robotframework.javalib.beans.common.IClassFilter;
-import org.robotframework.javalib.beans.common.IKeywordBeanDefintionReader;
-import org.robotframework.javalib.beans.common.KeywordBeanDefinitionReader;
-import org.robotframework.javalib.context.KeywordApplicationContext;
 import org.robotframework.javalib.util.AntPathMatcher;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
-import org.springframework.context.support.GenericApplicationContext;
 
 public class KeywordBeanLoader implements IBeanLoader {
-    protected GenericApplicationContext context = new KeywordApplicationContext(new KeywordNameNormalizer());
-    protected IKeywordBeanDefintionReader beanDefinitionReader = new KeywordBeanDefinitionReader(context, Thread.currentThread().getContextClassLoader());
     protected String keywordPattern = null;
 
     public KeywordBeanLoader(String keywordPattern) {

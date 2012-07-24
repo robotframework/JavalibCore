@@ -34,9 +34,11 @@ import org.robotframework.javalib.util.KeywordNameNormalizer;
 
 public class KeywordBeanLoader implements IBeanLoader {
     protected String keywordPattern = null;
+    private ClassLoader loader;
 
-    public KeywordBeanLoader(String keywordPattern) {
+    public KeywordBeanLoader(String keywordPattern, ClassLoader loader) {
         this.keywordPattern = keywordPattern;
+        this.loader = loader;
     }
 
     private String getRoot() {
@@ -44,9 +46,8 @@ public class KeywordBeanLoader implements IBeanLoader {
     }
 
     public Map loadBeanDefinitions(IClassFilter classFilter) {
-        Map kws = new HashMap();
+        Map kws = new HashMap<String, Object>();
         String root = getRoot();
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
             Enumeration<URL> entries = loader.getResources(root);
             while (entries.hasMoreElements()) {
@@ -103,7 +104,7 @@ public class KeywordBeanLoader implements IBeanLoader {
     }
 
 
-    private void addKeyword(IClassFilter classFilter, Map kws, String className) {
+    private void addKeyword(IClassFilter classFilter, Map<String, Object> kws, String className) {
         if (className.indexOf("$")!=-1)
             return;
         if (!new AntPathMatcher().match(keywordPattern, className))
@@ -112,7 +113,7 @@ public class KeywordBeanLoader implements IBeanLoader {
             if (className.startsWith("java"))
                 return;
             String name = className.substring(0, className.length() - 6);
-            Class cls = Class.forName(name.replace("/", "."));
+            Class cls = loader.loadClass(name.replace("/", "."));
             if (classFilter.accept(cls))
                 kws.put(new KeywordNameNormalizer().normalize(name), cls.newInstance());
 

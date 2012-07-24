@@ -16,11 +16,13 @@
 
 package org.robotframework.javalib.library;
 
+import org.robotframework.javalib.beans.annotation.KeywordBeanLoader;
 import org.robotframework.javalib.beans.classpath.InterfaceBasedKeywordFilter;
 import org.robotframework.javalib.beans.common.IKeywordBeanDefintionReader;
 import org.robotframework.javalib.beans.common.KeywordBeanDefinitionReader;
 import org.robotframework.javalib.context.KeywordApplicationContext;
 import org.robotframework.javalib.factory.ApplicationContextKeywordFactory;
+import org.robotframework.javalib.factory.ClassPathKeywordFactory;
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.Keyword;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
@@ -77,11 +79,7 @@ public class ClassPathLibrary extends KeywordFactoryBasedLibrary<Keyword> {
     @Override
     protected KeywordFactory<Keyword> createKeywordFactory() {
         assumeKeywordPatternIsSet();
-        KeywordApplicationContext ctx = new KeywordApplicationContext(new KeywordNameNormalizer());
-        IKeywordBeanDefintionReader reader = new KeywordBeanDefinitionReader(ctx, getClassLoader());
-        reader.loadBeanDefinitions(keywordPattern, new InterfaceBasedKeywordFilter());
-        ctx.refresh();
-        return new ApplicationContextKeywordFactory(ctx);
+        return new ClassPathKeywordFactory(new KeywordBeanLoader(this.keywordPattern, getClassLoader()));
     }
 
     /**

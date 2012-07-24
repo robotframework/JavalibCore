@@ -77,7 +77,7 @@ public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyw
     }
 
     public void addKeywordPattern(String keywordPattern) {
-        beanLoaders.add(new KeywordBeanLoader(keywordPattern));
+        beanLoaders.add(new KeywordBeanLoader(keywordPattern, Thread.currentThread().getContextClassLoader()));
     }
 
     private void assumeKeywordPatternIsSet() {

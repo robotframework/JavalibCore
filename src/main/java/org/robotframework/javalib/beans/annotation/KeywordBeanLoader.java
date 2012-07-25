@@ -59,8 +59,10 @@ public class KeywordBeanLoader implements IBeanLoader {
     private void addURLKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
         if (url.getProtocol().startsWith("jar")) {
             addJarKeywords(classFilter, kws, url);
-        } else {
+        } else if  (url.getProtocol().startsWith("file")) {
             addFileKeywords(classFilter, kws, url);
+        } else {
+            throw new RuntimeException("Unsupported URL type "+url);
         }
     }
 

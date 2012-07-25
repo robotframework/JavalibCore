@@ -47,47 +47,55 @@ public class KeywordBeanLoader implements IBeanLoader {
 
     public Map loadBeanDefinitions(IClassFilter classFilter) {
         Map kws = new HashMap<String, Object>();
-        String root = getRoot();
-        try {
-            Enumeration<URL> entries = loader.getResources(root);
-            while (entries.hasMoreElements()) {
-                URL url = entries.nextElement();
-                if (url.getProtocol().startsWith("jar")) {
-                    JarInputStream is = null;
-                    try {
-                        JarURLConnection connection =
-                                (JarURLConnection) url.openConnection();
-                        File jar = new File(connection.getJarFileURL().getFile());
-                        is = new JarInputStream(new FileInputStream(jar));
-                    } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-
-                    JarEntry entry;
-                    try {
-                        while( (entry = is.getNextJarEntry()) != null) {
-                            if(entry.getName().endsWith(".class")) {
-                                addKeyword(classFilter, kws, entry.getName());
-
-                            }
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-                }
-                else {
-                    if (new File(url.getFile()).isDirectory()) {
-                        for (String f: getChildrenFrom(getRoot(), new File(url.getFile())))
-                               addKeyword(classFilter, kws, f);
-
-                    }
-                }
-
+        Enumeration<URL> entries = getRootResources();
+        while (entries.hasMoreElements()) {
+            URL url = entries.nextElement();
+            try {
+                addURLKeywords(classFilter, kws, url);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         return kws;
+    }
+
+    private void addURLKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
+        if (url.getProtocol().startsWith("jar")) {
+            addJarKeywords(classFilter, kws, url);
+        } else {
+            addFileKeywords(classFilter, kws, url);
+        }
+    }
+
+    private void addFileKeywords(IClassFilter classFilter, Map kws, URL url) {
+        if (new File(url.getFile()).isDirectory()) {
+            for (String f: getChildrenFrom(getRoot(), new File(url.getFile())))
+                   addKeyword(classFilter, kws, f);
+
+        }
+    }
+
+    private void addJarKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
+        JarURLConnection connection =
+                    (JarURLConnection) url.openConnection();
+        File jar = new File(connection.getJarFileURL().getFile());
+        JarInputStream is = new JarInputStream(new FileInputStream(jar));
+
+        JarEntry entry;
+        while( (entry = is.getNextJarEntry()) != null) {
+            if(entry.getName().endsWith(".class")) {
+                addKeyword(classFilter, kws, entry.getName());
+            }
+        }
+    }
+
+    private Enumeration<URL> getRootResources() {
+        String root = getRoot();
+        try {
+            return loader.getResources(root);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private ArrayList<String> getChildrenFrom(String root, File file) {
@@ -96,13 +104,11 @@ public class KeywordBeanLoader implements IBeanLoader {
             if (f.isFile()) {
                 if (f.getName().endsWith(".class"))
                     classes.add(root + f.getName());
-            }
-            else
+            } else
                 classes.addAll(getChildrenFrom(root + f.getName() + "/", f));
         }
         return classes;
     }
-
 
     private void addKeyword(IClassFilter classFilter, Map<String, Object> kws, String className) {
         if (className.indexOf("$")!=-1)
@@ -116,13 +122,12 @@ public class KeywordBeanLoader implements IBeanLoader {
             Class cls = loader.loadClass(name.replace("/", "."));
             if (classFilter.accept(cls))
                 kws.put(new KeywordNameNormalizer().normalize(name), cls.newInstance());
-
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);  //To change body of catch statement use File | Settings | File Templates.
+            throw new RuntimeException(e);
         } catch (InstantiationException e) {
-            throw new RuntimeException(e);  //To change body of catch statement use File | Settings | File Templates.
+            throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new RuntimeException(e);
         }
     }
 }

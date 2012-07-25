@@ -32,6 +32,7 @@ import org.robotframework.javalib.beans.common.IClassFilter;
 import org.robotframework.javalib.util.AntPathMatcher;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
 
+
 public class KeywordBeanLoader implements IBeanLoader {
     protected String keywordPattern = null;
     private ClassLoader loader;
@@ -46,9 +47,8 @@ public class KeywordBeanLoader implements IBeanLoader {
         Map kws = new HashMap<String, Object>();
         Enumeration<URL> entries = getRootResources();
         while (entries.hasMoreElements()) {
-            URL url = entries.nextElement();
             try {
-                addURLKeywords(classFilter, kws, url);
+                addURLKeywords(classFilter, kws, entries.nextElement());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -64,7 +64,7 @@ public class KeywordBeanLoader implements IBeanLoader {
         }
     }
 
-    private void addFileKeywords(IClassFilter classFilter, Map kws, URL url) {
+    private void addFileKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
         if (new File(url.getFile()).isDirectory()) {
             for (String f: getChildrenFrom(pathMatcher.getRoot(keywordPattern), new File(url.getFile())))
                    addKeyword(classFilter, kws, f);
@@ -107,23 +107,33 @@ public class KeywordBeanLoader implements IBeanLoader {
         return classes;
     }
 
-    private void addKeyword(IClassFilter classFilter, Map<String, Object> kws, String className) {
+    private void addKeyword(IClassFilter classFilter, Map<String, Object> kws, String className) throws IOException {
         if (className.indexOf("$")!=-1)
+            return;
+        if (className.startsWith("java/") || className.startsWith("javax/") )
             return;
         if (!pathMatcher.match(keywordPattern, className))
             return;
+        String name = className.substring(0, className.length() - 6);
+        Class cls = loadClass(name);
+        if (classFilter.accept(cls))
+            putInstance(kws, name, cls);
+    }
+
+    private void putInstance(Map<String, Object> kws, String name, Class cls) {
         try {
-            if (className.startsWith("java"))
-                return;
-            String name = className.substring(0, className.length() - 6);
-            Class cls = loader.loadClass(name.replace("/", "."));
-            if (classFilter.accept(cls))
-                kws.put(new KeywordNameNormalizer().normalize(name), cls.newInstance());
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            kws.put(new KeywordNameNormalizer().normalize(name), cls.newInstance());
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Class loadClass(String name) {
+        try {
+            return loader.loadClass(name.replace("/", "."));
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

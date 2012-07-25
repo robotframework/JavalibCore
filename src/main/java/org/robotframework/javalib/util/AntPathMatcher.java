@@ -74,6 +74,20 @@ public class AntPathMatcher {
 		return doMatch(pattern, path, false, null);
 	}
 
+    /**
+     * Borrowed from PathMatchingResourcePatternResolver
+     */
+    public String getRoot(String pattern) {
+        int prefixEnd = pattern.indexOf(":") + 1;
+        int rootDirEnd = pattern.length();
+        while (rootDirEnd > prefixEnd && isPattern(pattern.substring(prefixEnd, rootDirEnd))) {
+            rootDirEnd = pattern.lastIndexOf('/', rootDirEnd - 2) + 1;
+        }
+        if (rootDirEnd == 0) {
+            rootDirEnd = prefixEnd;
+        }
+        return pattern.substring(0, rootDirEnd);
+    }
 
 	/**
 	 * Actually match the given <code>path</code> against the given <code>pattern</code>.

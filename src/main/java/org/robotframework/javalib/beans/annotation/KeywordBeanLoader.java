@@ -35,14 +35,11 @@ import org.robotframework.javalib.util.KeywordNameNormalizer;
 public class KeywordBeanLoader implements IBeanLoader {
     protected String keywordPattern = null;
     private ClassLoader loader;
+    private AntPathMatcher pathMatcher = new AntPathMatcher();
 
     public KeywordBeanLoader(String keywordPattern, ClassLoader loader) {
         this.keywordPattern = keywordPattern;
         this.loader = loader;
-    }
-
-    private String getRoot() {
-        return keywordPattern.substring(0, keywordPattern.indexOf('*'));
     }
 
     public Map loadBeanDefinitions(IClassFilter classFilter) {
@@ -69,7 +66,7 @@ public class KeywordBeanLoader implements IBeanLoader {
 
     private void addFileKeywords(IClassFilter classFilter, Map kws, URL url) {
         if (new File(url.getFile()).isDirectory()) {
-            for (String f: getChildrenFrom(getRoot(), new File(url.getFile())))
+            for (String f: getChildrenFrom(pathMatcher.getRoot(keywordPattern), new File(url.getFile())))
                    addKeyword(classFilter, kws, f);
 
         }
@@ -90,7 +87,7 @@ public class KeywordBeanLoader implements IBeanLoader {
     }
 
     private Enumeration<URL> getRootResources() {
-        String root = getRoot();
+        String root = pathMatcher.getRoot(keywordPattern);
         try {
             return loader.getResources(root);
         } catch (IOException e) {
@@ -113,7 +110,7 @@ public class KeywordBeanLoader implements IBeanLoader {
     private void addKeyword(IClassFilter classFilter, Map<String, Object> kws, String className) {
         if (className.indexOf("$")!=-1)
             return;
-        if (!new AntPathMatcher().match(keywordPattern, className))
+        if (!pathMatcher.match(keywordPattern, className))
             return;
         try {
             if (className.startsWith("java"))

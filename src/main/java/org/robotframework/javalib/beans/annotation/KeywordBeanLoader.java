@@ -70,7 +70,6 @@ public class KeywordBeanLoader implements IBeanLoader {
         if (new File(url.getFile()).isDirectory()) {
             for (String f: getChildrenFrom(pathMatcher.getRoot(keywordPattern), new File(url.getFile())))
                 addKeyword(classFilter, kws, f);
-
         }
     }
 
@@ -79,7 +78,6 @@ public class KeywordBeanLoader implements IBeanLoader {
                     (JarURLConnection) url.openConnection();
         File jar = new File(connection.getJarFileURL().getFile());
         JarInputStream is = new JarInputStream(new FileInputStream(jar));
-
         JarEntry entry;
         while( (entry = is.getNextJarEntry()) != null) {
             if(entry.getName().endsWith(".class")) {

@@ -34,9 +34,9 @@ import org.robotframework.javalib.util.KeywordNameNormalizer;
 
 
 public class KeywordBeanLoader implements IBeanLoader {
-    protected String keywordPattern = null;
-    private ClassLoader loader;
-    private AntPathMatcher pathMatcher = new AntPathMatcher();
+    protected final String keywordPattern;
+    private final ClassLoader loader;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     public KeywordBeanLoader(String keywordPattern, ClassLoader loader) {
         this.keywordPattern = keywordPattern;
@@ -59,7 +59,7 @@ public class KeywordBeanLoader implements IBeanLoader {
     private void addURLKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
         if (url.getProtocol().startsWith("jar")) {
             addJarKeywords(classFilter, kws, url);
-        } else if  (url.getProtocol().startsWith("file")) {
+        } else if (url.getProtocol().startsWith("file")) {
             addFileKeywords(classFilter, kws, url);
         } else {
             throw new RuntimeException("Unsupported URL type "+url);
@@ -69,7 +69,7 @@ public class KeywordBeanLoader implements IBeanLoader {
     private void addFileKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
         if (new File(url.getFile()).isDirectory()) {
             for (String f: getChildrenFrom(pathMatcher.getRoot(keywordPattern), new File(url.getFile())))
-                   addKeyword(classFilter, kws, f);
+                addKeyword(classFilter, kws, f);
 
         }
     }

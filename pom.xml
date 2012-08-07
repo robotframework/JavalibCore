@@ -10,8 +10,8 @@
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>javalib-core</name>
-  <description>Base for implementing Java test libraries to Robot Framework</description>
-  <url>https://code.google.com/p/robotframework-javatools/</url>
+  <description>Base for implementing Java test libraries for Robot Framework</description>
+  <url>https://github.com/robotframework/JavalibCore</url>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -20,8 +20,8 @@
     </license>
   </licenses>
   <scm>
-    <url>http://robotframework-javatools.googlecode.com/svn/trunk</url>
-    <connection>scm:svn:http://robotframework-javatools.googlecode.com/svn/trunk</connection>
+    <url>https://github.com/robotframework/JavalibCore</url>
+    <connection>scm:git:https//github.com/robotframework/JavalibCore</connection>
   </scm>
   <developers>
     <developer>
@@ -29,6 +29,7 @@
       <email>robotframework@gmail.com</email>
     </developer>
   </developers>
+
   <dependencies>
     <dependency>
       <groupId>commons-collections</groupId>
@@ -65,27 +66,6 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-4</version>
-        <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
@@ -119,16 +99,43 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>jarjar-maven-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jarjar</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>commons-collections:commons-collections</include>
+                <include>com.thoughtworks.paranamer:paranamer</include>
+              </includes>
+              <rules>
+                <rule>
+                  <pattern>org.apache.commons.collections.**</pattern>
+                  <result>org.robotframework.javalib.@0</result>
+                </rule>
+                <rule>
+                  <pattern>com.thoughtworks.**</pattern>
+                  <result>org.robotframework.javalib.@0</result>
+                </rule>
+                <keep>
+                  <pattern>org.robotframework.javalib.**</pattern>
+                </keep>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.0</version>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>

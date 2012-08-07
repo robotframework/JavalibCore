@@ -1,0 +1,10 @@
+*** Settings ***
+Library    org.robotframework.javalib.library.ClassPathLibrary     org/robotframework/example/keyword/**.class
+Library    org.robotframework.javalib.library.AnnotationLibrary    org/robotframework/example/keyword/**.class
+
+*** Test Cases ***
+ClassPathLibrary Example
+     Interface Based Keyword				
+					
+AnnotationLibrary Example
+     Annotation Based Keyword

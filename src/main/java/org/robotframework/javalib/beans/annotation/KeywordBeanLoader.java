@@ -16,27 +16,125 @@
 
 package org.robotframework.javalib.beans.annotation;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 import org.robotframework.javalib.beans.common.IClassFilter;
-import org.robotframework.javalib.beans.common.IKeywordBeanDefintionReader;
-import org.robotframework.javalib.beans.common.KeywordBeanDefinitionReader;
-import org.robotframework.javalib.context.KeywordApplicationContext;
+import org.robotframework.javalib.util.AntPathMatcher;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
-import org.springframework.context.support.GenericApplicationContext;
+
 
 public class KeywordBeanLoader implements IBeanLoader {
-    protected GenericApplicationContext context = new KeywordApplicationContext(new KeywordNameNormalizer());
-    protected IKeywordBeanDefintionReader beanDefinitionReader = new KeywordBeanDefinitionReader(context, Thread.currentThread().getContextClassLoader());
-    protected String keywordPattern = null;
+    protected final String keywordPattern;
+    private final ClassLoader loader;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    public KeywordBeanLoader(String keywordPattern) {
+    public KeywordBeanLoader(String keywordPattern, ClassLoader loader) {
         this.keywordPattern = keywordPattern;
+        this.loader = loader;
     }
 
     public Map loadBeanDefinitions(IClassFilter classFilter) {
-        beanDefinitionReader.loadBeanDefinitions(keywordPattern, classFilter);
-        context.refresh();
-        return context.getBeansOfType(Object.class);
+        Map kws = new HashMap<String, Object>();
+        Enumeration<URL> entries = getRootResources();
+        while (entries.hasMoreElements()) {
+            try {
+                addURLKeywords(classFilter, kws, entries.nextElement());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return kws;
+    }
+
+    private void addURLKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
+        if (url.getProtocol().startsWith("jar")) {
+            addJarKeywords(classFilter, kws, url);
+        } else if (url.getProtocol().startsWith("file")) {
+            addFileKeywords(classFilter, kws, url);
+        } else {
+            throw new RuntimeException("Unsupported URL type "+url);
+        }
+    }
+
+    private void addFileKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
+        if (new File(url.getFile()).isDirectory()) {
+            for (String f: getChildrenFrom(pathMatcher.getRoot(keywordPattern), new File(url.getFile())))
+                addKeyword(classFilter, kws, f);
+        }
+    }
+
+    private void addJarKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
+        JarURLConnection connection =
+                    (JarURLConnection) url.openConnection();
+        File jar = new File(connection.getJarFileURL().getFile());
+        JarInputStream is = new JarInputStream(new FileInputStream(jar));
+        JarEntry entry;
+        while( (entry = is.getNextJarEntry()) != null) {
+            if(entry.getName().endsWith(".class")) {
+                addKeyword(classFilter, kws, entry.getName());
+            }
+        }
+    }
+
+    private Enumeration<URL> getRootResources() {
+        String root = pathMatcher.getRoot(keywordPattern);
+        try {
+            return loader.getResources(root);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ArrayList<String> getChildrenFrom(String root, File file) {
+        ArrayList<String> classes = new ArrayList<String>();
+        for (File f: file.listFiles()) {
+            if (f.isFile()) {
+                if (f.getName().endsWith(".class"))
+                    classes.add(root + f.getName());
+            } else
+                classes.addAll(getChildrenFrom(root + f.getName() + "/", f));
+        }
+        return classes;
+    }
+
+    private void addKeyword(IClassFilter classFilter, Map<String, Object> kws, String className) throws IOException {
+        if (className.indexOf("$")!=-1)
+            return;
+        if (className.startsWith("java/") || className.startsWith("javax/") )
+            return;
+        if (!pathMatcher.match(keywordPattern, className))
+            return;
+        String name = className.substring(0, className.length() - 6);
+        Class cls = loadClass(name);
+        if (classFilter.accept(cls))
+            putInstance(kws, name, cls);
+    }
+
+    private void putInstance(Map<String, Object> kws, String name, Class cls) {
+        try {
+            kws.put(new KeywordNameNormalizer().normalize(name), cls.newInstance());
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Class loadClass(String name) {
+        try {
+            return loader.loadClass(name.replace("/", "."));
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

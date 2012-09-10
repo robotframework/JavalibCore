@@ -8,6 +8,6 @@ Source code layout follows the normal Maven convention of `src/main` and
 Robot Tests
 -----------
 
-There are some number of robot tests under src/test/resources/robotframework;
-these are executed for example with `mvn integration-test`
+There are some number of robot tests under src/test/robotframework/acceptance;
+these are executed for example with `mvn verify`
 

@@ -8,7 +8,7 @@
   <groupId>org.robotframework</groupId>
   <artifactId>javalib-core</artifactId>
   <packaging>jar</packaging>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <name>javalib-core</name>
   <description>Base for implementing Java test libraries for Robot Framework</description>
   <url>https://github.com/robotframework/JavalibCore</url>
@@ -128,6 +128,20 @@
                 </keep>
               </rules>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>install</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>

@@ -137,6 +137,7 @@
         </executions>
       </plugin>
       <plugin>
+        <!-- Use "mvn install -Dgpg.skip=true" to skip signing -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
         <version>1.4</version>

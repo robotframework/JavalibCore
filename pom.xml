@@ -8,7 +8,7 @@
   <groupId>org.robotframework</groupId>
   <artifactId>javalib-core</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.2</version>
   <name>javalib-core</name>
   <description>Base for implementing Java test libraries for Robot Framework</description>
   <url>https://github.com/robotframework/JavalibCore</url>

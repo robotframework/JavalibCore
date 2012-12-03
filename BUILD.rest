@@ -11,3 +11,11 @@ Robot Tests
 There are some number of robot tests under src/test/robotframework/acceptance;
 these are executed for example with `mvn verify`
 
+Releasing
+---------
+
+- update release notes
+- update version number to pom.xml
+- create git tag for new version
+- mvn deploy deploys the library to maven central. See instructinos on Robot Framework releasing for the prerequisites.
+- Go to https://oss.sonatype.org/index.html#welcome, log in with Sonatype creadentials, find the staging repository and do close & release

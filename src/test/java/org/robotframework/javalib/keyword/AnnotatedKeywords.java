@@ -35,4 +35,32 @@ public class AnnotatedKeywords {
     public Object[] keywordWithVariableArgumentCount(String someArgument, String[] restOfTheArguments) {
         return restOfTheArguments;
     }
+
+    @RobotKeyword("This is a keyword with numeric arguments. The keyword will fail unless all are 42.")
+    public void keywordWithNumericArguments(long l1, Long l2, short s1, Short s2) {
+        if (l1 != 42 || l2 != 42 || s1 != 42 || s2 != 42)
+            throw new AssertionFailedError("All arguments should be 42.");
+    }
+
+    @RobotKeyword("This is a keyword with object argument.")
+    public SomeObject getSomeObject() {
+        SomeObject obj = new SomeObject();
+        obj.name = "Hello";
+        obj.value = "World";
+        return obj;
+    }
+
+    @RobotKeyword("This is a keyword with object argument.")
+    public void keywordWithObjectArgument(SomeInterface arg) {
+        if (arg == null)
+            throw new AssertionFailedError("Argument was null.");
+    }
+
+    public interface SomeInterface {
+    }
+
+    public class SomeObject implements SomeInterface {
+        public String name;
+        public String value;
+    }
 }

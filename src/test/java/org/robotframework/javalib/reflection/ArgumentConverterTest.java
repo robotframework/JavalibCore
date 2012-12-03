@@ -16,6 +16,40 @@ public class ArgumentConverterTest extends TestCase {
         assertTrue(converted[1] instanceof String);
     }
 
+    public void testConvertingNumericTypes() throws Exception {
+        convertAndVerifyNumeric(Integer.class, Integer.class);
+        convertAndVerifyNumeric(Long.class, Long.class);
+        convertAndVerifyNumeric(Short.class, Short.class);
+        convertAndVerifyNumeric(Float.class, Float.class);
+        convertAndVerifyNumeric(Double.class, Double.class);
+        convertAndVerifyNumeric(Byte.class, Byte.class);
+        convertAndVerifyNumeric(Integer.TYPE, Integer.class);
+        convertAndVerifyNumeric(Long.TYPE, Long.class);
+        convertAndVerifyNumeric(Short.TYPE, Short.class);
+        convertAndVerifyNumeric(Float.TYPE, Float.class);
+        convertAndVerifyNumeric(Double.TYPE, Double.class);
+        convertAndVerifyNumeric(Byte.TYPE, Byte.class);
+    }
+
+    private void convertAndVerifyNumeric(Class type, Class expected) {
+        convertAndVerify(type, expected, "42");
+    }
+
+    public void testConvertingBoolean() throws Exception {
+        convertAndVerify(Boolean.class, Boolean.class, "True");
+        convertAndVerify(Boolean.TYPE, Boolean.class, "True");
+    }
+
+    public void testConvertingObjects() throws Exception {
+        convertAndVerify(Object.class, Object.class, new Object());
+    }
+
+    private void convertAndVerify(Class type, Class expected, Object value) {
+        IArgumentConverter converter = new ArgumentConverter(new Class[] {type});
+        Object[] converted = converter.convertArguments(new Object[] {value});
+        assertTrue(converted[0].getClass().equals(expected));
+    }
+
     public void testConvertsOnlyNonArrayArgumentsIfLastArgumentIsArray() throws Exception {
         String[] array = new String[] {"X", "Y"};
         IArgumentConverter converter = new ArgumentConverter(new Class[] {Long.class, Double.class, array.getClass()});

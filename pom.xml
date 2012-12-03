@@ -64,6 +64,7 @@
   </dependencies>
 
   <build>
+    <directory>${project.basedir}/target with spaces</directory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -95,6 +96,7 @@
           <execution>
             <goals>
               <goal>run</goal>
+              <goal>verify</goal>
             </goals>
           </execution>
         </executions>

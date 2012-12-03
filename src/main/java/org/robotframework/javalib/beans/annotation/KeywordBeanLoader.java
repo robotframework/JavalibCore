@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -67,9 +68,11 @@ public class KeywordBeanLoader implements IBeanLoader {
     }
 
     private void addFileKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
-        if (new File(url.getFile()).isDirectory()) {
-            for (String f: getChildrenFrom(pathMatcher.getRoot(keywordPattern), new File(url.getFile())))
+        File urlFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
+        if (urlFile.isDirectory()) {
+            for (String f: getChildrenFrom(pathMatcher.getRoot(keywordPattern), urlFile)) {
                 addKeyword(classFilter, kws, f);
+            }
         }
     }
 

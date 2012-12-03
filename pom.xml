@@ -8,7 +8,7 @@
   <groupId>org.robotframework</groupId>
   <artifactId>javalib-core</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <name>javalib-core</name>
   <description>Base for implementing Java test libraries for Robot Framework</description>
   <url>https://github.com/robotframework/JavalibCore</url>
@@ -100,6 +100,9 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <logLevel>DEBUG</logLevel>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.sonatype.plugins</groupId>

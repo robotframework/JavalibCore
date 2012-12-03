@@ -79,7 +79,7 @@ public class KeywordBeanLoader implements IBeanLoader {
     private void addJarKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
         JarURLConnection connection =
                     (JarURLConnection) url.openConnection();
-        File jar = new File(connection.getJarFileURL().getFile());
+        File jar = new File(URLDecoder.decode(connection.getJarFileURL().getFile(), "UTF-8"));
         JarInputStream is = new JarInputStream(new FileInputStream(jar));
         JarEntry entry;
         while( (entry = is.getNextJarEntry()) != null) {

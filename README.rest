@@ -7,6 +7,10 @@ Java.
 Usage instructions can be found on the project Wiki:
 https://github.com/robotframework/JavalibCore/wiki
 
+Project jar can be downloaded directly from the `Maven Repository`__
+
+__ http://search.maven.org/remotecontent?filepath=org/robotframework/javalib-core/1.0.3/javalib-core-1.0.3.jar
+
 The project was orginally hosted at `Google Code`__
 
 __ http://code.google.com/p/robotframework-javalibcore/

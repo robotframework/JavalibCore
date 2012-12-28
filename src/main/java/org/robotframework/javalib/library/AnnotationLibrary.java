@@ -63,7 +63,15 @@ public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyw
         return createKeywordFactory().createKeyword(keywordName).getArgumentNames();
     }
 
+    /**
+     * This method should be overridden in the Library implementation
+     * including the equals comparison for '__intro__'.
+     *
+     * Default implementation returns empty String for the '__intro__'.
+     */
     public String getKeywordDocumentation(String keywordName) {
+        if (keywordName.equals("__intro__"))
+            return "";
         return createKeywordFactory().createKeyword(keywordName).getDocumentation();
     }
 

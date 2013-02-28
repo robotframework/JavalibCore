@@ -21,12 +21,12 @@ Creates Keywords That Can Handle Variable Number Of Arguments
 	${expected}=	createList
 	listsShouldBeEqual	${expected}	${stackedArguments}
 
-Polymorphic keyword
-	Polymorphic	one
-	Polymorphic	one	2
-	Polymorphic	one	two	three
-	runKeywordAndExpectError	*	Polymorphic
-	runKeywordAndExpectError	*	Polymorphic	1	2	3	4
+Overloaded keyword
+	Overloaded	one
+	Overloaded	one	2
+	Overloaded	one	two	three
+	runKeywordAndExpectError	*	Overloaded
+	runKeywordAndExpectError	*	Overloaded	1	2	3	4
 
 Can convert numeric argument types
 	Keyword With Numeric Arguments	42	42	42	42

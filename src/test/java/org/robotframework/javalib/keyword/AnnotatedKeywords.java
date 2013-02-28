@@ -27,15 +27,15 @@ public class AnnotatedKeywords {
     }
 
     @RobotKeyword
-    public void polymorphic(String one) {
+    public void overloaded(String one, String two, String three) {
     }
 
     @RobotKeyword
-    public void polymorphic(String one, int two) {
+    public void overloaded(String one) {
     }
 
     @RobotKeyword
-    public void polymorphic(String one, String two, String three) {
+    public void overloaded(String one, int two) {
     }
 
     @ArgumentNames({"overridenArgumentName"})

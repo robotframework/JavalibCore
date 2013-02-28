@@ -32,7 +32,7 @@ public class AnnotatedKeywords {
     }
 
     @RobotKeyword("This is a keyword with variable argument count")
-    public Object[] keywordWithVariableArgumentCount(String someArgument, String[] restOfTheArguments) {
+    public Object[] keywordWithVariableArgumentCount(String someArgument, String... restOfTheArguments) {
         return restOfTheArguments;
     }
 

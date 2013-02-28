@@ -34,6 +34,10 @@ public class AnnotatedKeywords {
     public void polymorphic(String one, int two) {
     }
 
+    @RobotKeyword
+    public void polymorphic(String one, String two, String three) {
+    }
+
     @ArgumentNames({"overridenArgumentName"})
     @RobotKeyword("Some documentation")
     public void someKeyword(String someArgument) {

@@ -16,7 +16,7 @@ public class AnnotationLibraryIntegrationTest extends TestCase {
 
     public void testFindsAnnotatedKeywordsFromClassPath() throws Exception {
         String[] keywordNames = annotationLibrary.getKeywordNames();
-        String[] expectedKeywordNames = new String[] { "failingKeyword", "someKeyword", keywordThatReturnsItsArguments,
+        String[] expectedKeywordNames = new String[] { "failingKeyword", "someKeyword", "polymorphic", keywordThatReturnsItsArguments,
                 "keywordWithVariableArgumentCount", "keywordWithObjectArgument", "getSomeObject", "keywordWithNumericArguments" };
 
         ArrayUtil.assertArraysContainSame(expectedKeywordNames, keywordNames);

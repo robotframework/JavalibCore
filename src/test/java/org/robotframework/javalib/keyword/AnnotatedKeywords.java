@@ -26,6 +26,14 @@ public class AnnotatedKeywords {
         return arg;
     }
 
+    @RobotKeyword
+    public void polymorphic(String one) {
+    }
+
+    @RobotKeyword
+    public void polymorphic(String one, int two) {
+    }
+
     @ArgumentNames({"overridenArgumentName"})
     @RobotKeyword("Some documentation")
     public void someKeyword(String someArgument) {

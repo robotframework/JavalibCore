@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 
 import org.robotframework.javalib.util.ArrayUtil;
 
-
 public class AnnotationLibraryIntegrationTest extends TestCase {
     private AnnotationLibrary annotationLibrary;
     private String keywordThatReturnsItsArguments = "keywordThatReturnsItsArguments";
@@ -28,6 +27,23 @@ public class AnnotationLibraryIntegrationTest extends TestCase {
             new String[] { keywordArgument });
 
         assertEquals(keywordArgument, executionResult);
+    }
+
+    public void testOverloading() throws Exception {
+        assertEquals(2, annotationLibrary.runKeyword("overloaded", new Object[] {"one", "2"}));
+        assertEquals("one", annotationLibrary.runKeyword("overloaded", new Object[] {"one"}));
+        assertEquals("3", annotationLibrary.runKeyword("overloaded", new Object[] {"one", "two", "3"}));
+    }
+
+    public void testOverloadingWithWrongNumberOfArguments() throws Exception {
+       try{
+           annotationLibrary.runKeyword("overloaded", new Object[] {});
+           fail();
+       } catch (RuntimeException expected) {}
+       try{
+           annotationLibrary.runKeyword("overloaded", new Object[] {1, 2, 3, 4});
+           fail();
+       } catch (RuntimeException expected) {}
     }
 
     public void testFindsKeywordDocumentation() throws Exception {

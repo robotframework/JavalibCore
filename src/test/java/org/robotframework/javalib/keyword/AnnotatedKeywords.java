@@ -29,15 +29,18 @@ public class AnnotatedKeywords {
 
     @RobotKeyword
     @ArgumentNames({"one", "two=", "three="})
-    public void overloaded(String one, String two, String three) {
+    public Object overloaded(String one, String two, String three) {
+        return three;
     }
 
     @RobotKeywordOverload
-    public void overloaded(String one) {
+    public Object overloaded(String one) {
+        return one;
     }
 
     @RobotKeywordOverload
-    public void overloaded(String one, int two) {
+    public Object overloaded(String one, int two) {
+        return two;
     }
 
     @ArgumentNames({"overridenArgumentName"})

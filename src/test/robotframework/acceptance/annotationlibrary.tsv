@@ -25,8 +25,6 @@ Overloaded keyword
 	Overloaded	one
 	Overloaded	one	2
 	Overloaded	one	two	three
-	runKeywordAndExpectError	*	Overloaded
-	runKeywordAndExpectError	*	Overloaded	1	2	3	4
 
 Can convert numeric argument types
 	Keyword With Numeric Arguments	42	42	42	42

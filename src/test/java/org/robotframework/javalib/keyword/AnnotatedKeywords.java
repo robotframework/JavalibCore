@@ -27,6 +27,7 @@ public class AnnotatedKeywords {
     }
 
     @RobotKeyword
+    @ArgumentNames({"one", "two=", "three="})
     public void overloaded(String one, String two, String three) {
     }
 

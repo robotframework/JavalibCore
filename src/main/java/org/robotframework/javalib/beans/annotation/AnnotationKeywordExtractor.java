@@ -82,7 +82,11 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
             }
 
             public String[] getArgumentNames() {
-                return other.getArgumentNames();
+                String[] names = other.getArgumentNames();
+                if(names == null){
+                    names = original.getArgumentNames();
+                }
+                return names;
             }
 
             public String getDocumentation() {

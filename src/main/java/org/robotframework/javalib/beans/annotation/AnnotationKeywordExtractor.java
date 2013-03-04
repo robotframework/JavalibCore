@@ -75,6 +75,8 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
     private DocumentedKeyword addPolymorphToKeywordDefinition(final DocumentedKeyword original, final Object keywordBean, final Method method) {
         final DocumentedKeyword other = createKeyword(keywordBean, method);
         final boolean isOverload = method.isAnnotationPresent(RobotKeywordOverload.class);
+        if(isOverload && method.isAnnotationPresent(RobotKeyword.class))
+            throw new AssertionError("Method definition should not have both RobotKeyword and RobotKeywordOverload annotations");
         final int parameterTypesLength = method.getParameterTypes().length;
         return new DocumentedKeyword() {
             public Object execute(Object[] arguments) {
@@ -85,11 +87,10 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
             }
 
             public String[] getArgumentNames() {
-                String[] names = other.getArgumentNames();
-                if(names == null){
-                    names = original.getArgumentNames();
+                if(isOverload){
+                    return original.getArgumentNames();
                 }
-                return names;
+                return other.getArgumentNames();
             }
 
             public String getDocumentation() {

@@ -31,25 +31,14 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
         Map<String, DocumentedKeyword> extractedKeywords = new HashMap<String, DocumentedKeyword>();
         Method[] methods = keywordBean.getClass().getMethods();
         for (final Method method : methods) {
-            if (method.isAnnotationPresent(RobotKeyword.class)) {
+            if (method.isAnnotationPresent(RobotKeyword.class) || method.isAnnotationPresent(RobotKeywordOverload.class)) {
                 createOrAddKeyword(extractedKeywords, keywordBean, method);
-            } else if (method.isAnnotationPresent(RobotKeywordOverload.class)) {
-                createOrAddKeywordOverload(extractedKeywords, keywordBean, method);
             }
         }
         return extractedKeywords;
     }
 
     private void createOrAddKeyword(Map<String, DocumentedKeyword> extractedKeywords, Object keywordBean, Method method) {
-        String name = method.getName();
-        if(extractedKeywords.containsKey(name)){
-            extractedKeywords.put(name, addPolymorphToKeywordDefinition(extractedKeywords.get(name), keywordBean, method));
-        }else{
-            extractedKeywords.put(name, createKeyword(keywordBean, method));
-        }
-    }
-
-    private void createOrAddKeywordOverload(Map<String, DocumentedKeyword> extractedKeywords, Object keywordBean, Method method) {
         String name = method.getName();
         if(extractedKeywords.containsKey(name)){
             extractedKeywords.put(name, addPolymorphToKeywordDefinition(extractedKeywords.get(name), keywordBean, method));

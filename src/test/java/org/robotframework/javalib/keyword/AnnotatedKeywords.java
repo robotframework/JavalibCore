@@ -4,6 +4,7 @@ import junit.framework.AssertionFailedError;
 
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
+import org.robotframework.javalib.annotation.RobotKeywordOverload;
 import org.robotframework.javalib.annotation.RobotKeywords;
 
 
@@ -31,11 +32,11 @@ public class AnnotatedKeywords {
     public void overloaded(String one, String two, String three) {
     }
 
-    @RobotKeyword
+    @RobotKeywordOverload
     public void overloaded(String one) {
     }
 
-    @RobotKeyword
+    @RobotKeywordOverload
     public void overloaded(String one, int two) {
     }
 

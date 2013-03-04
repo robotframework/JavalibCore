@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.robotframework.javalib.annotation.RobotKeyword;
+import org.robotframework.javalib.annotation.RobotKeywordOverload;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
 import org.robotframework.javalib.reflection.IKeywordInvoker;
 import org.robotframework.javalib.reflection.KeywordInvoker;
@@ -32,12 +33,23 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
         for (final Method method : methods) {
             if (method.isAnnotationPresent(RobotKeyword.class)) {
                 createOrAddKeyword(extractedKeywords, keywordBean, method);
+            } else if (method.isAnnotationPresent(RobotKeywordOverload.class)) {
+                createOrAddKeywordOverload(extractedKeywords, keywordBean, method);
             }
         }
         return extractedKeywords;
     }
 
     private void createOrAddKeyword(Map<String, DocumentedKeyword> extractedKeywords, Object keywordBean, Method method) {
+        String name = method.getName();
+        if(extractedKeywords.containsKey(name)){
+            extractedKeywords.put(name, addPolymorphToKeywordDefinition(extractedKeywords.get(name), keywordBean, method));
+        }else{
+            extractedKeywords.put(name, createKeyword(keywordBean, method));
+        }
+    }
+
+    private void createOrAddKeywordOverload(Map<String, DocumentedKeyword> extractedKeywords, Object keywordBean, Method method) {
         String name = method.getName();
         if(extractedKeywords.containsKey(name)){
             extractedKeywords.put(name, addPolymorphToKeywordDefinition(extractedKeywords.get(name), keywordBean, method));
@@ -73,9 +85,11 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
 
     private DocumentedKeyword addPolymorphToKeywordDefinition(final DocumentedKeyword original, final Object keywordBean, final Method method) {
         final DocumentedKeyword other = createKeyword(keywordBean, method);
+        final boolean isOverload = method.isAnnotationPresent(RobotKeywordOverload.class);
+        final int parameterTypesLength = method.getParameterTypes().length;
         return new DocumentedKeyword() {
             public Object execute(Object[] arguments) {
-                if(method.getParameterTypes().length == arguments.length){
+                if(parameterTypesLength == arguments.length){
                     return other.execute(arguments);
                 }
                 return original.execute(arguments);
@@ -90,6 +104,9 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
             }
 
             public String getDocumentation() {
+                if(isOverload){
+                    return original.getDocumentation();
+                }
                 return other.getDocumentation();
             }
         };

@@ -16,10 +16,14 @@
 
 package org.robotframework.javalib.beans.annotation;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.robotframework.javalib.annotation.Autowired;
 import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.annotation.RobotKeywordOverload;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
@@ -27,78 +31,114 @@ import org.robotframework.javalib.reflection.IKeywordInvoker;
 import org.robotframework.javalib.reflection.KeywordInvoker;
 
 public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedKeyword> {
-    public Map<String, DocumentedKeyword> extractKeywords(final Object keywordBean) {
-        Map<String, DocumentedKeyword> extractedKeywords = new HashMap<String, DocumentedKeyword>();
-        Method[] methods = keywordBean.getClass().getMethods();
-        for (final Method method : methods) {
-            if (method.isAnnotationPresent(RobotKeyword.class) || method.isAnnotationPresent(RobotKeywordOverload.class)) {
-                createOrAddKeyword(extractedKeywords, keywordBean, method);
-            }
-        }
-        return extractedKeywords;
-    }
+	public Map<String, DocumentedKeyword> extractKeywords(final Object keywordBean,
+			final Collection<Object> keywordBeanValues) {
+		Map<String, DocumentedKeyword> extractedKeywords = new HashMap<String, DocumentedKeyword>();
+		Class<?> clazz = keywordBean.getClass();
+		Method[] methods = clazz.getMethods();
+		for (final Method method : methods) {
+			if (method.isAnnotationPresent(RobotKeyword.class)
+					|| method.isAnnotationPresent(RobotKeywordOverload.class)) {
+				createOrAddKeyword(extractedKeywords, keywordBean, method);
+			}
+		}
+		while (clazz != null) {
+			Field[] fields = clazz.getDeclaredFields();
+			for (final Field field : fields) {
+				if (field.isAnnotationPresent(Autowired.class)) {
+					autowireKeywordBeanField(keywordBean, field, keywordBeanValues);
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return extractedKeywords;
+	}
 
-    private void createOrAddKeyword(Map<String, DocumentedKeyword> extractedKeywords, Object keywordBean, Method method) {
-        String name = method.getName();
-        if(extractedKeywords.containsKey(name)){
-            extractedKeywords.put(name, addPolymorphToKeywordDefinition(extractedKeywords.get(name), keywordBean, method));
-        }else{
-            extractedKeywords.put(name, createKeyword(keywordBean, method));
-        }
-    }
+	private void autowireKeywordBeanField(Object keywordBean, Field field, Collection<Object> keywordBeanValues) {
+		try {
+			Class<?> clazz = field.getDeclaringClass();
+			if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(clazz.getModifiers()))
+					&& !field.isAccessible()) {
+				field.setAccessible(true);
+			}
+			for (Object keywordBeanValue : keywordBeanValues) {
+				if (keywordBeanValue.getClass().equals(clazz)) {
+					field.set(keywordBean, keywordBeanValue);
+					return;
+				}
+			}
+		} catch (IllegalAccessException e) {
+			throw new IllegalArgumentException(String.format("Can't autowire field '%s' at keyword class '%s'.",
+					field.getName(), keywordBean.getClass().getName()), e);
+		}
+		throw new IllegalArgumentException(String.format("Can't autowire field '%s' at keyword class '%s'.",
+				field.getName(), keywordBean.getClass().getName()));
+	}
 
-    IKeywordInvoker createKeywordInvoker(Object keywordBean, Method method) {
-        return new KeywordInvoker(keywordBean, method);
-    }
+	private void createOrAddKeyword(Map<String, DocumentedKeyword> extractedKeywords, Object keywordBean, Method method) {
+		String name = method.getName();
+		if (extractedKeywords.containsKey(name)) {
+			extractedKeywords.put(name,
+					addPolymorphToKeywordDefinition(extractedKeywords.get(name), keywordBean, method));
+		} else {
+			extractedKeywords.put(name, createKeyword(keywordBean, method));
+		}
+	}
 
-    private DocumentedKeyword createKeyword(Object keywordBean, Method method) {
-        IKeywordInvoker keywordInvoker = createKeywordInvoker(keywordBean, method);
-        return createKeyword(keywordInvoker);
-    }
+	IKeywordInvoker createKeywordInvoker(Object keywordBean, Method method) {
+		return new KeywordInvoker(keywordBean, method);
+	}
 
-    private DocumentedKeyword createKeyword(final IKeywordInvoker keywordInvoker) {
-        return new DocumentedKeyword() {
-            public Object execute(Object[] arguments) {
-                return keywordInvoker.invoke(arguments);
-            }
+	private DocumentedKeyword createKeyword(Object keywordBean, Method method) {
+		IKeywordInvoker keywordInvoker = createKeywordInvoker(keywordBean, method);
+		return createKeyword(keywordInvoker);
+	}
 
-            public String[] getArgumentNames() {
-                return keywordInvoker.getParameterNames();
-            }
+	private DocumentedKeyword createKeyword(final IKeywordInvoker keywordInvoker) {
+		return new DocumentedKeyword() {
+			public Object execute(Object[] arguments) {
+				return keywordInvoker.invoke(arguments);
+			}
 
-            public String getDocumentation() {
-                return keywordInvoker.getDocumentation();
-            }
-        };
-    }
+			public String[] getArgumentNames() {
+				return keywordInvoker.getParameterNames();
+			}
 
-    private DocumentedKeyword addPolymorphToKeywordDefinition(final DocumentedKeyword original, final Object keywordBean, final Method method) {
-        final DocumentedKeyword other = createKeyword(keywordBean, method);
-        final boolean isOverload = method.isAnnotationPresent(RobotKeywordOverload.class);
-        if(isOverload && method.isAnnotationPresent(RobotKeyword.class))
-            throw new AssertionError("Method definition should not have both RobotKeyword and RobotKeywordOverload annotations");
-        final int parameterTypesLength = method.getParameterTypes().length;
-        return new DocumentedKeyword() {
-            public Object execute(Object[] arguments) {
-                if(parameterTypesLength == arguments.length){
-                    return other.execute(arguments);
-                }
-                return original.execute(arguments);
-            }
+			public String getDocumentation() {
+				return keywordInvoker.getDocumentation();
+			}
+		};
+	}
 
-            public String[] getArgumentNames() {
-                if(isOverload){
-                    return original.getArgumentNames();
-                }
-                return other.getArgumentNames();
-            }
+	private DocumentedKeyword addPolymorphToKeywordDefinition(final DocumentedKeyword original,
+			final Object keywordBean, final Method method) {
+		final DocumentedKeyword other = createKeyword(keywordBean, method);
+		final boolean isOverload = method.isAnnotationPresent(RobotKeywordOverload.class);
+		if (isOverload && method.isAnnotationPresent(RobotKeyword.class))
+			throw new AssertionError(
+					"Method definition should not have both RobotKeyword and RobotKeywordOverload annotations");
+		final int parameterTypesLength = method.getParameterTypes().length;
+		return new DocumentedKeyword() {
+			public Object execute(Object[] arguments) {
+				if (parameterTypesLength == arguments.length) {
+					return other.execute(arguments);
+				}
+				return original.execute(arguments);
+			}
 
-            public String getDocumentation() {
-                if(isOverload){
-                    return original.getDocumentation();
-                }
-                return other.getDocumentation();
-            }
-        };
-    }
+			public String[] getArgumentNames() {
+				if (isOverload) {
+					return original.getArgumentNames();
+				}
+				return other.getArgumentNames();
+			}
+
+			public String getDocumentation() {
+				if (isOverload) {
+					return original.getDocumentation();
+				}
+				return other.getDocumentation();
+			}
+		};
+	}
 }

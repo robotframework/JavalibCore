@@ -17,12 +17,13 @@
 
 package org.robotframework.javalib.reflection;
 
-import com.thoughtworks.paranamer.ParameterNamesNotFoundException;
-import com.thoughtworks.paranamer.Paranamer;
+import java.lang.reflect.Method;
+
 import org.jmock.Mock;
 import org.robotframework.javalib.util.ArrayUtil;
 
-import java.lang.reflect.Method;
+import com.thoughtworks.paranamer.ParameterNamesNotFoundException;
+import com.thoughtworks.paranamer.Paranamer;
 
 public class KeywordInvokerHandlingParameterNamesTest extends KeywordInvokerTestCase {
     private Mock paranamer;

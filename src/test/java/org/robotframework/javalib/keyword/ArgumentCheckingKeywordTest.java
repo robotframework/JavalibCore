@@ -1,6 +1,4 @@
 package org.robotframework.javalib.keyword;
-import org.robotframework.javalib.keyword.ArgumentCheckingKeyword;
-
 import junit.framework.TestCase;
 
 public class ArgumentCheckingKeywordTest extends TestCase {

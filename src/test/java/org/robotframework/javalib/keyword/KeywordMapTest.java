@@ -2,8 +2,6 @@ package org.robotframework.javalib.keyword;
 
 import java.util.Arrays;
 
-import org.robotframework.javalib.keyword.KeywordMap;
-
 import junit.framework.TestCase;
 
 public class KeywordMapTest extends TestCase {

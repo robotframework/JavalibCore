@@ -4,7 +4,6 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.Keyword;
-import org.robotframework.javalib.library.KeywordFactoryBasedLibrary;
 
 
 public class KeywordFactoryBasedLibraryTest extends MockObjectTestCase {

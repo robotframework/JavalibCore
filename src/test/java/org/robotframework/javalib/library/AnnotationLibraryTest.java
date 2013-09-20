@@ -1,9 +1,9 @@
 package org.robotframework.javalib.library;
 
+import java.lang.reflect.Field;
+
 import org.jmock.MockObjectTestCase;
 import org.robotframework.javalib.beans.annotation.KeywordBeanLoader;
-
-import java.lang.reflect.Field;
 
 
 public class AnnotationLibraryTest extends MockObjectTestCase {

@@ -1,7 +1,6 @@
 package org.robotframework.javalib.util;
 
 import org.jmock.MockObjectTestCase;
-import org.robotframework.javalib.util.StdStreamRedirecter;
 
 public class StdOutAndErrRedirecterTest extends MockObjectTestCase {
     private String emptyString = "";

@@ -17,7 +17,6 @@
 package org.robotframework.javalib.beans.classpath;
 
 import org.robotframework.javalib.beans.common.BasicKeywordFilter;
-import org.robotframework.javalib.beans.common.BasicKeywordFilter.Condition;
 import org.robotframework.javalib.keyword.Keyword;
 
 /**

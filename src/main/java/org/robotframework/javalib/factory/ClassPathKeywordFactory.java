@@ -1,15 +1,11 @@
 package org.robotframework.javalib.factory;
 
+import java.util.Map;
+
 import org.robotframework.javalib.beans.annotation.KeywordBeanLoader;
 import org.robotframework.javalib.beans.classpath.InterfaceBasedKeywordFilter;
-import org.robotframework.javalib.beans.common.BasicKeywordFilter;
 import org.robotframework.javalib.keyword.Keyword;
 import org.robotframework.javalib.keyword.KeywordMap;
-import org.robotframework.javalib.util.IKeywordNameNormalizer;
-import org.robotframework.javalib.util.KeywordNameNormalizer;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class ClassPathKeywordFactory implements KeywordFactory<Keyword> {

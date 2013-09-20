@@ -4,7 +4,6 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
-import org.robotframework.javalib.library.AnnotationLibrary;
 import org.robotframework.javalib.util.ArrayUtil;
 
 

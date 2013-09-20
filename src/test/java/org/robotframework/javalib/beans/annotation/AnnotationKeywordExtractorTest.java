@@ -9,6 +9,7 @@ import org.jmock.MockObjectTestCase;
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
+import org.robotframework.javalib.library.AnnotationLibrary;
 import org.robotframework.javalib.util.ArrayUtil;
 
 public class AnnotationKeywordExtractorTest extends MockObjectTestCase {
@@ -24,11 +25,12 @@ public class AnnotationKeywordExtractorTest extends MockObjectTestCase {
 
 	@Override
 	protected void setUp() throws Exception {
+		AnnotationLibrary library = new AnnotationLibrary();
 		MyKeywordsBean myKeywordsBean = new MyKeywordsBean();
 		Collection<Object> beans = new ArrayList<Object>();
 		beans.add(myKeywordsBean);
 		extractor = new AnnotationKeywordExtractor();
-		extractedKeywords = extractor.extractKeywords(myKeywordsBean, beans);
+		extractedKeywords = extractor.extractKeywords(library, myKeywordsBean, beans);
 		keywordWithArguments = (DocumentedKeyword) extractedKeywords.get("keywordWithArguments");
 		keywordWithoutArguments = (DocumentedKeyword) extractedKeywords.get("keywordWithoutArguments");
 		keywordWithoutReturnValue = (DocumentedKeyword) extractedKeywords.get("keywordWithoutReturnValue");

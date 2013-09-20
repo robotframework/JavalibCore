@@ -27,11 +27,12 @@ import org.robotframework.javalib.annotation.Autowired;
 import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.annotation.RobotKeywordOverload;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
+import org.robotframework.javalib.library.AnnotationLibrary;
 import org.robotframework.javalib.reflection.IKeywordInvoker;
 import org.robotframework.javalib.reflection.KeywordInvoker;
 
 public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedKeyword> {
-	public Map<String, DocumentedKeyword> extractKeywords(final Object keywordBean,
+	public Map<String, DocumentedKeyword> extractKeywords(final AnnotationLibrary library, final Object keywordBean,
 			final Collection<Object> keywordBeanValues) {
 		Map<String, DocumentedKeyword> extractedKeywords = new HashMap<String, DocumentedKeyword>();
 		Class<?> clazz = keywordBean.getClass();
@@ -46,7 +47,7 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
 			Field[] fields = clazz.getDeclaredFields();
 			for (final Field field : fields) {
 				if (field.isAnnotationPresent(Autowired.class)) {
-					autowireKeywordBeanField(keywordBean, field, keywordBeanValues);
+					autowireKeywordBeanField(keywordBean, field, library, keywordBeanValues);
 				}
 			}
 			clazz = clazz.getSuperclass();
@@ -54,18 +55,23 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
 		return extractedKeywords;
 	}
 
-	private void autowireKeywordBeanField(Object keywordBean, Field field, Collection<Object> keywordBeanValues) {
+	private void autowireKeywordBeanField(Object keywordBean, Field field, AnnotationLibrary library,
+			Collection<Object> keywordBeanValues) {
 		try {
-			Class<?> clazz = field.getDeclaringClass();
-			if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(clazz.getModifiers()))
+			if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass().getModifiers()))
 					&& !field.isAccessible()) {
 				field.setAccessible(true);
 			}
+			Class<?> clazz = field.getType();
 			for (Object keywordBeanValue : keywordBeanValues) {
 				if (keywordBeanValue.getClass().equals(clazz)) {
 					field.set(keywordBean, keywordBeanValue);
 					return;
 				}
+			}
+			if (library.getClass().equals(clazz)) {
+				field.set(keywordBean, library);
+				return;
 			}
 		} catch (IllegalAccessException e) {
 			throw new IllegalArgumentException(String.format("Can't autowire field '%s' at keyword class '%s'.",

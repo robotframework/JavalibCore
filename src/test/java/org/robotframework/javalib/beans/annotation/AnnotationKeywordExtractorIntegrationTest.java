@@ -10,23 +10,27 @@ import junit.framework.TestCase;
 import org.robotframework.javalib.keyword.AnnotatedKeywords;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
 import org.robotframework.javalib.keyword.Keyword;
+import org.robotframework.javalib.library.AnnotationLibrary;
 import org.robotframework.javalib.util.ArrayUtil;
 
 public class AnnotationKeywordExtractorIntegrationTest extends TestCase {
 	private IKeywordExtractor<DocumentedKeyword> extractor = new AnnotationKeywordExtractor();
 	private Map<String, DocumentedKeyword> extractedKeywords;
 	private AnnotatedKeywords annotatedKeywords;
+	private AnnotationLibrary library;
 
 	@Override
 	protected void setUp() throws Exception {
+		library = new AnnotationLibrary();
 		annotatedKeywords = new AnnotatedKeywords();
 		Collection<Object> beans = new ArrayList<Object>();
 		beans.add(annotatedKeywords);
-		extractedKeywords = extractor.extractKeywords(annotatedKeywords, beans);
+		extractedKeywords = extractor.extractKeywords(library, annotatedKeywords, beans);
 	}
 
 	public void testAutowire() throws Exception {
 		assertTrue(annotatedKeywords.getAnnotatedKeywords() == annotatedKeywords);
+		assertTrue(annotatedKeywords.getLibrary() == library);
 	}
 
 	public void testReturnsKeywordNamesInCamelCase() throws Exception {

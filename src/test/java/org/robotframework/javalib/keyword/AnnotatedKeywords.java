@@ -7,6 +7,7 @@ import org.robotframework.javalib.annotation.Autowired;
 import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.annotation.RobotKeywordOverload;
 import org.robotframework.javalib.annotation.RobotKeywords;
+import org.robotframework.javalib.library.AnnotationLibrary;
 
 @RobotKeywords
 public class AnnotatedKeywords {
@@ -20,7 +21,14 @@ public class AnnotatedKeywords {
 	public AnnotatedKeywords getAnnotatedKeywords() {
 		return annotatedKeywords;
 	}
-	
+
+	@Autowired
+	private AnnotationLibrary library;
+
+	public AnnotationLibrary getLibrary() {
+		return library;
+	}
+
 	@RobotKeyword
 	public void failingKeyword() {
 		throw new AssertionFailedError("Assertion failed");
@@ -84,4 +92,5 @@ public class AnnotatedKeywords {
 		public String name;
 		public String value;
 	}
+
 }

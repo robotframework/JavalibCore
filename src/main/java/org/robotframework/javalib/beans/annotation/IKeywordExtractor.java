@@ -20,7 +20,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.robotframework.javalib.keyword.Keyword;
+import org.robotframework.javalib.library.AnnotationLibrary;
 
 public interface IKeywordExtractor<T extends Keyword> {
-    Map<String, T> extractKeywords(Object keywordBean, Collection<Object> keywordBeanValues);
+	Map<String, T> extractKeywords(AnnotationLibrary library, Object keywordBean, Collection<Object> keywordBeanValues);
 }

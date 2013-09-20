@@ -25,6 +25,7 @@ import java.util.Map;
 import org.robotframework.javalib.beans.annotation.AnnotationKeywordExtractor;
 import org.robotframework.javalib.beans.annotation.IKeywordExtractor;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
+import org.robotframework.javalib.library.AnnotationLibrary;
 import org.robotframework.javalib.util.IKeywordNameNormalizer;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
 
@@ -33,13 +34,13 @@ public class AnnotationKeywordFactory implements KeywordFactory<DocumentedKeywor
 	private IKeywordNameNormalizer keywordNameNormalizer = new KeywordNameNormalizer();
 	private List<String> keywordNames = new ArrayList<String>();
 
-	public AnnotationKeywordFactory(Map<String, Object> keywordBeansMap) {
-		extractKeywordsFromKeywordBeans(keywordBeansMap);
+	public AnnotationKeywordFactory(AnnotationLibrary library, Map<String, Object> keywordBeansMap) {
+		extractKeywordsFromKeywordBeans(library, keywordBeansMap);
 	}
 
-	public AnnotationKeywordFactory(List<Map> keywordBeansMaps) {
+	public AnnotationKeywordFactory(AnnotationLibrary library, List<Map> keywordBeansMaps) {
 		for (Map<String, Object> keywordBeansMap : keywordBeansMaps) {
-			extractKeywordsFromKeywordBeans(keywordBeansMap);
+			extractKeywordsFromKeywordBeans(library, keywordBeansMap);
 		}
 	}
 
@@ -52,12 +53,12 @@ public class AnnotationKeywordFactory implements KeywordFactory<DocumentedKeywor
 		return (String[]) keywordNames.toArray(new String[0]);
 	}
 
-	protected void extractKeywordsFromKeywordBeans(Map<String, Object> keywordBeansMap) {
+	protected void extractKeywordsFromKeywordBeans(AnnotationLibrary library, Map<String, Object> keywordBeansMap) {
 		Collection<Object> keywordBeanValues = keywordBeansMap.values();
 		IKeywordExtractor<DocumentedKeyword> keywordExtractor = createKeywordExtractor();
 
 		for (Object keywordBean : keywordBeanValues) {
-			Map<String, DocumentedKeyword> extractedKeywords = keywordExtractor.extractKeywords(keywordBean,
+			Map<String, DocumentedKeyword> extractedKeywords = keywordExtractor.extractKeywords(library, keywordBean,
 					keywordBeanValues);
 			addKeywordNames(extractedKeywords);
 			addKeywords(extractedKeywords);

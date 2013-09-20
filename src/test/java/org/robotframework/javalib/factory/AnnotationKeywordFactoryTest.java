@@ -10,6 +10,7 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.robotframework.javalib.beans.annotation.IKeywordExtractor;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
+import org.robotframework.javalib.library.AnnotationLibrary;
 
 public class AnnotationKeywordFactoryTest extends MockObjectTestCase {
 	private Object someKeywordBean = new Object();
@@ -20,6 +21,7 @@ public class AnnotationKeywordFactoryTest extends MockObjectTestCase {
 			"keywordname4" };
 	private KeywordFactory<DocumentedKeyword> keywordFactory;
 	private Mock keywordExtractor;
+	private AnnotationLibrary library;
 
 	private Map keywordBeans = new HashMap() {
 		@Override
@@ -35,8 +37,9 @@ public class AnnotationKeywordFactoryTest extends MockObjectTestCase {
 
 	@Override
 	protected void setUp() throws Exception {
+		library = new AnnotationLibrary();
 		keywordExtractor = mock(IKeywordExtractor.class);
-		keywordExtractor.expects(once()).method("extractKeywords").with(eq(someKeywordBean), NOT_NULL)
+		keywordExtractor.expects(once()).method("extractKeywords").with(eq(library), eq(someKeywordBean), NOT_NULL)
 				.will(returnValue(new HashMap() {
 					{
 						put("keywordname1", keyword1);
@@ -44,7 +47,7 @@ public class AnnotationKeywordFactoryTest extends MockObjectTestCase {
 					}
 				}));
 
-		keywordExtractor.expects(once()).method("extractKeywords").with(eq(anotherKeywordBean), NOT_NULL)
+		keywordExtractor.expects(once()).method("extractKeywords").with(eq(library), eq(anotherKeywordBean), NOT_NULL)
 				.will(returnValue(new HashMap() {
 					{
 						put("keywordname3", null);
@@ -52,7 +55,7 @@ public class AnnotationKeywordFactoryTest extends MockObjectTestCase {
 					}
 				}));
 
-		keywordFactory = new AnnotationKeywordFactory(keywordBeans) {
+		keywordFactory = new AnnotationKeywordFactory(library, keywordBeans) {
 			@Override
 			IKeywordExtractor createKeywordExtractor() {
 				return (IKeywordExtractor) keywordExtractor.proxy();

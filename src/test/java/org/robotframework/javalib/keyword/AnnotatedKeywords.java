@@ -11,86 +11,86 @@ import org.robotframework.javalib.library.AnnotationLibrary;
 
 @RobotKeywords
 public class AnnotatedKeywords {
-	public static final String __PARANAMER_DATA = "<init> \n" + "myKeyword \n"
-			+ "keywordThatReturnsItsArguments java.lang.String arg\n" + "someKeyword java.lang.String someArgument\n"
-			+ "keywordWithVariableArgumentCount java.lang.String,java.lang.String[] someArgument,restOfTheArguments\n";
+    public static final String __PARANAMER_DATA = "<init> \n" + "myKeyword \n"
+            + "keywordThatReturnsItsArguments java.lang.String arg\n" + "someKeyword java.lang.String someArgument\n"
+            + "keywordWithVariableArgumentCount java.lang.String,java.lang.String[] someArgument,restOfTheArguments\n";
 
-	@Autowired
-	private AnnotatedKeywords annotatedKeywords;
+    @Autowired
+    private AnnotatedKeywords annotatedKeywords;
 
-	public AnnotatedKeywords getAnnotatedKeywords() {
-		return annotatedKeywords;
-	}
+    public AnnotatedKeywords getAnnotatedKeywords() {
+        return annotatedKeywords;
+    }
 
-	@Autowired
-	private AnnotationLibrary library;
+    @Autowired
+    private AnnotationLibrary library;
 
-	public AnnotationLibrary getLibrary() {
-		return library;
-	}
+    public AnnotationLibrary getLibrary() {
+        return library;
+    }
 
-	@RobotKeyword
-	public void failingKeyword() {
-		throw new AssertionFailedError("Assertion failed");
-	}
+    @RobotKeyword
+    public void failingKeyword() {
+        throw new AssertionFailedError("Assertion failed");
+    }
 
-	@RobotKeyword
-	public String keywordThatReturnsItsArguments(String arg) {
-		return arg;
-	}
+    @RobotKeyword
+    public String keywordThatReturnsItsArguments(String arg) {
+        return arg;
+    }
 
-	@RobotKeyword
-	@ArgumentNames({ "one", "two=", "three=" })
-	public Object overloaded(String one, String two, String three) {
-		return three;
-	}
+    @RobotKeyword
+    @ArgumentNames({ "one", "two=", "three=" })
+    public Object overloaded(String one, String two, String three) {
+        return three;
+    }
 
-	@RobotKeywordOverload
-	public Object overloaded(String one) {
-		return one;
-	}
+    @RobotKeywordOverload
+    public Object overloaded(String one) {
+        return one;
+    }
 
-	@RobotKeywordOverload
-	public Object overloaded(String one, int two) {
-		return two;
-	}
+    @RobotKeywordOverload
+    public Object overloaded(String one, int two) {
+        return two;
+    }
 
-	@ArgumentNames({ "overridenArgumentName" })
-	@RobotKeyword("Some documentation")
-	public void someKeyword(String someArgument) {
-	}
+    @ArgumentNames({ "overridenArgumentName" })
+    @RobotKeyword("Some documentation")
+    public void someKeyword(String someArgument) {
+    }
 
-	@RobotKeyword("This is a keyword with variable argument count")
-	public Object[] keywordWithVariableArgumentCount(String someArgument, String... restOfTheArguments) {
-		return restOfTheArguments;
-	}
+    @RobotKeyword("This is a keyword with variable argument count")
+    public Object[] keywordWithVariableArgumentCount(String someArgument, String... restOfTheArguments) {
+        return restOfTheArguments;
+    }
 
-	@RobotKeyword("This is a keyword with numeric arguments. The keyword will fail unless all are 42.")
-	public void keywordWithNumericArguments(long l1, Long l2, short s1, Short s2) {
-		if (l1 != 42 || l2 != 42 || s1 != 42 || s2 != 42)
-			throw new AssertionFailedError("All arguments should be 42.");
-	}
+    @RobotKeyword("This is a keyword with numeric arguments. The keyword will fail unless all are 42.")
+    public void keywordWithNumericArguments(long l1, Long l2, short s1, Short s2) {
+        if (l1 != 42 || l2 != 42 || s1 != 42 || s2 != 42)
+            throw new AssertionFailedError("All arguments should be 42.");
+    }
 
-	@RobotKeyword("This is a keyword with object argument.")
-	public SomeObject getSomeObject() {
-		SomeObject obj = new SomeObject();
-		obj.name = "Hello";
-		obj.value = "World";
-		return obj;
-	}
+    @RobotKeyword("This is a keyword with object argument.")
+    public SomeObject getSomeObject() {
+        SomeObject obj = new SomeObject();
+        obj.name = "Hello";
+        obj.value = "World";
+        return obj;
+    }
 
-	@RobotKeyword("This is a keyword with object argument.")
-	public void keywordWithObjectArgument(SomeInterface arg) {
-		if (arg == null)
-			throw new AssertionFailedError("Argument was null.");
-	}
+    @RobotKeyword("This is a keyword with object argument.")
+    public void keywordWithObjectArgument(SomeInterface arg) {
+        if (arg == null)
+            throw new AssertionFailedError("Argument was null.");
+    }
 
-	public interface SomeInterface {
-	}
+    public interface SomeInterface {
+    }
 
-	public class SomeObject implements SomeInterface {
-		public String name;
-		public String value;
-	}
+    public class SomeObject implements SomeInterface {
+        public String name;
+        public String value;
+    }
 
 }

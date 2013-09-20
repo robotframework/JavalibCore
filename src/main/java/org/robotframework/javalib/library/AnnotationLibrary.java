@@ -16,11 +16,15 @@
 
 package org.robotframework.javalib.library;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.robotframework.javalib.annotation.Autowired;
 import org.robotframework.javalib.beans.annotation.AnnotationBasedKeywordFilter;
 import org.robotframework.javalib.beans.annotation.IBeanLoader;
 import org.robotframework.javalib.beans.annotation.KeywordBeanLoader;
@@ -47,19 +51,60 @@ public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyw
 	}
 
 	@Override
-    protected KeywordFactory<DocumentedKeyword> createKeywordFactory() {
-        assumeKeywordPatternIsSet();
-        if (keywordFactory == null) {
-        	List<Map> keywordBeansMaps = new ArrayList<Map>();
-        	for (IBeanLoader beanLoader : beanLoaders) {
-        		keywordBeansMaps.add(beanLoader.loadBeanDefinitions(classFilter));
+	protected KeywordFactory<DocumentedKeyword> createKeywordFactory() {
+		assumeKeywordPatternIsSet();
+		if (keywordFactory == null) {
+			List<Map> keywordBeansMaps = new ArrayList<Map>();
+			for (IBeanLoader beanLoader : beanLoaders) {
+				keywordBeansMaps.add(beanLoader.loadBeanDefinitions(classFilter));
 			}
-            keywordFactory = new AnnotationKeywordFactory(keywordBeansMaps);
-        }
-        return keywordFactory;
-    }
+			keywordFactory = new AnnotationKeywordFactory(keywordBeansMaps);
 
-    public String[] getKeywordArguments(String keywordName) {
+			List<Object> injectionValues = new ArrayList<Object>();
+			injectionValues.add(this);
+			for (Map keywordBeansMap : keywordBeansMaps) {
+				injectionValues.addAll(keywordBeansMap.values());
+			}
+			for (Object injectionTarget : injectionValues) {
+				autowireFields(injectionTarget, injectionValues);
+			}
+		}
+		return keywordFactory;
+	}
+
+	protected void autowireFields(Object injectionTarget, Collection<Object> injectionValues) {
+		Class<?> objectClass = injectionTarget.getClass();
+		while (objectClass != null) {
+			Field[] fields = objectClass.getDeclaredFields();
+			next_field: for (final Field field : fields) {
+				try {
+					if (field.isAnnotationPresent(Autowired.class)) {
+						if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass()
+								.getModifiers())) && !field.isAccessible()) {
+							field.setAccessible(true);
+						}
+						Class<?> fieldClass = field.getType();
+						for (Object injectionValue : injectionValues) {
+							if (injectionValue.getClass().equals(fieldClass)) {
+								field.set(injectionTarget, injectionValue);
+								continue next_field;
+							}
+						}
+						throw new IllegalArgumentException(String.format(
+								"Can't autowire field '%s' at keyword class '%s'.", field.getName(), injectionTarget
+										.getClass().getName()));
+					}
+				} catch (IllegalAccessException e) {
+					throw new IllegalArgumentException(String.format(
+							"Can't autowire field '%s' at keyword class '%s'.", field.getName(), injectionTarget
+									.getClass().getName()), e);
+				}
+			}
+			objectClass = objectClass.getSuperclass();
+		}
+	}
+
+	public String[] getKeywordArguments(String keywordName) {
         return createKeywordFactory().createKeyword(keywordName).getArgumentNames();
     }
 

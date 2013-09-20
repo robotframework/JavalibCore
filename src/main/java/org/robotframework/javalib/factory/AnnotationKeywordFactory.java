@@ -25,62 +25,70 @@ import java.util.Map;
 import org.robotframework.javalib.beans.annotation.AnnotationKeywordExtractor;
 import org.robotframework.javalib.beans.annotation.IKeywordExtractor;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
+import org.robotframework.javalib.library.AnnotationLibrary;
 import org.robotframework.javalib.util.IKeywordNameNormalizer;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
 
 public class AnnotationKeywordFactory implements KeywordFactory<DocumentedKeyword> {
-    private Map<String, DocumentedKeyword> keywords = new HashMap<String, DocumentedKeyword>();
-    private IKeywordNameNormalizer keywordNameNormalizer = new KeywordNameNormalizer();
-    private List<String> keywordNames = new ArrayList<String>();
+	private Map<String, DocumentedKeyword> keywords = new HashMap<String, DocumentedKeyword>();
+	private IKeywordNameNormalizer keywordNameNormalizer = new KeywordNameNormalizer();
+	private List<String> keywordNames = new ArrayList<String>();
 
-    public AnnotationKeywordFactory(Map<String, Object> keywordBeansMap) {
-        extractKeywordsFromKeywordBeans(keywordBeansMap);
-    }
+	public AnnotationKeywordFactory(AnnotationLibrary library, Map<String, Object> keywordBeansMap) {
+		extractKeywordsFromKeywordBeans(library, keywordBeansMap);
+		AnnotationKeywordExtractor.autowireField(library, library, keywordBeansMap.values());
+	}
 
-    public AnnotationKeywordFactory(List<Map> keywordBeansMaps) {
-    	for (Map<String, Object> keywordBeansMap : keywordBeansMaps) {
-        	extractKeywordsFromKeywordBeans(keywordBeansMap);			
+	public AnnotationKeywordFactory(AnnotationLibrary library, List<Map> keywordBeansMaps) {
+		for (Map<String, Object> keywordBeansMap : keywordBeansMaps) {
+			extractKeywordsFromKeywordBeans(library, keywordBeansMap);
 		}
-    }
+		Collection<Object> combinedKeywordBeansValues = new ArrayList<Object>();
+		for (Map keywordBeansMap : keywordBeansMaps) {
+			combinedKeywordBeansValues.add(keywordBeansMap.values());
+		}
+		AnnotationKeywordExtractor.autowireField(library, library, combinedKeywordBeansValues);
+	}
 
-    public DocumentedKeyword createKeyword(String keywordName) {
-        String normalizedKeywordName = keywordNameNormalizer.normalize(keywordName);
-        return keywords.get(normalizedKeywordName);
-    }
+	public DocumentedKeyword createKeyword(String keywordName) {
+		String normalizedKeywordName = keywordNameNormalizer.normalize(keywordName);
+		return keywords.get(normalizedKeywordName);
+	}
 
-    public String[] getKeywordNames() {
-        return (String[]) keywordNames.toArray(new String[0]);
-    }
+	public String[] getKeywordNames() {
+		return (String[]) keywordNames.toArray(new String[0]);
+	}
 
-    protected void extractKeywordsFromKeywordBeans(Map<String, Object> keywordBeansMap) {
-        Collection<Object> keywordBeanValues = keywordBeansMap.values();
-        IKeywordExtractor<DocumentedKeyword> keywordExtractor = createKeywordExtractor();
+	protected void extractKeywordsFromKeywordBeans(AnnotationLibrary library, Map<String, Object> keywordBeansMap) {
+		Collection<Object> keywordBeanValues = keywordBeansMap.values();
+		IKeywordExtractor<DocumentedKeyword> keywordExtractor = createKeywordExtractor();
 
-        for (Object keywordBean : keywordBeanValues) {
-            Map<String, DocumentedKeyword> extractedKeywords = keywordExtractor.extractKeywords(keywordBean);
-            addKeywordNames(extractedKeywords);
-            addKeywords(extractedKeywords);
-        }
-    }
+		for (Object keywordBean : keywordBeanValues) {
+			Map<String, DocumentedKeyword> extractedKeywords = keywordExtractor.extractKeywords(library, keywordBean,
+					keywordBeanValues);
+			addKeywordNames(extractedKeywords);
+			addKeywords(extractedKeywords);
+		}
+	}
 
-    IKeywordExtractor<DocumentedKeyword> createKeywordExtractor() {
-        return new AnnotationKeywordExtractor();
-    }
+	IKeywordExtractor<DocumentedKeyword> createKeywordExtractor() {
+		return new AnnotationKeywordExtractor();
+	}
 
-    private void addKeywords(Map<String, DocumentedKeyword> extractedKeywords) {
-        for (String keywordName : extractedKeywords.keySet()) {
-        	handleDuplicateKeywordNames(keywordName);
-        	keywords.put(keywordNameNormalizer.normalize(keywordName), extractedKeywords.get(keywordName));
-        }
-    }
+	private void addKeywords(Map<String, DocumentedKeyword> extractedKeywords) {
+		for (String keywordName : extractedKeywords.keySet()) {
+			handleDuplicateKeywordNames(keywordName);
+			keywords.put(keywordNameNormalizer.normalize(keywordName), extractedKeywords.get(keywordName));
+		}
+	}
 
-    private void handleDuplicateKeywordNames(String keywordName) {
-    	if (keywords.containsKey(keywordNameNormalizer.normalize(keywordName))) {
-    		throw new RuntimeException("Two keywords with name '"+ keywordName + "' found!");
-        }
-    }
-    
-    private void addKeywordNames(Map<String, DocumentedKeyword> extractedKeywords) {
-        keywordNames.addAll(extractedKeywords.keySet());
-    }
+	private void handleDuplicateKeywordNames(String keywordName) {
+		if (keywords.containsKey(keywordNameNormalizer.normalize(keywordName))) {
+			throw new RuntimeException("Two keywords with name '" + keywordName + "' found!");
+		}
+	}
+
+	private void addKeywordNames(Map<String, DocumentedKeyword> extractedKeywords) {
+		keywordNames.addAll(extractedKeywords.keySet());
+	}
 }

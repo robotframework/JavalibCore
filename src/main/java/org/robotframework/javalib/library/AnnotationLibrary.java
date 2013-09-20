@@ -29,78 +29,81 @@ import org.robotframework.javalib.factory.AnnotationKeywordFactory;
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
 
-public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyword> implements KeywordDocumentationRepository {
-    protected List<IBeanLoader> beanLoaders = new ArrayList<IBeanLoader>();
-    protected IClassFilter classFilter = new AnnotationBasedKeywordFilter();
-    private KeywordFactory<DocumentedKeyword> keywordFactory;
+public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyword> implements
+		KeywordDocumentationRepository {
+	protected List<IBeanLoader> beanLoaders = new ArrayList<IBeanLoader>();
+	protected IClassFilter classFilter = new AnnotationBasedKeywordFilter();
+	private KeywordFactory<DocumentedKeyword> keywordFactory;
 
-    public AnnotationLibrary() {}
+	public AnnotationLibrary() {
+	}
 
-    public AnnotationLibrary(String keywordPattern) {
-        addKeywordPattern(keywordPattern);
-    }
+	public AnnotationLibrary(String keywordPattern) {
+		addKeywordPattern(keywordPattern);
+	}
 
-    public AnnotationLibrary(List<String> keywordPatterns) {
-    	for (String pattern : keywordPatterns) {
-            addKeywordPattern(pattern);
+	public AnnotationLibrary(List<String> keywordPatterns) {
+		for (String pattern : keywordPatterns) {
+			addKeywordPattern(pattern);
 		}
 	}
 
 	@Override
-    protected KeywordFactory<DocumentedKeyword> createKeywordFactory() {
-        assumeKeywordPatternIsSet();
-        if (keywordFactory == null) {
-        	List<Map> keywordBeansMaps = new ArrayList<Map>();
-        	for (IBeanLoader beanLoader : beanLoaders) {
-        		keywordBeansMaps.add(beanLoader.loadBeanDefinitions(classFilter));
+	protected KeywordFactory<DocumentedKeyword> createKeywordFactory() {
+		assumeKeywordPatternIsSet();
+		if (keywordFactory == null) {
+			List<Map> keywordBeansMaps = new ArrayList<Map>();
+			for (IBeanLoader beanLoader : beanLoaders) {
+				keywordBeansMaps.add(beanLoader.loadBeanDefinitions(classFilter));
 			}
-            keywordFactory = new AnnotationKeywordFactory(keywordBeansMaps);
-        }
-        return keywordFactory;
-    }
+			keywordFactory = new AnnotationKeywordFactory(this, keywordBeansMaps);
+		}
 
-    public String[] getKeywordArguments(String keywordName) {
-        return createKeywordFactory().createKeyword(keywordName).getArgumentNames();
-    }
+		return keywordFactory;
+	}
 
-    /**
-     * This method should be overridden in the Library implementation
-     * including the equals comparison for '__intro__'.
-     *
-     * Default implementation returns empty String for the '__intro__'.
-     */
-    public String getKeywordDocumentation(String keywordName) {
-        if (keywordName.equals("__intro__"))
-            return "";
-        return createKeywordFactory().createKeyword(keywordName).getDocumentation();
-    }
+	public String[] getKeywordArguments(String keywordName) {
+		return createKeywordFactory().createKeyword(keywordName).getArgumentNames();
+	}
 
-    @Override
-    public Object runKeyword(String keywordName, Object[] args) {
-        try {
-            return super.runKeyword(keywordName, args);
-        } catch (RuntimeException e) {
-            throw retrieveInnerException(e);
-        }
-    }
+	/**
+	 * This method should be overridden in the Library implementation including
+	 * the equals comparison for '__intro__'.
+	 * 
+	 * Default implementation returns empty String for the '__intro__'.
+	 */
+	public String getKeywordDocumentation(String keywordName) {
+		if (keywordName.equals("__intro__"))
+			return "";
+		return createKeywordFactory().createKeyword(keywordName).getDocumentation();
+	}
 
-    public void addKeywordPattern(String keywordPattern) {
-        beanLoaders.add(new KeywordBeanLoader(keywordPattern, Thread.currentThread().getContextClassLoader()));
-    }
+	@Override
+	public Object runKeyword(String keywordName, Object[] args) {
+		try {
+			return super.runKeyword(keywordName, args);
+		} catch (RuntimeException e) {
+			throw retrieveInnerException(e);
+		}
+	}
 
-    private void assumeKeywordPatternIsSet() {
-        if (beanLoaders.isEmpty()) {
-            throw new IllegalStateException("Keyword pattern must be set before calling getKeywordNames.");
-        }
-    }
+	public void addKeywordPattern(String keywordPattern) {
+		beanLoaders.add(new KeywordBeanLoader(keywordPattern, Thread.currentThread().getContextClassLoader()));
+	}
 
-    private RuntimeException retrieveInnerException(RuntimeException e) {
-        Throwable cause = e.getCause();
-        if (InvocationTargetException.class.equals(cause.getClass())) {
-            Throwable original = cause.getCause();
-            return new RuntimeException(original.getMessage(), original);
-        }
+	private void assumeKeywordPatternIsSet() {
+		if (beanLoaders.isEmpty()) {
+			throw new IllegalStateException("Keyword pattern must be set before calling getKeywordNames.");
+		}
+	}
 
-        return e;
-    }
+	private RuntimeException retrieveInnerException(RuntimeException e) {
+		Throwable cause = e.getCause();
+		if (InvocationTargetException.class.equals(cause.getClass())) {
+			Throwable original = cause.getCause();
+			return new RuntimeException(original.getMessage(), original);
+		}
+
+		return e;
+	}
 }

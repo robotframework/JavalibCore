@@ -1,8 +1,5 @@
 package org.robotframework.javalib.util;
 
-import org.robotframework.javalib.util.IKeywordNameNormalizer;
-import org.robotframework.javalib.util.KeywordNameNormalizer;
-
 import junit.framework.TestCase;
 
 public class KeywordNameNormalizerTest extends TestCase {

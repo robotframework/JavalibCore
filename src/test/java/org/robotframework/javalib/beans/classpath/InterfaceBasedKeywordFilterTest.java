@@ -1,10 +1,9 @@
 package org.robotframework.javalib.beans.classpath;
 
-import org.robotframework.javalib.beans.classpath.InterfaceBasedKeywordFilter;
+import junit.framework.TestCase;
+
 import org.robotframework.javalib.beans.common.IClassFilter;
 import org.robotframework.javalib.keyword.EmptyKeyword;
-
-import junit.framework.TestCase;
 
 
 public class InterfaceBasedKeywordFilterTest extends TestCase {

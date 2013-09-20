@@ -1,7 +1,5 @@
 package org.robotframework.javalib.keyword;
 
-import org.robotframework.javalib.keyword.PreparableKeyword;
-
 import junit.framework.TestCase;
 
 public class PreparableKeywordTest extends TestCase {

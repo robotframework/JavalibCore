@@ -1,10 +1,9 @@
 package org.robotframework.javalib.beans.annotation;
 
-import org.robotframework.javalib.beans.annotation.AnnotationBasedKeywordFilter;
+import junit.framework.TestCase;
+
 import org.robotframework.javalib.beans.common.IClassFilter;
 import org.robotframework.javalib.keyword.AnnotatedKeywords;
-
-import junit.framework.TestCase;
 
 
 public class AnnotationBasedKeywordFilterTest extends TestCase {

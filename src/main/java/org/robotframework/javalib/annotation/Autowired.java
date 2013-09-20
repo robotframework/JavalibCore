@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.robotframework.javalib.beans.annotation;
+package org.robotframework.javalib.annotation;
 
-import java.util.Collection;
-import java.util.Map;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.robotframework.javalib.keyword.Keyword;
-import org.robotframework.javalib.library.AnnotationLibrary;
-
-public interface IKeywordExtractor<T extends Keyword> {
-	Map<String, T> extractKeywords(AnnotationLibrary library, Object keywordBean, Collection<Object> keywordBeanValues);
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Autowired {
 }

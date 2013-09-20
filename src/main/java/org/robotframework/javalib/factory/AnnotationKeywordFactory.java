@@ -36,12 +36,18 @@ public class AnnotationKeywordFactory implements KeywordFactory<DocumentedKeywor
 
 	public AnnotationKeywordFactory(AnnotationLibrary library, Map<String, Object> keywordBeansMap) {
 		extractKeywordsFromKeywordBeans(library, keywordBeansMap);
+		AnnotationKeywordExtractor.autowireField(library, library, keywordBeansMap.values());
 	}
 
 	public AnnotationKeywordFactory(AnnotationLibrary library, List<Map> keywordBeansMaps) {
 		for (Map<String, Object> keywordBeansMap : keywordBeansMaps) {
 			extractKeywordsFromKeywordBeans(library, keywordBeansMap);
 		}
+		Collection<Object> combinedKeywordBeansValues = new ArrayList<Object>();
+		for (Map keywordBeansMap : keywordBeansMaps) {
+			combinedKeywordBeansValues.add(keywordBeansMap.values());
+		}
+		AnnotationKeywordExtractor.autowireField(library, library, combinedKeywordBeansValues);
 	}
 
 	public DocumentedKeyword createKeyword(String keywordName) {

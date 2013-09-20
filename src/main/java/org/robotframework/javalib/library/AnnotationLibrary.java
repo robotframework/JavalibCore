@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.robotframework.javalib.beans.annotation.AnnotationBasedKeywordFilter;
+import org.robotframework.javalib.beans.annotation.AnnotationKeywordExtractor;
 import org.robotframework.javalib.beans.annotation.IBeanLoader;
 import org.robotframework.javalib.beans.annotation.KeywordBeanLoader;
 import org.robotframework.javalib.beans.common.IClassFilter;
@@ -58,6 +59,7 @@ public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyw
 			}
 			keywordFactory = new AnnotationKeywordFactory(this, keywordBeansMaps);
 		}
+
 		return keywordFactory;
 	}
 

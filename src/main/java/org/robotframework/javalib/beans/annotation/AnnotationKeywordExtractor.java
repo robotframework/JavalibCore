@@ -43,42 +43,44 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
 				createOrAddKeyword(extractedKeywords, keywordBean, method);
 			}
 		}
-		while (clazz != null) {
-			Field[] fields = clazz.getDeclaredFields();
-			for (final Field field : fields) {
-				if (field.isAnnotationPresent(Autowired.class)) {
-					autowireKeywordBeanField(keywordBean, field, library, keywordBeanValues);
-				}
-			}
-			clazz = clazz.getSuperclass();
-		}
+		autowireField(keywordBean, library, keywordBeanValues);
+
 		return extractedKeywords;
 	}
 
-	private void autowireKeywordBeanField(Object keywordBean, Field field, AnnotationLibrary library,
-			Collection<Object> keywordBeanValues) {
-		try {
-			if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass().getModifiers()))
-					&& !field.isAccessible()) {
-				field.setAccessible(true);
-			}
-			Class<?> clazz = field.getType();
-			for (Object keywordBeanValue : keywordBeanValues) {
-				if (keywordBeanValue.getClass().equals(clazz)) {
-					field.set(keywordBean, keywordBeanValue);
-					return;
+	public static void autowireField(Object object, AnnotationLibrary library, Collection<Object> keywordBeanValues) {
+		Class<?> objectClass = object.getClass();
+		while (objectClass != null) {
+			Field[] fields = objectClass.getDeclaredFields();
+			next_field: for (final Field field : fields) {
+				try {
+					if (field.isAnnotationPresent(Autowired.class)) {
+						if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass()
+								.getModifiers())) && !field.isAccessible()) {
+							field.setAccessible(true);
+						}
+						Class<?> fieldClass = field.getType();
+						for (Object keywordBeanValue : keywordBeanValues) {
+							if (keywordBeanValue.getClass().equals(fieldClass)) {
+								field.set(object, keywordBeanValue);
+								continue next_field;
+							}
+						}
+						if (library.getClass().equals(fieldClass)) {
+							field.set(object, library);
+							continue next_field;
+						}
+						throw new IllegalArgumentException(String.format("Can't autowire field '%s' at keyword class '%s'.",
+								field.getName(), object.getClass().getName()));
+					}
+				} catch (IllegalAccessException e) {
+					throw new IllegalArgumentException(String.format(
+							"Can't autowire field '%s' at keyword class '%s'.", field.getName(), object.getClass()
+									.getName()), e);
 				}
 			}
-			if (library.getClass().equals(clazz)) {
-				field.set(keywordBean, library);
-				return;
-			}
-		} catch (IllegalAccessException e) {
-			throw new IllegalArgumentException(String.format("Can't autowire field '%s' at keyword class '%s'.",
-					field.getName(), keywordBean.getClass().getName()), e);
+			objectClass = objectClass.getSuperclass();
 		}
-		throw new IllegalArgumentException(String.format("Can't autowire field '%s' at keyword class '%s'.",
-				field.getName(), keywordBean.getClass().getName()));
 	}
 
 	private void createOrAddKeyword(Map<String, DocumentedKeyword> extractedKeywords, Object keywordBean, Method method) {

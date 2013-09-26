@@ -7,15 +7,11 @@ import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.annotation.RobotKeywordOverload;
 import org.robotframework.javalib.annotation.RobotKeywords;
 
-
 @RobotKeywords
 public class AnnotatedKeywords {
-    public static final String __PARANAMER_DATA =
-        "<init> \n" +
-        "myKeyword \n" +
-        "keywordThatReturnsItsArguments java.lang.String arg\n" +
-        "someKeyword java.lang.String someArgument\n" +
-        "keywordWithVariableArgumentCount java.lang.String,java.lang.String[] someArgument,restOfTheArguments\n";
+    public static final String __PARANAMER_DATA = "<init> \n" + "myKeyword \n"
+            + "keywordThatReturnsItsArguments java.lang.String arg\n" + "someKeyword java.lang.String someArgument\n"
+            + "keywordWithVariableArgumentCount java.lang.String,java.lang.String[] someArgument,restOfTheArguments\n";
 
     @RobotKeyword
     public void failingKeyword() {
@@ -28,7 +24,7 @@ public class AnnotatedKeywords {
     }
 
     @RobotKeyword
-    @ArgumentNames({"one", "two=", "three="})
+    @ArgumentNames({ "one", "two=", "three=" })
     public Object overloaded(String one, String two, String three) {
         return three;
     }
@@ -43,7 +39,7 @@ public class AnnotatedKeywords {
         return two;
     }
 
-    @ArgumentNames({"overridenArgumentName"})
+    @ArgumentNames({ "overridenArgumentName" })
     @RobotKeyword("Some documentation")
     public void someKeyword(String someArgument) {
     }
@@ -80,4 +76,5 @@ public class AnnotatedKeywords {
         public String name;
         public String value;
     }
+
 }

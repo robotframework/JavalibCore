@@ -3,31 +3,15 @@ package org.robotframework.javalib.keyword;
 import junit.framework.AssertionFailedError;
 
 import org.robotframework.javalib.annotation.ArgumentNames;
-import org.robotframework.javalib.annotation.Autowired;
 import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.annotation.RobotKeywordOverload;
 import org.robotframework.javalib.annotation.RobotKeywords;
-import org.robotframework.javalib.library.AnnotationLibrary;
 
 @RobotKeywords
 public class AnnotatedKeywords {
     public static final String __PARANAMER_DATA = "<init> \n" + "myKeyword \n"
             + "keywordThatReturnsItsArguments java.lang.String arg\n" + "someKeyword java.lang.String someArgument\n"
             + "keywordWithVariableArgumentCount java.lang.String,java.lang.String[] someArgument,restOfTheArguments\n";
-
-    @Autowired
-    private AnnotatedKeywords annotatedKeywords;
-
-    public AnnotatedKeywords getAnnotatedKeywords() {
-        return annotatedKeywords;
-    }
-
-    @Autowired
-    private AnnotationLibrary library;
-
-    public AnnotationLibrary getLibrary() {
-        return library;
-    }
 
     @RobotKeyword
     public void failingKeyword() {

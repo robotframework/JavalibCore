@@ -143,7 +143,7 @@ public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyw
 
     private RuntimeException retrieveInnerException(RuntimeException e) {
         Throwable cause = e.getCause();
-        if (InvocationTargetException.class.equals(cause.getClass())) {
+        if (cause != null && InvocationTargetException.class.equals(cause.getClass())) {
             Throwable original = cause.getCause();
             return new RuntimeException(original.getMessage(), original);
         }

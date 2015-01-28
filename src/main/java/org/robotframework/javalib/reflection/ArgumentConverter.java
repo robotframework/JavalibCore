@@ -41,7 +41,7 @@ public class ArgumentConverter implements IArgumentConverter {
     }
 
     private boolean isArrayArgument(Object object) {
-        return object.getClass().isArray();
+        return object != null && object.getClass().isArray();
     }
 
     private Object convertToType(Class<?> clazz, Object object) {

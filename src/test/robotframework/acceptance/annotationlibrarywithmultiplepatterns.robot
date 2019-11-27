@@ -1,12 +1,12 @@
-*Setting*	*Value*
+*** Settings ***
 Variables	variables.py
 library	org.robotframework.javalib.library.AnnotationLibrary	${KEYWORD PATTERNS}
 library	Collections
 
-*Variable*	*Value*
+*** Variables ***
 ${testArgument}	some argument
 
-*Test Case*	*Action*	*Argument*
+*** Test Cases ***
 Finds Annotated Keywords
 	${retVal}=	keywordThatReturnsItsArguments	${testArgument}
 	shouldBeEqual	${testArgument}	${retVal}

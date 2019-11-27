@@ -1,12 +1,15 @@
-# ignore eclipse files
-.classpath
-.settings
-.project
-target
-
+# ignore IDE files
 .idea
+.vscode
 *iml
 *ipr
 *iws
+
+# eclipse
+.classpath
+.settings
+.project
+
 /.DS_Store
-/target with spaces/
+target
+target with spaces

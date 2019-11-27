@@ -3,7 +3,7 @@ name: Java CI
 on: [push]
 
 jobs:
-  build:
+  build and test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,3 +18,14 @@ jobs:
         java-version: ${{ matrix.java }}
     - name: Build with Maven
       run: mvn -B verify --file pom.xml
+  release:
+    runs-on: ubuntu-latest
+    name: Release package
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 8
+    - name: Build with Maven
+      run: echo "This would release"

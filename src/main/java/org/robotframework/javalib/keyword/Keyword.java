@@ -16,6 +16,9 @@
 
 package org.robotframework.javalib.keyword;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * A keyword that performs a single, isolated task for a test case.
  * 
@@ -26,9 +29,9 @@ public interface Keyword {
      * Execute method is called when the keyword is executed in a Robot
      * test case.
      * 
-     * @param arguments arguments from Robot
+     * @param args arguments from Robot
      * @return keyword return value. If the keyword isn't suppose to
      * return anything useful, use Boolean.TRUE.
      */
-    Object execute(Object[] arguments);
+    Object execute(List args, Map kwargs);
 }

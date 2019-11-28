@@ -18,6 +18,7 @@ package org.robotframework.javalib.beans.annotation;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.robotframework.javalib.annotation.RobotKeyword;
@@ -58,11 +59,11 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
 
     private DocumentedKeyword createKeyword(final IKeywordInvoker keywordInvoker) {
         return new DocumentedKeyword() {
-            public Object execute(Object[] arguments) {
-                return keywordInvoker.invoke(arguments);
+            public Object execute(List arguments, Map kwargs) {
+                return keywordInvoker.invoke(arguments, kwargs);
             }
 
-            public String[] getArgumentNames() {
+            public List<String> getArgumentNames() {
                 return keywordInvoker.getParameterNames();
             }
 
@@ -79,14 +80,14 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
             throw new AssertionError("Method definition should not have both RobotKeyword and RobotKeywordOverload annotations");
         final int parameterTypesLength = method.getParameterTypes().length;
         return new DocumentedKeyword() {
-            public Object execute(Object[] arguments) {
-                if(parameterTypesLength == arguments.length){
-                    return other.execute(arguments);
+            public Object execute(List arguments, Map kwargs) {
+                if(parameterTypesLength == arguments.size()){
+                    return other.execute(arguments, kwargs);
                 }
-                return original.execute(arguments);
+                return original.execute(arguments, kwargs);
             }
 
-            public String[] getArgumentNames() {
+            public List<String> getArgumentNames() {
                 if(isOverload){
                     return original.getArgumentNames();
                 }

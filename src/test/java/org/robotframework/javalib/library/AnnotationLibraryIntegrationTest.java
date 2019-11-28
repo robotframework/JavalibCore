@@ -2,6 +2,8 @@ package org.robotframework.javalib.library;
 
 import junit.framework.TestCase;
 
+import java.util.Arrays;
+
 import org.robotframework.javalib.util.ArrayUtil;
 
 public class AnnotationLibraryIntegrationTest extends TestCase {
@@ -14,7 +16,7 @@ public class AnnotationLibraryIntegrationTest extends TestCase {
     }
 
     public void testFindsAnnotatedKeywordsFromClassPath() throws Exception {
-        String[] keywordNames = annotationLibrary.getKeywordNames();
+        String[] keywordNames = annotationLibrary.getKeywordNames().toArray(new String[0]);
         String[] expectedKeywordNames = new String[] { "failingKeyword", "someKeyword", "overloaded", keywordThatReturnsItsArguments,
                 "keywordWithVariableArgumentCount", "keywordWithObjectArgument", "getSomeObject", "keywordWithNumericArguments" };
 
@@ -24,24 +26,24 @@ public class AnnotationLibraryIntegrationTest extends TestCase {
     public void testRunsKeywords() throws Exception {
         String keywordArgument = "someArgument";
         Object executionResult = annotationLibrary.runKeyword(keywordThatReturnsItsArguments,
-            new String[] { keywordArgument });
+            Arrays.asList(keywordArgument));
 
         assertEquals(keywordArgument, executionResult);
     }
 
     public void testOverloading() throws Exception {
-        assertEquals(2, annotationLibrary.runKeyword("overloaded", new Object[] {"one", "2"}));
-        assertEquals("one", annotationLibrary.runKeyword("overloaded", new Object[] {"one"}));
-        assertEquals("3", annotationLibrary.runKeyword("overloaded", new Object[] {"one", "two", "3"}));
+        assertEquals(2, annotationLibrary.runKeyword("overloaded", Arrays.asList("one", "2")));
+        assertEquals("one", annotationLibrary.runKeyword("overloaded", Arrays.asList("one")));
+        assertEquals("3", annotationLibrary.runKeyword("overloaded", Arrays.asList("one", "two", "3")));
     }
 
     public void testOverloadingWithWrongNumberOfArguments() throws Exception {
        try{
-           annotationLibrary.runKeyword("overloaded", new Object[] {});
+           annotationLibrary.runKeyword("overloaded", Arrays.asList());
            fail();
        } catch (RuntimeException expected) {}
        try{
-           annotationLibrary.runKeyword("overloaded", new Object[] {1, 2, 3, 4});
+           annotationLibrary.runKeyword("overloaded", Arrays.asList(1, 2, 3, 4));
            fail();
        } catch (RuntimeException expected) {}
     }
@@ -52,12 +54,12 @@ public class AnnotationLibraryIntegrationTest extends TestCase {
     }
 
     public void testFindsKeywordArguments() throws Exception {
-        String[] keywordArguments = annotationLibrary.getKeywordArguments("keywordThatReturnsItsArguments");
+        String[] keywordArguments = annotationLibrary.getKeywordArguments("keywordThatReturnsItsArguments").toArray(new String[0]);
         ArrayUtil.assertArraysEquals(new String[] { "arg" }, keywordArguments);
     }
 
     public void testFindsKeywordArgumentsWithKeywordArgumentsAnnotation() throws Exception {
-        String[] keywordArguments = annotationLibrary.getKeywordArguments("someKeyword");
+        String[] keywordArguments = annotationLibrary.getKeywordArguments("someKeyword").toArray(new String[0]);
         ArrayUtil.assertArraysEquals(new String[] { "overridenArgumentName" }, keywordArguments);
     }
 

@@ -16,7 +16,9 @@
 
 package org.robotframework.javalib.keyword;
 
+import java.util.List;
+
 public interface DocumentedKeyword extends Keyword {
     String getDocumentation();
-    String[] getArgumentNames();
+    List<String> getArgumentNames();
 }

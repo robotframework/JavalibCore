@@ -78,8 +78,8 @@ public class ClassPathLibrary extends KeywordFactoryBasedLibrary<Keyword> {
     /**
      * Sets a new pattern. See class description for details. Must
      * be set before Robot calls
-     * {@link RobotJavaLibrary#runKeyword(String, Object[])} or
-     * {@link RobotJavaLibrary#getKeywordNames()}.
+     * {@link RobotFrameworkDynamicAPI#runKeyword(String, Object[])} or
+     * {@link RobotFrameworkDynamicAPI#getKeywordNames()}.
      *
      * @param pattern new pattern
      */

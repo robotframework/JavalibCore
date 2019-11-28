@@ -16,6 +16,8 @@
 
 package org.robotframework.javalib.factory;
 
+import java.util.List;
+
 import org.robotframework.javalib.keyword.Keyword;
 
 /**
@@ -37,5 +39,5 @@ public interface KeywordFactory<T extends Keyword> {
      *
      * @return names of available keywords
      */
-    String[] getKeywordNames();
+    List<String> getKeywordNames();
 }

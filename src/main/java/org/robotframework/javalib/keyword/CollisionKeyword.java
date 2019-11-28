@@ -16,6 +16,9 @@
 
 package org.robotframework.javalib.keyword;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * If a keyword name collision is detected, an instance of this class will
  * be associated with the colliding name. Execution of this keyword will
@@ -46,7 +49,7 @@ public class CollisionKeyword implements Keyword {
      * 
      * @throws KeywordNameCollisionException always throws this exception
      */
-    public Object execute(Object[] arguments) {
+    public Object execute(List arguments, Map kwargs) {
         throw new KeywordNameCollisionException("Two keywords with same name not allowed. Alternative implementations available from " + implementingClassName1 + " and " + implementingClassName2 + ".");
     }
 }

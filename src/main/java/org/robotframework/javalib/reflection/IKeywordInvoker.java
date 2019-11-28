@@ -16,8 +16,11 @@
 
 package org.robotframework.javalib.reflection;
 
+import java.util.List;
+import java.util.Map;
+
 public interface IKeywordInvoker {
-    String[] getParameterNames();
-    Object invoke(Object[] args);
+    List<String> getParameterNames();
+    Object invoke(List args, Map kwargs);
     String getDocumentation();
 }

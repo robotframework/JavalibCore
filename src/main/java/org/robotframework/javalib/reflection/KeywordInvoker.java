@@ -17,6 +17,9 @@
 package org.robotframework.javalib.reflection;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
@@ -36,18 +39,22 @@ public class KeywordInvoker implements IKeywordInvoker {
         this.method = method;
     }
 
-    public String[] getParameterNames() {
+    public List<String> getParameterNames() {
         if (method.isAnnotationPresent(ArgumentNames.class)) {
-            return method.getAnnotation(ArgumentNames.class).value();
+            return Arrays.asList(method.getAnnotation(ArgumentNames.class).value());
         }
         return getParameterNamesFromParanamer();
     }
 
-    public Object invoke(Object[] args) {
+    public Object invoke(List args, Map kwargs) {
         try {
-            Object[] groupedArguments = createArgumentGrouper().groupArguments(args);
-            Object[] convertedArguments = createArgumentConverter().convertArguments(groupedArguments);
-            return method.invoke(obj, convertedArguments);
+            List groupedArguments = createArgumentGrouper().groupArguments(args);
+            List convertedArguments = createArgumentConverter().convertArguments(groupedArguments);
+            if (kwargs != null && kwargs.size() > 0) {
+                convertedArguments.add(kwargs);
+            }
+            Object[] reflectionArgs = convertedArguments != null ? convertedArguments.toArray() : null; 
+            return method.invoke(obj, reflectionArgs);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -65,9 +72,9 @@ public class KeywordInvoker implements IKeywordInvoker {
         return new ArgumentGrouper(method.getParameterTypes());
     }
 
-    private String[] getParameterNamesFromParanamer() {
+    private List<String> getParameterNamesFromParanamer() {
         try {
-            return parameterNames.lookupParameterNames(method);
+            return Arrays.asList(parameterNames.lookupParameterNames(method));
         } catch (ParameterNamesNotFoundException e) {
             return null;
         }

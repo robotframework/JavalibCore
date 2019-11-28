@@ -16,8 +16,11 @@
 
 package org.robotframework.javalib.keyword;
 
+import java.util.List;
+import java.util.Map;
+
 public abstract class PreparableKeyword implements Keyword {
-    public Object execute(Object[] arguments) {
+    public Object execute(List arguments, Map kwargs) {
         prepare(arguments);
         try {
             return operate(arguments);
@@ -26,7 +29,7 @@ public abstract class PreparableKeyword implements Keyword {
         }
     }
 
-    protected void prepare(Object[] arguments) {}
-    protected void finish(Object[] arguments) {}    
-    protected abstract Object operate(Object[] arguments);
+    protected void prepare(List arguments) {}
+    protected void finish(List arguments) {}    
+    protected abstract Object operate(List arguments);
 }

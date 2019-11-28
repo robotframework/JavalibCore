@@ -16,6 +16,8 @@
 
 package org.robotframework.javalib.reflection;
 
+import java.util.List;
+
 public interface IArgumentGrouper {
-    Object[] groupArguments(Object[] args);
+    List groupArguments(List args);
 }

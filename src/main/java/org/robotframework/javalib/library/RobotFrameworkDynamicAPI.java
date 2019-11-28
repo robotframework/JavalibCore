@@ -16,10 +16,21 @@
 
 package org.robotframework.javalib.library;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * A Java library for Robot Framework.
  */
-public interface RobotJavaLibrary {
+public interface RobotFrameworkDynamicAPI {
+    
+    /**
+     * Returns all the keywords this library contains
+     * 
+     * @return names of keywords this library contains
+     */
+    List<String> getKeywordNames();
+
     /**
      * Runs a keyword and returns the result. If an exception is thrown
      * the keyword fails, otherwise it passes.
@@ -28,12 +39,15 @@ public interface RobotJavaLibrary {
      * @param args arguments for the keyword
      * @return keyword return value
      */
-    public Object runKeyword(String keywordName, Object[] args);
-    
-    /**
-     * Returns all the keywords this library contains
-     * 
-     * @return names of keywords this library contains
-     */
-    public String[] getKeywordNames();
+    Object runKeyword(String name, List arguments);
+
+    Object runKeyword(String name, List arguments, Map kwargs);
+
+//    List<String> getKeywordArguments(String name);
+//
+//    List<String> getKeywordTypes(String name);
+//
+////    List<String> getKeywordTags(String name);
+//
+//    String getKeywordDocumentation(String name);
 }

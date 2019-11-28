@@ -48,8 +48,8 @@ public class AnnotationKeywordFactory implements KeywordFactory<DocumentedKeywor
         return keywords.get(normalizedKeywordName);
     }
 
-    public String[] getKeywordNames() {
-        return (String[]) keywordNames.toArray(new String[0]);
+    public List<String> getKeywordNames() {
+        return keywordNames;
     }
 
     protected void extractKeywordsFromKeywordBeans(Map<String, Object> keywordBeansMap) {

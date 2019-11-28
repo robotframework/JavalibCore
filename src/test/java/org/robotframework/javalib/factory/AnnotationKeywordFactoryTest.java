@@ -53,7 +53,7 @@ public class AnnotationKeywordFactoryTest extends MockObjectTestCase {
     }
 
     public void testExtractsKeywordNamesFromKeywordBeans() throws Exception {
-        assertArraysHaveSameContent(expectedKeywordNames, keywordFactory.getKeywordNames());
+        assertArraysHaveSameContent(expectedKeywordNames, keywordFactory.getKeywordNames().toArray(new String[0]));
     }
 
     public void testExtractsKeywordsFromKeywordBeansWithNormalizedName() throws Exception {

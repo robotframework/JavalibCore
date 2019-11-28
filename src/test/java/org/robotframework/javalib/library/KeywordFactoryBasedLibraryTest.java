@@ -1,5 +1,9 @@
 package org.robotframework.javalib.library;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.robotframework.javalib.factory.KeywordFactory;
@@ -46,7 +50,7 @@ public class KeywordFactoryBasedLibraryTest extends MockObjectTestCase {
     }
 
     public void testExecutesKeyword() throws Exception {
-        Object[] args = new Object[0];
+        List args = Arrays.asList();
         mockKeyword.stubs().method("execute")
             .with(eq(args));
 
@@ -99,14 +103,14 @@ public class KeywordFactoryBasedLibraryTest extends MockObjectTestCase {
             return new KeywordFactory<Keyword>() {
                 public Keyword createKeyword(String keywordName) {
                     return new Keyword() {
-                        public Object execute(Object[] arguments) {
+                        public Object execute(List arguments, Map kwargs) {
                             return null;
                         }
                     };
                 }
 
-                public String[] getKeywordNames() {
-                    return new String[0];
+                public List getKeywordNames() {
+                    return Arrays.asList();
                 }
             };
         }

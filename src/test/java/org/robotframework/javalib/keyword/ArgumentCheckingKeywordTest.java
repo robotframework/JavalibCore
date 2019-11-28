@@ -1,4 +1,8 @@
 package org.robotframework.javalib.keyword;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.robotframework.javalib.keyword.ArgumentCheckingKeyword;
 
 import junit.framework.TestCase;
@@ -14,7 +18,7 @@ public class ArgumentCheckingKeywordTest extends TestCase {
         fakeKeyword.expectedArgumentCount = 2;
         
         try {
-            fakeKeyword.execute(new String[] { "arg0" } );
+            fakeKeyword.execute(Arrays.asList("arg0"), null );
         } catch(IllegalArgumentException e) {
             assertEquals("Illegal number of arguments (should be 2, but got 1)", e.getMessage());
         }
@@ -24,36 +28,36 @@ public class ArgumentCheckingKeywordTest extends TestCase {
         fakeKeyword.expectedArgumentCount = 1;
         
         try {
-            fakeKeyword.execute(new String[] { "arg0", "arg1"} );
+            fakeKeyword.execute(Arrays.asList("arg0", "arg1"), null );
         } catch(IllegalArgumentException e) {
             assertEquals("Illegal number of arguments (should be 1, but got 2)", e.getMessage());
         }
     }
 
     public void testExecuteDelegatesToOperate() {
-        fakeKeyword.execute(new Object[0]);
+        fakeKeyword.execute(Arrays.asList(), null);
         assertTrue(fakeKeyword.wasDelegatedToOperate);
     }
     
     public void testExecutePassesArgumentsToOperate() throws Exception {
-        String[] args = new String[] { "argument1", "argument2" };
+        List args = Arrays.asList("argument1", "argument2");
         fakeKeyword.expectedArgumentCount = 2;
-        fakeKeyword.execute(args);
+        fakeKeyword.execute(args, null);
         assertEquals(args, fakeKeyword.arguments);
     }
     
     public void testExecutePassesReturnValueFromOperate() throws Exception {
         fakeKeyword.returnValue = "My Return Value";
-        assertEquals("My Return Value", fakeKeyword.execute(new Object[0]));
+        assertEquals("My Return Value", fakeKeyword.execute(Arrays.asList(), null));
     }
     
     private class RecordingAbstractKeyword extends ArgumentCheckingKeyword {
         boolean wasDelegatedToOperate;
         int expectedArgumentCount;
         Object returnValue;
-        Object[] arguments;
+        List arguments;
         
-        protected Object operate(Object[] arguments) {
+        protected Object operate(List arguments) {
             this.arguments = arguments;
             wasDelegatedToOperate = true;
             return returnValue;
@@ -61,6 +65,10 @@ public class ArgumentCheckingKeywordTest extends TestCase {
 
         public int getExpectedArgumentCount() {
             return expectedArgumentCount;
+        }
+
+        public Object execute(List args, Map kwargs) {
+            return super.execute(arguments, kwargs);
         }
     }
 }

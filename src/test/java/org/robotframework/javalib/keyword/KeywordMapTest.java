@@ -61,7 +61,7 @@ public class KeywordMapTest extends TestCase {
     public void testCanReturnsArrayOfKeywordNames() throws Exception {
         map.add("First Keyword", "");
         map.add("Second Keyword", "");
-        String[] keywordNames = map.getKeywordNames();
+        String[] keywordNames = map.getKeywordNames().toArray(new String[0]);
         assertTrue(Arrays.equals(new String[] { "firstkeyword", "secondkeyword" }, keywordNames));
     }
     

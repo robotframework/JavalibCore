@@ -106,7 +106,7 @@ public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyw
         }
     }
 
-    public String[] getKeywordArguments(String keywordName) {
+    public List<String> getKeywordArguments(String keywordName) {
         return createKeywordFactory().createKeyword(keywordName).getArgumentNames();
     }
 
@@ -123,7 +123,16 @@ public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyw
     }
 
     @Override
-    public Object runKeyword(String keywordName, Object[] args) {
+    public Object runKeyword(String keywordName, List args, Map kwargs) {
+        try {
+            return super.runKeyword(keywordName, args, kwargs);
+        } catch (RuntimeException e) {
+            throw retrieveInnerException(e);
+        }
+    }
+    
+    @Override
+    public Object runKeyword(String keywordName, List args) {
         try {
             return super.runKeyword(keywordName, args);
         } catch (RuntimeException e) {

@@ -37,7 +37,7 @@ public class KeywordInvokerHandlingParameterNamesTest extends KeywordInvokerTest
 
         paranamer.expects(never()).method("lookupParameterNames");
 
-        ArrayUtil.assertArraysEquals(new String[] {"firstArg", "*args"}, invoker.getParameterNames());
+        ArrayUtil.assertArraysEquals(new String[] {"firstArg", "*args"}, invoker.getParameterNames().toArray(new String[0]));
     }
 
     public void testReturnsParameterNamesFromParameterInformationIfArgumentAnnotationIsNotPresent() throws Exception {
@@ -51,7 +51,7 @@ public class KeywordInvokerHandlingParameterNamesTest extends KeywordInvokerTest
             .with(eq(keywordMethod))
             .will(returnValue(parameterNames));
 
-        ArrayUtil.assertArraysEquals(parameterNames, keywordInvoker.getParameterNames());
+        ArrayUtil.assertArraysEquals(parameterNames, keywordInvoker.getParameterNames().toArray(new String[0]));
     }
 
     public void testReturnsNullParameterNamesIfArgumentAnnotationAndParameterNameInformationIsNotPresent() throws Exception {

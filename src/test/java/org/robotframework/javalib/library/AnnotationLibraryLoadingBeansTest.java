@@ -19,7 +19,7 @@ public class AnnotationLibraryLoadingBeansTest extends MockObjectTestCase {
     public void testLoadsKeywordClassesWithBeanLoader() throws Exception {
         injectBeanDefinitionsToAnnotationLibrary();
         String[] expectedKeywordNames = new String[] { "someKeyword", "anotherKeyword" };
-        ArrayUtil.assertArraysContainSame(expectedKeywordNames, annotationLibrary.getKeywordNames());
+        ArrayUtil.assertArraysContainSame(expectedKeywordNames, annotationLibrary.getKeywordNames().toArray(new String[0]));
     }
 
     private void injectBeanDefinitionsToAnnotationLibrary() {

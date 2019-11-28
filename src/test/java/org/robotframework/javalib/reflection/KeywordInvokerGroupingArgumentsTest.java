@@ -18,6 +18,9 @@
 package org.robotframework.javalib.reflection;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.jmock.Mock;
 import org.robotframework.javalib.util.ArrayUtil;
@@ -30,8 +33,8 @@ public class KeywordInvokerGroupingArgumentsTest extends KeywordInvokerTestCase 
     }
     
     public void testGroupsRestOfTheArgumentsIfProvidedArgumentCountIsGreaterThanActualArgumentCount() throws Exception {
-        Object[] providedArguments = new Object[] { "arg1", "arg2", "arg3" };
-        Object[] groupedArguments = new Object[] { "arg1", new String[] { "arg2", "arg3" }};
+        List providedArguments = Arrays.asList("arg1", "arg2", "arg3");
+        List groupedArguments = Arrays.asList("arg1", new String[] { "arg2", "arg3" });
 
         argumentGrouper.expects(once()).method("groupArguments")
             .with(same(providedArguments))
@@ -39,13 +42,13 @@ public class KeywordInvokerGroupingArgumentsTest extends KeywordInvokerTestCase 
         
         IKeywordInvoker invoker = createKeywordInvokerWithMockArgumentGrouper("someMethod");
 
-        invoker.invoke(providedArguments);
-        ArrayUtil.assertArraysEquals((Object[]) groupedArguments[1], restOfArgs);
+        invoker.invoke(providedArguments, null);
+        ArrayUtil.assertArraysEquals((Object[]) groupedArguments.get(1), restOfArgs);
     }
     
     public void testProvidesEmptyArgumentIfNoArgumentsProvided() throws Exception {
-        Object[] providedArguments = new Object[0];
-        Object[] emptyArgument = new Object[] { new String[0] };
+        List providedArguments = new ArrayList<String>();
+        List emptyArgument = new ArrayList<String>();
 
         argumentGrouper.expects(once()).method("groupArguments")
             .with(same(providedArguments))
@@ -53,7 +56,7 @@ public class KeywordInvokerGroupingArgumentsTest extends KeywordInvokerTestCase 
 
         IKeywordInvoker invoker = createKeywordInvokerWithMockArgumentGrouper("keywordWithVariableArgCount");
 
-        invoker.invoke(providedArguments);
+        invoker.invoke(providedArguments, null);
     }
 
     private IKeywordInvoker createKeywordInvokerWithMockArgumentGrouper(String methodName) {

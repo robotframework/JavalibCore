@@ -1,5 +1,7 @@
 package org.robotframework.javalib.reflection;
 
+import java.util.List;
+
 public class ArgumentConverter implements IArgumentConverter {
 
     private final Class<?>[] parameterTypes;
@@ -9,11 +11,12 @@ public class ArgumentConverter implements IArgumentConverter {
     }
 
     /** {@inheritDoc} */
-    public Object[] convertArguments(Object[] args) {
-        if (!shouldConvert(args)) {
-            return args;
-        }
-        return internalConvert(args);
+    public List convertArguments(List args) {
+        return args;
+//        if (!shouldConvert(args)) {
+//            return args;
+//        }
+//        return internalConvert(args);
     }
 
     /**
@@ -36,7 +39,7 @@ public class ArgumentConverter implements IArgumentConverter {
      * @param args
      * @return
      */
-    private boolean shouldConvert(Object[] args) {
+    private boolean shouldConvert(List args) {
         return args != null;
     }
 

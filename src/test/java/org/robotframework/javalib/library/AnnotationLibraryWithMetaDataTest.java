@@ -30,7 +30,7 @@ public class AnnotationLibraryWithMetaDataTest extends MockObjectTestCase {
     }
 
     public void testGetsKeywordArgumentsFromKeywordFactory() throws Exception {
-        ArrayUtil.assertArraysEquals(keywordArguments, annotationLibrary.getKeywordArguments(keywordName));
+        ArrayUtil.assertArraysEquals(keywordArguments, annotationLibrary.getKeywordArguments(keywordName).toArray(new String[0]));
     }
 
     private KeywordFactory<DocumentedKeyword> createKeywordFactory() {

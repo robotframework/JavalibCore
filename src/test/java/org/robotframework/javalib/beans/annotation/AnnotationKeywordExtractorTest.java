@@ -1,6 +1,7 @@
 package org.robotframework.javalib.beans.annotation;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.jmock.MockObjectTestCase;
@@ -35,16 +36,16 @@ public class AnnotationKeywordExtractorTest extends MockObjectTestCase {
     }
 
     public void testExtractsKeywordsWithReturnValue() throws Exception {
-        assertEquals(keywordWithoutArgumentsExecutionResult, keywordWithoutArguments.execute(null));
+        assertEquals(keywordWithoutArgumentsExecutionResult, keywordWithoutArguments.execute(null, null));
     }
 
     public void testExtractsKeywordsWithArguments() throws Exception {
         String keywordArgument = "someArgument";
-        assertEquals(keywordWithArgumentsExecutionResult + keywordArgument, keywordWithArguments.execute(new String[] { keywordArgument }));
+        assertEquals(keywordWithArgumentsExecutionResult + keywordArgument, keywordWithArguments.execute(Arrays.asList(keywordArgument), null));
     }
 
     public void testExtractsKeywordsWithoutReturnValue() throws Exception {
-        assertNull(keywordWithoutReturnValue.execute(null));
+        assertNull(keywordWithoutReturnValue.execute(null, null));
         assertTrue(keywordWasCalled);
     }
 
@@ -55,7 +56,7 @@ public class AnnotationKeywordExtractorTest extends MockObjectTestCase {
     }
 
     public void testExtractsKeywordArguments() throws Exception {
-        ArrayUtil.assertArraysEquals(new String[] { "overridenArgumentName" }, keywordWithArguments.getArgumentNames());
+        ArrayUtil.assertArraysEquals(new String[] { "overridenArgumentName" }, keywordWithArguments.getArgumentNames().toArray(new String[0]));
     }
 
     private int expectedKeywordCount() {

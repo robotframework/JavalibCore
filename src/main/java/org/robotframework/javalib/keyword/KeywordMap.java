@@ -16,13 +16,15 @@
 
 package org.robotframework.javalib.keyword;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.functors.NotNullPredicate;
-import org.apache.commons.collections.functors.TruePredicate;
-import org.apache.commons.collections.functors.UniquePredicate;
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.collections.map.PredicatedMap;
+import org.apache.commons.collections4.functors.NotNullPredicate;
+import org.apache.commons.collections4.functors.TruePredicate;
+import org.apache.commons.collections4.functors.UniquePredicate;
+import org.apache.commons.collections4.map.HashedMap;
+import org.apache.commons.collections4.map.PredicatedMap;
 
 /**
  * A data structure for keywords and related values, such as instances or
@@ -34,8 +36,8 @@ public class KeywordMap {
 
     public KeywordMap() {
         map = new HashedMap();
-        map = PredicatedMap.decorate(map, UniquePredicate.getInstance(), TruePredicate.INSTANCE);
-        map = PredicatedMap.decorate(map, NotNullPredicate.INSTANCE, NotNullPredicate.INSTANCE);
+        map = PredicatedMap.predicatedMap(map, UniquePredicate.uniquePredicate(), TruePredicate.INSTANCE);
+        map = PredicatedMap.predicatedMap(map, NotNullPredicate.INSTANCE, NotNullPredicate.INSTANCE);
     }
 
     /**
@@ -93,8 +95,8 @@ public class KeywordMap {
      * 
      * @return array of keyword names
      */
-    public String[] getKeywordNames() {
-        return (String[]) map.keySet().toArray(new String[0]);
+    public List<String> getKeywordNames() {
+        return new ArrayList<String>(map.keySet());
     }
     
     /**

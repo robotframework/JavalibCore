@@ -9,6 +9,7 @@ import org.robotframework.javalib.util.IKeywordNameNormalizer;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -39,7 +40,7 @@ public class ClassPathKeywordFactory implements KeywordFactory<Keyword> {
         return (Keyword)map.get(keywordName);
     }
 
-    public String[] getKeywordNames() {
+    public List<String> getKeywordNames() {
         return map.getKeywordNames();
     }
 

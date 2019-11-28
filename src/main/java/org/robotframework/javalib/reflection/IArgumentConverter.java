@@ -1,9 +1,9 @@
 package org.robotframework.javalib.reflection;
 
-
+import java.util.List;
 
 public interface IArgumentConverter {
 
-    Object[] convertArguments(Object[] args);
+    List convertArguments(List groupedArguments);
 
 }

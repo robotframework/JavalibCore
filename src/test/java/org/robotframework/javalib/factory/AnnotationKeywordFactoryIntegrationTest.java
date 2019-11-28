@@ -24,7 +24,7 @@ public class AnnotationKeywordFactoryIntegrationTest extends TestCase {
 
     public void testFindsAnnotatedKeywordsFromKeywordBeans() throws Exception {
         String[] expectedKeywordNames = new String[] { keywordName };
-        ArrayUtil.assertArraysContainSame(expectedKeywordNames, annotationKeywordFactory.getKeywordNames());
+        ArrayUtil.assertArraysContainSame(expectedKeywordNames, annotationKeywordFactory.getKeywordNames().toArray(new String[0]));
     }
 
     public void testNormalizesKeywordNamesBeforeExecution() throws Exception {

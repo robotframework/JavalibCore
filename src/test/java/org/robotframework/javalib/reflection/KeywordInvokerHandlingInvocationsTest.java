@@ -1,5 +1,8 @@
 package org.robotframework.javalib.reflection;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class KeywordInvokerHandlingInvocationsTest extends KeywordInvokerTestCase {
     private KeywordInvoker keywordInvoker;
 
@@ -8,13 +11,13 @@ public class KeywordInvokerHandlingInvocationsTest extends KeywordInvokerTestCas
     }
     
     public void testInvokesWrappedMethod() throws Exception {
-        Object[] args = new String[] { "someArg", "moreArgs" };
-        assertEquals("someArg", keywordInvoker.invoke(args));
+        List args = Arrays.asList("someArg", "moreArgs");
+        assertEquals("someArg", keywordInvoker.invoke(args, null));
     }
 
     public void testThrowsRuntimeExceptionInCaseOfException() throws Exception {
         try {
-            keywordInvoker.invoke(null);
+            keywordInvoker.invoke(null, null);
             fail();
         } catch (RuntimeException e) {
             //Expected

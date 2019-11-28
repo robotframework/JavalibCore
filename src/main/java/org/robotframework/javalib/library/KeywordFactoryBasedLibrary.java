@@ -16,6 +16,9 @@
 
 package org.robotframework.javalib.library;
 
+import java.util.List;
+import java.util.Map;
+
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.Keyword;
 
@@ -25,22 +28,26 @@ import org.robotframework.javalib.keyword.Keyword;
  * keyword. Subclasses must implement factory method
  * {@link #createKeywordFactory()}.
  */
-public abstract class KeywordFactoryBasedLibrary<T extends Keyword> implements RobotJavaLibrary {
+public abstract class KeywordFactoryBasedLibrary<T extends Keyword> implements RobotFrameworkDynamicAPI {
     private KeywordFactory<T> keywordFactory;
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
     /**
-     * @see RobotJavaLibrary#runKeyword(String, Object[])
+     * @see RobotFrameworkDynamicAPI#runKeyword(String, Object[])
      */
-    public Object runKeyword(String keywordName, Object[] args) {
+    public Object runKeyword(String keywordName, List args, Map kwargs) {
         Keyword keyword = getKeywordFactory().createKeyword(keywordName);
-        return keyword.execute(args);
+        return keyword.execute(args, kwargs);
+    }
+    
+    public Object runKeyword(String keywordName, List args) {
+        return this.runKeyword(keywordName, args, null);
     }
 
     /**
-     * @see RobotJavaLibrary#getKeywordNames()
+     * @see RobotFrameworkDynamicAPI#getKeywordNames()
      */
-    public String[] getKeywordNames() {
+    public List<String> getKeywordNames() {
         return getKeywordFactory().getKeywordNames();
     }
 

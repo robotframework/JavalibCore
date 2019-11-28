@@ -12,7 +12,7 @@ public class ClassPathLibraryIntegrationTest extends MockObjectTestCase {
     }
 
     public void testFindsKeywords() throws Exception {
-        String[] keywordNames = classPathLibrary.getKeywordNames();
+        String[] keywordNames = classPathLibrary.getKeywordNames().toArray(new String[0]);
         assertEquals(4, keywordNames.length);
         ArrayUtil.arrayContains("springkeyword", keywordNames);
         ArrayUtil.arrayContains("emptykeyword", keywordNames);
@@ -25,11 +25,11 @@ public class ClassPathLibraryIntegrationTest extends MockObjectTestCase {
     }
 
     public void testUsesProvidedPattern() throws Exception {
-        assertTrue(classPathLibrary.getKeywordNames().length > 0);
+        assertTrue(classPathLibrary.getKeywordNames().size() > 0);
 
         classPathLibrary = new ClassPathLibrary();
         classPathLibrary.setKeywordPattern("com/nonexistent/**.class");
-        assertEquals(0, classPathLibrary.getKeywordNames().length);
+        assertEquals(0, classPathLibrary.getKeywordNames().size());
     }
 
     public void testThrowsExceptionIfKeywordPatternIsNotSet() throws Exception {

@@ -9,7 +9,7 @@ public class CollisionKeywordTest extends TestCase {
         CollisionKeyword collisionKeyword = new CollisionKeyword(implementingClassName1, implementingClassName2);
 
         try {
-            collisionKeyword.execute(null);
+            collisionKeyword.execute(null, null);
         } catch(KeywordNameCollisionException e) {
             assertEquals("Two keywords with same name not allowed. Alternative implementations available from " + implementingClassName1 + " and " + implementingClassName2 + ".", e.getMessage());
         }

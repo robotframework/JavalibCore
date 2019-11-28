@@ -21,7 +21,7 @@ public class AnnotationLibraryMultipleKeywordsWithSameNameIntegrationTest extend
     }
 
     public void testFindsAnnotatedKeywordsFromClassPath() throws Exception {
-        String[] keywordNames = annotationLibrary.getKeywordNames();
+        String[] keywordNames = annotationLibrary.getKeywordNames().toArray(new String[0]);
         String[] expectedKeywordNames = new String[] { "failingKeyword", "someKeyword", "overloaded",
         		keywordThatReturnsItsArguments, "keywordWithVariableArgumentCount", "keywordWithObjectArgument",
                 "getSomeObject", "keywordWithNumericArguments",

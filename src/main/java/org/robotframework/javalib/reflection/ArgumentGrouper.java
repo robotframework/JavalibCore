@@ -16,6 +16,9 @@
 
 package org.robotframework.javalib.reflection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.robotframework.javalib.util.ArrayUtil;
 
 public class ArgumentGrouper implements IArgumentGrouper {
@@ -25,7 +28,7 @@ public class ArgumentGrouper implements IArgumentGrouper {
         this.parameterTypes = parameterTypes;
     }
 
-    public Object[] groupArguments(Object[] ungroupedArguments) {
+    public List groupArguments(List ungroupedArguments) {
         if (shouldGroupArguments(ungroupedArguments)) {
             return extractArguments(asStrings(ungroupedArguments));
         } else {
@@ -33,40 +36,27 @@ public class ArgumentGrouper implements IArgumentGrouper {
         }
     }
 
-    private boolean shouldGroupArguments(Object[] ungroupedArguments) {
+    private boolean shouldGroupArguments(List ungroupedArguments) {
         return !shouldNotGroupArguments(ungroupedArguments);
     }
     
-    private boolean shouldNotGroupArguments(Object[] ungroupedArguments) {
+    private boolean shouldNotGroupArguments(List ungroupedArguments) {
         return ungroupedArguments == null || parameterTypes.length == 0 ||
-            parameterTypes.length == ungroupedArguments.length && !lastArgIsAnArray();
+            parameterTypes.length == ungroupedArguments.size() && !lastArgIsAnArray();
     }
     
-    private String[] asStrings(Object[] ungroupedArguments) {
-        String[] argsAsString = new String[ungroupedArguments.length];
-        for (int i = 0; i < ungroupedArguments.length; i++) {
-            argsAsString[i] = ungroupedArguments[i].toString();
+    private List asStrings(List ungroupedArguments) {
+        List argsAsString = new ArrayList<String>();
+        for (int i = 0; i < ungroupedArguments.size(); i++) {
+            argsAsString.add(ungroupedArguments.get(i).toString());
         }
         return argsAsString;
     }
     
-    private Object[] extractArguments(Object[] ungroupedArguments) {
-        Object[] beginningOfarguments = extractBeginningOfArguments(ungroupedArguments);
-        Object[] extractedArguments = new Object[beginningOfarguments.length + 1];
-        for (int i = 0; i < beginningOfarguments.length; i++) {
-            extractedArguments[i] = beginningOfarguments[i];
-        }
-
-        extractedArguments[extractedArguments.length - 1] = extractRestOfArguments(ungroupedArguments);
+    private List extractArguments(List list) {
+        List extractedArguments = list.subList(0, parameterTypes.length - 1);
+        extractedArguments.add(list.subList(parameterTypes.length, list.size()-1));
         return extractedArguments;
-    }
-
-    private Object[] extractBeginningOfArguments(Object[] ungroupedArguments) {
-        return ArrayUtil.copyOfRange(ungroupedArguments, 0, parameterTypes.length - 1);
-    }
-
-    private Object[] extractRestOfArguments(Object[] ungroupedArguments) {
-        return ArrayUtil.copyOfRange(ungroupedArguments, parameterTypes.length - 1, ungroupedArguments.length);
     }
 
     private boolean lastArgIsAnArray() {

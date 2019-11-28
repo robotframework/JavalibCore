@@ -27,8 +27,8 @@ public class AnnotationKeywordExtractorIntegrationTest extends TestCase {
     public void testExtractsKeywordArguments() throws Exception {
         DocumentedKeyword keywordThatReturnsItsArguments = (DocumentedKeyword) extractedKeywords.get("keywordThatReturnsItsArguments");
         DocumentedKeyword someKeyword = (DocumentedKeyword) extractedKeywords.get("someKeyword");
-        assertArraysEquals(new String[] { "arg" }, keywordThatReturnsItsArguments.getArgumentNames());
-        assertArraysEquals(new String[] { "overridenArgumentName" }, someKeyword.getArgumentNames());
+        assertArraysEquals(new String[] { "arg" }, keywordThatReturnsItsArguments.getArgumentNames().toArray(new String[0]));
+        assertArraysEquals(new String[] { "overridenArgumentName" }, someKeyword.getArgumentNames().toArray(new String[0]));
     }
 
     public void testExtractsKeywordsThatHandleVariableArgumentCount() throws Exception {
@@ -45,6 +45,6 @@ public class AnnotationKeywordExtractorIntegrationTest extends TestCase {
     
     private void assertLeftoverArgumentsAreCorrectlyGrouped(Keyword keyword, String[] arguments) {
         Object[] expected = ArrayUtil.copyOfRange(arguments, 1, arguments.length);
-        ArrayUtil.assertArraysEquals(expected, (Object[]) keyword.execute(arguments));
+        ArrayUtil.assertArraysEquals(expected, (Object[]) keyword.execute(Arrays.asList(arguments), null));
     }
 }

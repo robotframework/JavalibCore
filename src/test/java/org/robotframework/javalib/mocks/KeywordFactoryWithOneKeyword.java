@@ -18,7 +18,7 @@ public class KeywordFactoryWithOneKeyword implements KeywordFactory {
         this.keywordName = keywordname;
         this.keywordInstance = keyword;
     }
-    
+
     public Keyword createKeyword(String keywordName) {
         keywordCreated = true;
         createKeywordArgument = keywordName;

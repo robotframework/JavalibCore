@@ -1,25 +1,31 @@
 package org.robotframework.javalib.library;
 
-import org.jmock.MockObjectTestCase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.robotframework.javalib.beans.annotation.KeywordBeanLoader;
 
 import java.lang.reflect.Field;
 
+import static org.junit.jupiter.api.Assertions.*;
 
-public class AnnotationLibraryTest extends MockObjectTestCase {
-    private AnnotationLibrary annotationLibrary;
-    private String keywordPattern = "somePattern";
-    private KeywordBeanLoader beanLoaderAtInitialization;
-    private KeywordBeanLoader beanLoaderAfterSettingKeywordPattern;
 
-    protected void setUp() throws Exception {
+public class AnnotationLibraryTest {
+    private static AnnotationLibrary annotationLibrary;
+    private static String keywordPattern = "somePattern";
+    private static KeywordBeanLoader beanLoaderAtInitialization;
+    private static KeywordBeanLoader beanLoaderAfterSettingKeywordPattern;
+
+    @BeforeAll
+    public static void setUp() throws Exception {
         annotationLibrary = new AnnotationLibrary();
         beanLoaderAtInitialization = extractBeanLoaderFromAnnotationLibrary();
         annotationLibrary.addKeywordPattern(keywordPattern);
         beanLoaderAfterSettingKeywordPattern = extractBeanLoaderFromAnnotationLibrary();
     }
 
-    public void testThrowsExceptionIfKeywordPatternIsNotSet() throws Exception {
+    @Test
+    public void testThrowsExceptionIfKeywordPatternIsNotSet() {
+
         try {
             new AnnotationLibrary().getKeywordNames();
             fail("Expected IllegalStateException to be thrown.");
@@ -28,11 +34,13 @@ public class AnnotationLibraryTest extends MockObjectTestCase {
         }
     }
 
-    public void testCreatesNewBeanLoaderWhenKeywordPatternSet() throws Exception {
+    @Test
+    public void testCreatesNewBeanLoaderWhenKeywordPatternSet() {
         assertNotSame(beanLoaderAtInitialization, beanLoaderAfterSettingKeywordPattern);
     }
 
-    public void testSetsKeywordPatternToBeanLoader() throws Exception {
+    @Test
+    public void testSetsKeywordPatternToBeanLoader() throws IllegalAccessException {
         String extractedKeywordPattern = extractKeywordPatternFrom(beanLoaderAfterSettingKeywordPattern);
         assertEquals(keywordPattern, extractedKeywordPattern);
     }
@@ -47,11 +55,11 @@ public class AnnotationLibraryTest extends MockObjectTestCase {
         return null;
     }
 
-    private Field[] fields(KeywordBeanLoader beanLoader) {
+    private static Field[] fields(KeywordBeanLoader beanLoader) {
         return beanLoader.getClass().getDeclaredFields();
     }
 
-    private KeywordBeanLoader extractBeanLoaderFromAnnotationLibrary() {
+    private static KeywordBeanLoader extractBeanLoaderFromAnnotationLibrary() {
     	try {
     		return (KeywordBeanLoader) annotationLibrary.beanLoaders.get(0);
     	} catch (IndexOutOfBoundsException e){

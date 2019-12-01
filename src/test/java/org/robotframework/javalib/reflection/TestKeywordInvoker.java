@@ -19,11 +19,10 @@ package org.robotframework.javalib.reflection;
 
 import java.lang.reflect.Method;
 
-import org.jmock.MockObjectTestCase;
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
 
-public abstract class KeywordInvokerTestCase extends MockObjectTestCase {
+public class TestKeywordInvoker {
     protected Object[] restOfArgs;
 
     protected Method getMethod(String methodName) {

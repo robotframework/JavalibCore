@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,10 +23,10 @@ import java.util.Map;
  * A Java library for Robot Framework.
  */
 public interface RobotFrameworkDynamicAPI {
-    
+
     /**
      * Returns all the keywords this library contains
-     * 
+     *
      * @return names of keywords this library contains
      */
     List<String> getKeywordNames();
@@ -34,7 +34,7 @@ public interface RobotFrameworkDynamicAPI {
     /**
      * Runs a keyword and returns the result. If an exception is thrown
      * the keyword fails, otherwise it passes.
-     * 
+     *
      * @param keywordName keyword name to run
      * @param args arguments for the keyword
      * @return keyword return value

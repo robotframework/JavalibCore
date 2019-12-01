@@ -2,70 +2,65 @@ package org.robotframework.javalib.keyword;
 
 import java.util.Arrays;
 
-import org.robotframework.javalib.keyword.KeywordMap;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class KeywordMapTest extends TestCase {
+public class KeywordMapTest {
     private KeywordMap map;
     private String keywordName = "My Keyword";
     private String keywordValue = "Value";
 
-    protected void setUp() throws Exception {
+    @BeforeEach
+    protected void setUp() {
         map = new KeywordMap();
     }
-    
-    public void testAddsKeywordsToMap() throws Exception {
+
+    @Test
+    public void testAddsKeywordsToMap() {
         map.add(keywordName, keywordValue);
         assertEquals(1, map.size());
     }
-    
-    public void testGetsValueUsingKeywordNameAsKey() throws Exception {
+
+    @Test
+    public void testGetsValueUsingKeywordNameAsKey() {
         map.add(keywordName, keywordValue);
         assertEquals(keywordValue, map.get(keywordName));
     }
-    
-    public void testStoredKeywordNamesAreUnique() throws Exception {
+
+    @Test
+    public void testStoredKeywordNamesAreUnique() {
         map.add(keywordName, "");
-        try {
-            map.add(keywordName, "");
-            fail();
-        } catch(IllegalArgumentException e) {
-            assertTrue(true);
-        }
+        assertThrows(IllegalArgumentException.class, () -> map.add(keywordName, ""));
     }
-    
-    public void testNullKeywordNamesAreNotAllowed() throws Exception {
-        try {
-            map.add(null, "");
-            fail();
-        } catch(IllegalArgumentException e) {
-            assertTrue(true);
-        }
+
+    @Test
+    public void testNullKeywordNamesAreNotAllowed() {
+        assertThrows(IllegalArgumentException.class, () -> map.add(null, ""));
     }
-    
-    public void testNullKeywordValuesAreNotAllowed() throws Exception {
-        try {
-            map.add("", null);
-            fail();
-        } catch(IllegalArgumentException e) {
-            assertTrue(true);
-        }
+
+    @Test
+    public void testNullKeywordValuesAreNotAllowed() {
+        assertThrows(IllegalArgumentException.class, () -> map.add("", null));
     }
-    
-    public void testNormalizesKeywordNames() throws Exception {
+
+    @Test
+    public void testNormalizesKeywordNames() {
         map.add("Keyword Name", "");
         assertTrue(map.getUnderlyingMap().containsKey("keywordname"));
     }
-    
-    public void testCanReturnsArrayOfKeywordNames() throws Exception {
+
+    @Test
+    public void testCanReturnsArrayOfKeywordNames() {
         map.add("First Keyword", "");
         map.add("Second Keyword", "");
         String[] keywordNames = map.getKeywordNames().toArray(new String[0]);
         assertTrue(Arrays.equals(new String[] { "firstkeyword", "secondkeyword" }, keywordNames));
     }
-    
-    public void testCanBeQueriedForContainedKeywords() throws Exception {
+
+    @Test
+    public void testCanBeQueriedForContainedKeywords() {
         map.add(keywordName, keywordValue);
         assertTrue(map.containsKeyword(keywordName));
     }

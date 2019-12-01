@@ -9,10 +9,16 @@ public class RecordingKeyword implements Keyword  {
     public List arguments;
     public boolean executed;
     public Object returnValue;
-    
+
     public Object execute(List arguments, Map kwargs) {
-        this.arguments = arguments; 
+        this.arguments = arguments;
         executed = true;
         return returnValue;
+    }
+
+    @Override
+    public List<String> getArgumentTypes() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

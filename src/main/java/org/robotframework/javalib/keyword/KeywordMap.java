@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,29 +42,29 @@ public class KeywordMap {
 
     /**
      * Adds a keyword to the map. Name will be normalized.
-     * 
+     *
      * @param keywordName name to be added
      * @param value associated value
      */
     public void add(String keywordName, Object value) {
         map.put(normalizeKeywordName(keywordName), value);
     }
-    
+
     /**
      * Gets the value associated with given keyword name. Keyword name
      * is normalized before searching.
-     * 
+     *
      * @param keywordName keyword name
      * @return associated value
      */
     public Object get(String keywordName) {
         return map.get(normalizeKeywordName(keywordName));
     }
-    
+
     /**
      * Normalizes a keyword name. Removes spaces and special characters.
      * Converts all letters to lower case.
-     * 
+     *
      * @param keywordName keyword name
      * @return normalized keyword name
      */
@@ -80,28 +80,28 @@ public class KeywordMap {
         keywordName = keywordName.replaceAll("\n", "");
         return keywordName;
     }
-    
+
     /**
      * Amount of pairs in map
-     * 
+     *
      * @return amount of pairs in map
      */
     public int size() {
         return map.size();
     }
-    
+
     /**
      * Returns the keyword names. Similar to {@link Map#keySet()}.
-     * 
+     *
      * @return array of keyword names
      */
     public List<String> getKeywordNames() {
         return new ArrayList<String>(map.keySet());
     }
-    
+
     /**
      * Checks whether map contains a pair with given keyword name
-     * 
+     *
      * @param keywordName keyword name
      * @return true if pair exists, false otherwise
      */
@@ -111,7 +111,7 @@ public class KeywordMap {
 
     /**
      * Returns the underlying Map instance.
-     * 
+     *
      * @return underlying predicated HashedMap
      */
     protected Map getUnderlyingMap() {

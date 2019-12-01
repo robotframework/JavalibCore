@@ -1,17 +1,21 @@
 package org.robotframework.javalib.keyword;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class CollisionKeywordTest extends TestCase {
-    public void testExecutionThrowsException() throws Exception {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class CollisionKeywordTest {
+
+    @Test
+    public void testExecutionThrowsException() {
         String implementingClassName1 = "class org.robotframework.somecomponent.ImplementingClass";
         String implementingClassName2 = "class org.robotframework.othercomponent.OtherImplementingClass";
         CollisionKeyword collisionKeyword = new CollisionKeyword(implementingClassName1, implementingClassName2);
 
-        try {
-            collisionKeyword.execute(null, null);
-        } catch(KeywordNameCollisionException e) {
-            assertEquals("Two keywords with same name not allowed. Alternative implementations available from " + implementingClassName1 + " and " + implementingClassName2 + ".", e.getMessage());
-        }
+
+        KeywordNameCollisionException e = assertThrows(KeywordNameCollisionException.class, () -> collisionKeyword.execute(null, null));
+
+        assertEquals("Two keywords with same name not allowed. Alternative implementations available from " + implementingClassName1 + " and " + implementingClassName2 + ".", e.getMessage());
     }
 }

@@ -1,23 +1,29 @@
 package org.robotframework.javalib.library;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
-public class ClassLoadingIntegrationTest extends TestCase {
-    private MockClassLoader mockClassLoader;
+public class ClassLoadingIntegrationTest {
+    private static MockClassLoader mockClassLoader;
 
-    protected void setUp() throws Exception {
+    @BeforeAll
+    public static void setUp() {
         mockClassLoader = new MockClassLoader();
     }
 
-    public void testClassPathLibraryUsesProvidedClassLoaderForKeywordCreation() throws Exception {
+    @Test
+    public void testClassPathLibraryUsesProvidedClassLoaderForKeywordCreation() {
         ClassPathLibrary library = createClassPathLibraryWithMockClassLoader();
 
         library.runKeyword("Empty Keyword", null);
         assertClassWasLoaded("org.robotframework.javalib.keyword.EmptyKeyword");
     }
 
-    public void testClassPathLibraryUsesProvidedClassLoaderForKeywordExtraction() throws Exception {
+    @Test
+    public void testClassPathLibraryUsesProvidedClassLoaderForKeywordExtraction() {
         ClassPathLibrary library = createClassPathLibraryWithMockClassLoader();
 
         library.getKeywordNames();

@@ -1,30 +1,41 @@
 package org.robotframework.javalib.library;
 
-import org.jmock.cglib.MockObjectTestCase;
-import org.robotframework.javalib.util.ArrayUtil;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
-public class ClassPathLibraryIntegrationTest extends MockObjectTestCase {
-    private ClassPathLibrary classPathLibrary;
+public class ClassPathLibraryIntegrationTest {
+    private static ClassPathLibrary classPathLibrary;
 
-    protected void setUp() throws Exception {
+    @BeforeAll
+    public static void setUp() {
         classPathLibrary = new ClassPathLibrary("org/robotframework/**/**.class");
     }
 
-    public void testFindsKeywords() throws Exception {
-        String[] keywordNames = classPathLibrary.getKeywordNames().toArray(new String[0]);
-        assertEquals(4, keywordNames.length);
-        ArrayUtil.arrayContains("springkeyword", keywordNames);
-        ArrayUtil.arrayContains("emptykeyword", keywordNames);
-        ArrayUtil.arrayContains("conflictingkeyword", keywordNames);
+    @Test
+    public void testFindsKeywords() {
+        List keywordNames = classPathLibrary.getKeywordNames();
+        assertEquals(4, keywordNames.size());
+        List expectedKeywordNames = Arrays.asList("recordingkeyword", "springkeyword", "emptykeyword", "conflictingkeyword");
+        keywordNames.sort(Comparator.naturalOrder());
+        expectedKeywordNames.sort(Comparator.naturalOrder());
+        assertIterableEquals(expectedKeywordNames, keywordNames);
     }
 
-    public void testRunsKeyword() throws Exception {
+    @Test
+    public void testRunsKeyword() {
         Object result = classPathLibrary.runKeyword("Conflicting Keyword", null);
         assertEquals("Classpath Keyword", result.toString());
     }
 
-    public void testUsesProvidedPattern() throws Exception {
+    @Test
+    public void testUsesProvidedPattern() {
         assertTrue(classPathLibrary.getKeywordNames().size() > 0);
 
         classPathLibrary = new ClassPathLibrary();
@@ -32,7 +43,8 @@ public class ClassPathLibraryIntegrationTest extends MockObjectTestCase {
         assertEquals(0, classPathLibrary.getKeywordNames().size());
     }
 
-    public void testThrowsExceptionIfKeywordPatternIsNotSet() throws Exception {
+    @Test
+    public void testThrowsExceptionIfKeywordPatternIsNotSet() {
         try {
             new ClassPathLibrary().getKeywordNames();
             fail("Expected IllegalStateException to be thrown.");

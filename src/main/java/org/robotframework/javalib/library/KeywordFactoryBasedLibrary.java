@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,7 +39,7 @@ public abstract class KeywordFactoryBasedLibrary<T extends Keyword> implements R
         Keyword keyword = getKeywordFactory().createKeyword(keywordName);
         return keyword.execute(args, kwargs);
     }
-    
+
     public Object runKeyword(String keywordName, List args) {
         return this.runKeyword(keywordName, args, null);
     }
@@ -50,6 +50,10 @@ public abstract class KeywordFactoryBasedLibrary<T extends Keyword> implements R
     public List<String> getKeywordNames() {
         return getKeywordFactory().getKeywordNames();
     }
+
+//    public List<String> getKeywordTypes(String keywordName) {
+//        return createKeywordFactory().createKeyword(keywordName).getArgumentTypes();
+//    }
 
     /**
      * Gets the classloader. Simply a property that the subclasses can use

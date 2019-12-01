@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,6 +30,6 @@ public abstract class PreparableKeyword implements Keyword {
     }
 
     protected void prepare(List arguments) {}
-    protected void finish(List arguments) {}    
+    protected void finish(List arguments) {}
     protected abstract Object operate(List arguments);
 }

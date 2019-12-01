@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,17 +21,17 @@ import java.util.Map;
 
 /**
  * A keyword that performs a single, isolated task for a test case.
- * 
- * @see ArgumentCheckingKeyword
  */
 public interface Keyword {
     /**
      * Execute method is called when the keyword is executed in a Robot
      * test case.
-     * 
+     *
      * @param args arguments from Robot
      * @return keyword return value. If the keyword isn't suppose to
      * return anything useful, use Boolean.TRUE.
      */
     Object execute(List args, Map kwargs);
+
+    List<String> getArgumentTypes();
 }

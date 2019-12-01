@@ -17,6 +17,8 @@
 package org.robotframework.javalib.reflection;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -24,12 +26,7 @@ import java.util.Map;
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
 
-import com.thoughtworks.paranamer.CachingParanamer;
-import com.thoughtworks.paranamer.ParameterNamesNotFoundException;
-import com.thoughtworks.paranamer.Paranamer;
-
 public class KeywordInvoker implements IKeywordInvoker {
-    protected Paranamer parameterNames = new CachingParanamer();
 
     private final Method method;
     private final Object obj;
@@ -41,20 +38,29 @@ public class KeywordInvoker implements IKeywordInvoker {
 
     public List<String> getParameterNames() {
         if (method.isAnnotationPresent(ArgumentNames.class)) {
-            return Arrays.asList(method.getAnnotation(ArgumentNames.class).value());
+            // We use names stricter way than earlier, so making sure that varargs are marked correctly.
+            // https://github.com/robotframework/JavalibCore/wiki/AnnotationLibrary#argument-names only recommends
+            // marking varargs with *
+            List argumentNames = Arrays.asList(method.getAnnotation(ArgumentNames.class).value());
+
+            return argumentNames;
         }
-        return getParameterNamesFromParanamer();
+        return getParameterNamesFromMethod();
+    }
+
+    public List<String> getParameterTypes() {
+        List<String> parameterTypes = new ArrayList<String>();
+        for (Class parameterClass : method.getParameterTypes()) {
+            parameterTypes.add(parameterClass.getSimpleName());
+        }
+        return parameterTypes;
     }
 
     public Object invoke(List args, Map kwargs) {
         try {
-            List groupedArguments = createArgumentGrouper().groupArguments(args);
-            List convertedArguments = createArgumentConverter().convertArguments(groupedArguments);
-            if (kwargs != null && kwargs.size() > 0) {
-                convertedArguments.add(kwargs);
-            }
-            Object[] reflectionArgs = convertedArguments != null ? convertedArguments.toArray() : null; 
-            return method.invoke(obj, reflectionArgs);
+            List reflectionArgs = createArgumentCollector().collectArguments(args, kwargs);
+            Object[] reflectionArgsArray = reflectionArgs != null ? reflectionArgs.toArray() : null;
+            return method.invoke(obj, reflectionArgsArray);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -64,19 +70,36 @@ public class KeywordInvoker implements IKeywordInvoker {
         return method.getAnnotation(RobotKeyword.class).value();
     }
 
-    IArgumentConverter createArgumentConverter() {
-        return new ArgumentConverter(method.getParameterTypes());
-    }
-    
-    IArgumentGrouper createArgumentGrouper() {
-        return new ArgumentGrouper(method.getParameterTypes());
+    IArgumentCollector createArgumentCollector() {
+        return new ArgumentCollector(method.getParameterTypes(), getParameterNames());
     }
 
-    private List<String> getParameterNamesFromParanamer() {
-        try {
-            return Arrays.asList(parameterNames.lookupParameterNames(method));
-        } catch (ParameterNamesNotFoundException e) {
-            return null;
+    private List<String> getParameterNamesFromMethod() {
+            List<String> parameterNameList = this.getParameterNamesWithReflection();
+            // Marking varargs and kwargs correctly for RF
+            if (method.getParameterCount() > 0) {
+                int lastParameterIndex = method.getParameterCount() - 1;
+                if (method.getParameters()[lastParameterIndex].getType().equals(List.class)
+                        || method.getParameters()[lastParameterIndex].getType().isArray()) {
+                    parameterNameList.set(lastParameterIndex, "*" + parameterNameList.get(lastParameterIndex));
+                } else if (method.getParameters()[lastParameterIndex].getType().equals(Map.class)) {
+                    if (lastParameterIndex > 1
+                            && (method.getParameters()[lastParameterIndex - 1].getType().equals(List.class)
+                            || method.getParameters()[lastParameterIndex - 1].getType().isArray())) {
+                        parameterNameList.set(lastParameterIndex - 1, "*" + parameterNameList.get(lastParameterIndex - 1));
+                    }
+                    parameterNameList.set(lastParameterIndex, "**" + parameterNameList.get(lastParameterIndex));
+                }
+            }
+            return parameterNameList;
+    }
+
+    private List<String> getParameterNamesWithReflection() {
+        List<String> parameterNameList = new ArrayList<String>();
+        for (Parameter parameter : method.getParameters()) {
+            parameterNameList.add(parameter.getName());
         }
+
+        return parameterNameList;
     }
 }

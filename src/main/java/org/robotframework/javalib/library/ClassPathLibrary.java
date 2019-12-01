@@ -16,6 +16,8 @@
 
 package org.robotframework.javalib.library;
 
+import java.util.List;
+
 import org.robotframework.javalib.beans.annotation.KeywordBeanLoader;
 import org.robotframework.javalib.beans.classpath.InterfaceBasedKeywordFilter;
 import org.robotframework.javalib.factory.ClassPathKeywordFactory;

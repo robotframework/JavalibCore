@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.robotframework.javalib.keyword;
+package org.robotframework.javalib.reflection;
 
-public abstract class ZeroArgumentKeyword extends ArgumentCheckingKeyword {
-    public int getExpectedArgumentCount() {
-        return 0;
-    }
+import java.util.List;
+import java.util.Map;
+
+public interface IArgumentCollector {
+    List collectArguments(List args, Map<String, Object> kwargs);
 }

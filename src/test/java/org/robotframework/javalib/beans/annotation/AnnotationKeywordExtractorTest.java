@@ -4,26 +4,28 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.jmock.MockObjectTestCase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
-import org.robotframework.javalib.util.ArrayUtil;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
-public class AnnotationKeywordExtractorTest extends MockObjectTestCase {
-    private boolean keywordWasCalled = false;
-    private String keywordWithoutArgumentsExecutionResult = "keyword1ExecutionResult";
-    private String keywordWithArgumentsExecutionResult = "keyword2ExecutionResult";
+public class AnnotationKeywordExtractorTest {
+    private static boolean keywordWasCalled = false;
+    private static String keywordWithoutArgumentsExecutionResult = "keyword1ExecutionResult";
+    private static String keywordWithArgumentsExecutionResult = "keyword2ExecutionResult";
 
-    private Map extractedKeywords;
-    private DocumentedKeyword keywordWithArguments;
-    private DocumentedKeyword keywordWithoutArguments;
-    private DocumentedKeyword keywordWithoutReturnValue;
-    private IKeywordExtractor extractor;
+    private static Map extractedKeywords;
+    private static DocumentedKeyword keywordWithArguments;
+    private static DocumentedKeyword keywordWithoutArguments;
+    private static DocumentedKeyword keywordWithoutReturnValue;
+    private static IKeywordExtractor extractor;
 
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeAll
+    public static void setUp() {
         extractor = new AnnotationKeywordExtractor();
         extractedKeywords = extractor.extractKeywords(new MyKeywordsBean());
         keywordWithArguments = (DocumentedKeyword) extractedKeywords.get("keywordWithArguments");
@@ -31,32 +33,38 @@ public class AnnotationKeywordExtractorTest extends MockObjectTestCase {
         keywordWithoutReturnValue = (DocumentedKeyword) extractedKeywords.get("keywordWithoutReturnValue");
     }
 
-    public void testExtractsCorrectNumberOfKeywordsFromKeywordBean() throws Exception {
+    @Test
+    public void testExtractsCorrectNumberOfKeywordsFromKeywordBean() {
         assertEquals(expectedKeywordCount(), extractedKeywords.size());
     }
 
-    public void testExtractsKeywordsWithReturnValue() throws Exception {
+    @Test
+    public void testExtractsKeywordsWithReturnValue() {
         assertEquals(keywordWithoutArgumentsExecutionResult, keywordWithoutArguments.execute(null, null));
     }
 
-    public void testExtractsKeywordsWithArguments() throws Exception {
+    @Test
+    public void testExtractsKeywordsWithArguments() {
         String keywordArgument = "someArgument";
         assertEquals(keywordWithArgumentsExecutionResult + keywordArgument, keywordWithArguments.execute(Arrays.asList(keywordArgument), null));
     }
 
-    public void testExtractsKeywordsWithoutReturnValue() throws Exception {
+    @Test
+    public void testExtractsKeywordsWithoutReturnValue() {
         assertNull(keywordWithoutReturnValue.execute(null, null));
         assertTrue(keywordWasCalled);
     }
 
-    public void testExtractsKeywordDocumentation() throws Exception {
+    @Test
+    public void testExtractsKeywordDocumentation() {
         assertEquals("This is a keyword with arguments", keywordWithArguments.getDocumentation());
         assertEquals("This is a keyword without arguments", keywordWithoutArguments.getDocumentation());
         assertEquals("This is a keyword without return value", keywordWithoutReturnValue.getDocumentation());
     }
 
-    public void testExtractsKeywordArguments() throws Exception {
-        ArrayUtil.assertArraysEquals(new String[] { "overridenArgumentName" }, keywordWithArguments.getArgumentNames().toArray(new String[0]));
+    @Test
+    public void testExtractsKeywordArguments() {
+        assertIterableEquals(Arrays.asList("overridenArgumentName"), keywordWithArguments.getArgumentNames());
     }
 
     private int expectedKeywordCount() {
@@ -70,7 +78,7 @@ public class AnnotationKeywordExtractorTest extends MockObjectTestCase {
         return keywordCount;
     }
 
-    public class MyKeywordsBean {
+    public static class MyKeywordsBean {
         @RobotKeyword("This is a keyword without arguments")
         public Object keywordWithoutArguments() {
             return keywordWithoutArgumentsExecutionResult;

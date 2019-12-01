@@ -1,16 +1,20 @@
 package org.robotframework.javalib.autowired;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class AnnotatedAutowiredLibraryTest extends TestCase {
-    private AnnotatedAutowiredLibrary annotatedAutowiredLibrary;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    @Override
-    protected void setUp() throws Exception {
+public class AnnotatedAutowiredLibraryTest {
+    private static AnnotatedAutowiredLibrary annotatedAutowiredLibrary;
+
+    @BeforeAll
+    public static void setUp() {
         annotatedAutowiredLibrary = new AnnotatedAutowiredLibrary("org/robotframework/**/autowired/**/**.class");
         annotatedAutowiredLibrary.getKeywordNames();
     }
 
+    @Test
     public void testAutowired() throws Exception {
         AnnotatedAutowiredKeywords1 annotatedAutowiredKeywords1 = annotatedAutowiredLibrary.getAnnotatedAutowiredKeywords1();
         AnnotatedAutowiredKeywords2 annotatedAutowiredKeywords2 = annotatedAutowiredLibrary.getAnnotatedAutowiredKeywords2();

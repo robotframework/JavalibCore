@@ -10,4 +10,10 @@ public class EmptyKeyword implements Keyword {
     public Object execute(List arguments, Map kwargs) {
         return "Empty Keyword Return Value";
     }
+
+    @Override
+    public List<String> getArgumentTypes() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

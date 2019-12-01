@@ -3,60 +3,46 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.robotframework.javalib.keyword.ArgumentCheckingKeyword;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class ArgumentCheckingKeywordTest extends TestCase {
+
+public class ArgumentCheckingKeywordTest {
     private RecordingAbstractKeyword fakeKeyword;
 
-    protected void setUp() throws Exception {
-        fakeKeyword = new RecordingAbstractKeyword();
-    }
-    
-    public void testRaisesExceptionIfArgumentCountIsSmallerThanExpected() throws Exception {
-        fakeKeyword.expectedArgumentCount = 2;
-        
-        try {
-            fakeKeyword.execute(Arrays.asList("arg0"), null );
-        } catch(IllegalArgumentException e) {
-            assertEquals("Illegal number of arguments (should be 2, but got 1)", e.getMessage());
-        }
-    }
-    
-    public void testRaisesExceptionIfArgumentCountIsGreaterThanExpected() throws Exception {
-        fakeKeyword.expectedArgumentCount = 1;
-        
-        try {
-            fakeKeyword.execute(Arrays.asList("arg0", "arg1"), null );
-        } catch(IllegalArgumentException e) {
-            assertEquals("Illegal number of arguments (should be 1, but got 2)", e.getMessage());
-        }
+    @BeforeEach
+    public void setupTest() {
+        this.fakeKeyword = new RecordingAbstractKeyword();
     }
 
+    @Test
     public void testExecuteDelegatesToOperate() {
         fakeKeyword.execute(Arrays.asList(), null);
         assertTrue(fakeKeyword.wasDelegatedToOperate);
     }
-    
-    public void testExecutePassesArgumentsToOperate() throws Exception {
+
+    @Test
+    public void testExecutePassesArgumentsToOperate() {
         List args = Arrays.asList("argument1", "argument2");
         fakeKeyword.expectedArgumentCount = 2;
         fakeKeyword.execute(args, null);
         assertEquals(args, fakeKeyword.arguments);
     }
-    
-    public void testExecutePassesReturnValueFromOperate() throws Exception {
+
+    @Test
+    public void testExecutePassesReturnValueFromOperate() {
         fakeKeyword.returnValue = "My Return Value";
         assertEquals("My Return Value", fakeKeyword.execute(Arrays.asList(), null));
     }
-    
-    private class RecordingAbstractKeyword extends ArgumentCheckingKeyword {
+
+    private class RecordingAbstractKeyword extends PreparableKeyword {
         boolean wasDelegatedToOperate;
         int expectedArgumentCount;
         Object returnValue;
         List arguments;
-        
+
         protected Object operate(List arguments) {
             this.arguments = arguments;
             wasDelegatedToOperate = true;
@@ -68,7 +54,13 @@ public class ArgumentCheckingKeywordTest extends TestCase {
         }
 
         public Object execute(List args, Map kwargs) {
-            return super.execute(arguments, kwargs);
+            return super.execute(args, kwargs);
+        }
+
+        @Override
+        public List<String> getArgumentTypes() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 }

@@ -56,7 +56,9 @@ public class AntPathMatcher {
 	private String pathSeparator = DEFAULT_PATH_SEPARATOR;
 
 
-	/** Set the path separator to use for pattern parsing. Default is "/", as in Ant. */
+	/** Set the path separator to use for pattern parsing. Default is "/", as in Ant. 
+	 * @param pathSeparator Path separator to use
+	*/
 	public void setPathSeparator(String pathSeparator) {
 		this.pathSeparator = (pathSeparator != null ? pathSeparator : DEFAULT_PATH_SEPARATOR);
 	}
@@ -76,6 +78,8 @@ public class AntPathMatcher {
 
     /**
      * Borrowed from PathMatchingResourcePatternResolver
+	 * @param pattern string to get root from
+	 * @return root of given pattern
      */
     public String getRoot(String pattern) {
         int prefixEnd = pattern.indexOf(":") + 1;
@@ -95,6 +99,7 @@ public class AntPathMatcher {
 	 * @param path the path String to test
 	 * @param fullMatch whether a full pattern match is required (else a pattern match
 	 * as far as the given base path goes is sufficient)
+	 * @param uriTemplateVariables collection of matches
 	 * @return <code>true</code> if the supplied <code>path</code> matched, <code>false</code> if it didn't
 	 */
 	protected boolean doMatch(String pattern, String path, boolean fullMatch,
@@ -229,6 +234,7 @@ public class AntPathMatcher {
 	 * means zero or more characters<br> '?' means one and only one character
 	 * @param pattern pattern to match against. Must not be <code>null</code>.
 	 * @param str string which must be matched against the pattern. Must not be <code>null</code>.
+	 * @param uriTemplateVariables collection of matches
 	 * @return <code>true</code> if the string matches against the pattern, or <code>false</code> otherwise.
 	 */
 	private boolean matchStrings(String pattern, String str, Map<String, String> uriTemplateVariables) {
@@ -238,16 +244,19 @@ public class AntPathMatcher {
 
 	/**
 	 * Given a pattern and a full path, determine the pattern-mapped part. <p>For example: <ul>
-	 * <li>'<code>/docs/cvs/commit.html</code>' and '<code>/docs/cvs/commit.html</code> -> ''</li>
-	 * <li>'<code>/docs/*</code>' and '<code>/docs/cvs/commit</code> -> '<code>cvs/commit</code>'</li>
-	 * <li>'<code>/docs/cvs/*.html</code>' and '<code>/docs/cvs/commit.html</code> -> '<code>commit.html</code>'</li>
-	 * <li>'<code>/docs/**</code>' and '<code>/docs/cvs/commit</code> -> '<code>cvs/commit</code>'</li>
-	 * <li>'<code>/docs/**\/*.html</code>' and '<code>/docs/cvs/commit.html</code> -> '<code>cvs/commit.html</code>'</li>
-	 * <li>'<code>/*.html</code>' and '<code>/docs/cvs/commit.html</code> -> '<code>docs/cvs/commit.html</code>'</li>
-	 * <li>'<code>*.html</code>' and '<code>/docs/cvs/commit.html</code> -> '<code>/docs/cvs/commit.html</code>'</li>
-	 * <li>'<code>*</code>' and '<code>/docs/cvs/commit.html</code> -> '<code>/docs/cvs/commit.html</code>'</li> </ul>
+	 * <li>'<code>/docs/cvs/commit.html</code>' and '<code>/docs/cvs/commit.html</code> returns ''</li>
+	 * <li>'<code>/docs/*</code>' and '<code>/docs/cvs/commit</code> returns '<code>cvs/commit</code>'</li>
+	 * <li>'<code>/docs/cvs/*.html</code>' and '<code>/docs/cvs/commit.html</code> returns '<code>commit.html</code>'</li>
+	 * <li>'<code>/docs/**</code>' and '<code>/docs/cvs/commit</code> returns '<code>cvs/commit</code>'</li>
+	 * <li>'<code>/docs/**\/*.html</code>' and '<code>/docs/cvs/commit.html</code> returns '<code>cvs/commit.html</code>'</li>
+	 * <li>'<code>/*.html</code>' and '<code>/docs/cvs/commit.html</code> returns '<code>docs/cvs/commit.html</code>'</li>
+	 * <li>'<code>*.html</code>' and '<code>/docs/cvs/commit.html</code> returns '<code>/docs/cvs/commit.html</code>'</li>
+	 * <li>'<code>*</code>' and '<code>/docs/cvs/commit.html</code> returns '<code>/docs/cvs/commit.html</code>'</li> </ul>
 	 * <p>Assumes that {@link #match} returns <code>true</code> for '<code>pattern</code>' and '<code>path</code>', but
 	 * does <strong>not</strong> enforce this.
+	 * @param pattern the pattern
+	 * @param path full path
+	 * @return determined the pattern-mapped part
 	 */
 	public String extractPathWithinPattern(String pattern, String path) {
 		String[] patternParts = StringUtils.tokenizeToStringArray(pattern, this.pathSeparator);
@@ -290,7 +299,7 @@ public class AntPathMatcher {
 	 * <p>This implementation simply concatenates the two patterns, unless the first pattern
 	 * contains a file extension match (such as {@code *.html}. In that case, the second pattern
 	 * should be included in the first, or an {@code IllegalArgumentException} is thrown.
-	 * <p>For example: <table>
+	 * <p>For example: <table summary="Example">
 	 * <tr><th>Pattern 1</th><th>Pattern 2</th><th>Result</th></tr> <tr><td>/hotels</td><td>{@code
 	 * null}</td><td>/hotels</td></tr> <tr><td>{@code null}</td><td>/hotels</td><td>/hotels</td></tr>
 	 * <tr><td>/hotels</td><td>/bookings</td><td>/hotels/bookings</td></tr> <tr><td>/hotels</td><td>bookings</td><td>/hotels/bookings</td></tr>

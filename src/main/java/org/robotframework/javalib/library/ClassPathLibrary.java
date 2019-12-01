@@ -16,6 +16,8 @@
 
 package org.robotframework.javalib.library;
 
+import java.util.List;
+
 import org.robotframework.javalib.beans.annotation.KeywordBeanLoader;
 import org.robotframework.javalib.beans.classpath.InterfaceBasedKeywordFilter;
 import org.robotframework.javalib.factory.ClassPathKeywordFactory;
@@ -78,7 +80,8 @@ public class ClassPathLibrary extends KeywordFactoryBasedLibrary<Keyword> {
     /**
      * Sets a new pattern. See class description for details. Must
      * be set before Robot calls
-     * {@link RobotFrameworkDynamicAPI#runKeyword(String, Object[])} or
+     * {@link RobotFrameworkDynamicAPI#runKeyword(String, List, Map)},
+     * {@link RobotFrameworkDynamicAPI#runKeyword(String, List)} or
      * {@link RobotFrameworkDynamicAPI#getKeywordNames()}.
      *
      * @param pattern new pattern

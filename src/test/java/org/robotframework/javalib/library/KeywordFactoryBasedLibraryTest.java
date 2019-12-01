@@ -1,101 +1,101 @@
 package org.robotframework.javalib.library;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.Keyword;
-import org.robotframework.javalib.library.KeywordFactoryBasedLibrary;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 
-public class KeywordFactoryBasedLibraryTest extends MockObjectTestCase {
-    private KeywordFactoryBasedLibrary<Keyword> library;
-    private Mock mockKeywordFactory;
-    private Mock mockKeyword;
-    private String keywordName = "Keyword Name";;
+public class KeywordFactoryBasedLibraryTest {
+    private static KeywordFactoryBasedLibrary<Keyword> library;
+    private static KeywordFactory keywordFactorySpy;
+    private static Keyword keywordSpy;
+    private static String keywordName = "Keyword Name";;
 
-    protected void setUp() throws Exception {
-        mockKeyword = mock(Keyword.class);
-        mockKeywordFactory = mock(KeywordFactory.class);
-
-        mockKeywordFactory.stubs().method("createKeyword")
-            .with(eq(keywordName))
-            .will(returnValue(mockKeyword.proxy()));
+    @BeforeAll
+    public static void setUp() {
+        keywordSpy = spy(Keyword.class);
+        keywordFactorySpy = spy(KeywordFactory.class);
+        when(keywordFactorySpy.createKeyword(keywordName)).thenReturn(keywordSpy);
 
         library = new KeywordFactoryBasedLibrary<Keyword>() {
             protected KeywordFactory createKeywordFactory() {
-                return (KeywordFactory) mockKeywordFactory.proxy();
+                return keywordFactorySpy;
             }
         };
     }
 
+    @Test
     public void testUsesKeywordFactoryToCreateInstanceOfKeyword() throws Exception {
-        mockKeyword.stubs().method("execute");
+        when(keywordSpy.execute(any(), any())).thenReturn(null);
+        when(keywordFactorySpy.createKeyword(keywordName)).thenReturn(keywordSpy);
 
-        mockKeywordFactory.reset();
-        mockKeywordFactory.expects(once()).method("createKeyword")
-            .with(eq(keywordName))
-            .will(returnValue(mockKeyword.proxy()));
         library.runKeyword(keywordName, null);
     }
 
+    @Test
     public void testGetsKeywordNamesFromFactory() throws Exception {
-        mockKeywordFactory.expects(once()).method("getKeywordNames")
-            .will(returnValue(new String[0]));
-
+        when(keywordFactorySpy.getKeywordNames()).thenReturn(new ArrayList());
         library.getKeywordNames();
     }
 
+    @Test
     public void testExecutesKeyword() throws Exception {
-        List args = Arrays.asList();
-        mockKeyword.stubs().method("execute")
-            .with(eq(args));
-
+        List args = Arrays.asList(new Object[0]);
+        when(keywordSpy.execute(args, null)).thenReturn(any());
         library.runKeyword(keywordName, args);
     }
 
+    @Test
     public void testExecutionPassesKeywordReturnValue() throws Exception {
         String keywordReturnValue = "Return Value";
-        mockKeyword.stubs().method("execute")
-            .will(returnValue(keywordReturnValue));
-
+        when(keywordSpy.execute(null, null)).thenReturn(keywordReturnValue);
         assertEquals(keywordReturnValue, library.runKeyword(keywordName, null));
     }
 
+    @Test
     public void testRunningAKeywordCreatesKeywordFactory() throws Exception {
-        MockKeywordFactoryBasedLibrary mockKeywordFactoryBasedLibrary = new MockKeywordFactoryBasedLibrary();
-        mockKeywordFactoryBasedLibrary.runKeyword(null, null);
-        assertTrue(mockKeywordFactoryBasedLibrary.keywordFactoryWasCreated);
+        keywordFactorySpyBasedLibrary keywordFactorySpyBasedLibrary = new keywordFactorySpyBasedLibrary();
+        keywordFactorySpyBasedLibrary.runKeyword(null, null);
+        assertTrue(keywordFactorySpyBasedLibrary.keywordFactoryWasCreated);
     }
 
+    @Test
     public void testGettingKeywordNamesCreatesKeywordFactory() throws Exception {
-        MockKeywordFactoryBasedLibrary mockKeywordFactoryBasedLibrary = new MockKeywordFactoryBasedLibrary();
-        mockKeywordFactoryBasedLibrary.getKeywordNames();
-        assertTrue(mockKeywordFactoryBasedLibrary.keywordFactoryWasCreated);
+        keywordFactorySpyBasedLibrary keywordFactorySpyBasedLibrary = new keywordFactorySpyBasedLibrary();
+        keywordFactorySpyBasedLibrary.getKeywordNames();
+        assertTrue(keywordFactorySpyBasedLibrary.keywordFactoryWasCreated);
     }
 
+    @Test
     public void testKeywordFactoryIsOnlyCreatedOnce() throws Exception {
-        MockKeywordFactoryBasedLibrary mockKeywordFactoryBasedLibrary = new MockKeywordFactoryBasedLibrary();
-        mockKeywordFactoryBasedLibrary.getKeywordNames();
-        assertTrue(mockKeywordFactoryBasedLibrary.keywordFactoryWasCreated);
+        keywordFactorySpyBasedLibrary keywordFactorySpyBasedLibrary = new keywordFactorySpyBasedLibrary();
+        keywordFactorySpyBasedLibrary.getKeywordNames();
+        assertTrue(keywordFactorySpyBasedLibrary.keywordFactoryWasCreated);
 
-        mockKeywordFactoryBasedLibrary.keywordFactoryWasCreated = false;
-        mockKeywordFactoryBasedLibrary.getKeywordNames();
-        assertFalse(mockKeywordFactoryBasedLibrary.keywordFactoryWasCreated);
+        keywordFactorySpyBasedLibrary.keywordFactoryWasCreated = false;
+        keywordFactorySpyBasedLibrary.getKeywordNames();
+        assertFalse(keywordFactorySpyBasedLibrary.keywordFactoryWasCreated);
 
-        mockKeywordFactoryBasedLibrary.keywordFactoryWasCreated = false;
-        mockKeywordFactoryBasedLibrary.runKeyword(null, null);
-        assertFalse(mockKeywordFactoryBasedLibrary.keywordFactoryWasCreated);
+        keywordFactorySpyBasedLibrary.keywordFactoryWasCreated = false;
+        keywordFactorySpyBasedLibrary.runKeyword(null, null);
+        assertFalse(keywordFactorySpyBasedLibrary.keywordFactoryWasCreated);
     }
 
+    @Test
     public void testDefaultClassLoaderIsThreadContextClassLoader() throws Exception {
         assertEquals(Thread.currentThread().getContextClassLoader(), library.getClassLoader());
     }
 
-    private class MockKeywordFactoryBasedLibrary extends KeywordFactoryBasedLibrary<Keyword> {
+    private class keywordFactorySpyBasedLibrary extends KeywordFactoryBasedLibrary<Keyword> {
         boolean keywordFactoryWasCreated;
 
         protected KeywordFactory<Keyword> createKeywordFactory() {
@@ -106,11 +106,17 @@ public class KeywordFactoryBasedLibraryTest extends MockObjectTestCase {
                         public Object execute(List arguments, Map kwargs) {
                             return null;
                         }
+
+                        @Override
+                        public List<String> getArgumentTypes() {
+                            // TODO Auto-generated method stub
+                            return null;
+                        }
                     };
                 }
 
                 public List getKeywordNames() {
-                    return Arrays.asList();
+                    return new ArrayList();
                 }
             };
         }

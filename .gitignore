@@ -11,5 +11,6 @@
 .project
 
 /.DS_Store
-target
-target with spaces
+/target with spaces
+/target
+*.class

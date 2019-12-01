@@ -9,4 +9,10 @@ public class SpringKeyword implements Keyword {
     public Object execute(List args, Map kwargs) {
         return "Spring Keyword";
     }
+
+    @Override
+    public List<String> getArgumentTypes() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

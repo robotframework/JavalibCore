@@ -1,5 +1,6 @@
 package org.robotframework.javalib.reflection;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class ArgumentCollector implements IArgumentCollector {
                 boolean kwarg = parameterName.contains("**");
                 parameterName = parameterName.replace("*", "").replace("*", "");
                 Object value = this.getParameterValue(parameterName, i, args, cleanedKwargs);
-                Class<?> argumentType = parameterTypes.length > i && !vararg ? parameterTypes[i] : String.class;
+                Class<?> argumentType = parameterTypes.length > i && !vararg ? parameterTypes[i] : Object.class;
                 if (!kwarg) {
                     if (vararg) {
                         if (value != null) {
@@ -83,8 +84,14 @@ public class ArgumentCollector implements IArgumentCollector {
     }
 
     private Object ensureCorrectVarargsType(List varargs) {
-        if (parameterTypes != null && parameterTypes.length > 0 && parameterTypes[parameterTypes.length-1].isArray() || (parameterTypes.length > 1 && parameterTypes[parameterTypes.length-2].isArray())) {
-            return varargs.toArray(new String[0]);
+        int varargIndex = this.getVarargsIndex();
+        if (parameterTypes != null && varargIndex > -1 && parameterTypes[varargIndex].isArray()) {
+            Class<?> arrayClass = parameterTypes[varargIndex].getComponentType();
+            Object[] varargsArray = (Object[]) Array.newInstance(arrayClass, varargs.size());
+            for (int i = 0; i < varargs.size(); i++) {
+                varargsArray[i] = varargs.get(i);
+            }
+            return varargsArray;
         } else {
             return varargs;
         }

@@ -35,4 +35,30 @@ public class ArgumentCollectorTest {
         assertTrue(collectedArgs.size() == 3);
         assertTrue(collectedArgs.get(2) instanceof Map);
     }
+
+    @Test
+    void varargsTypeInt() {
+        List providedArguments = Arrays.asList("arg", "*varargs");
+        Class<?>[] argumentTypes = new Class[] { String.class, Integer[].class};
+        IArgumentCollector collector = new ArgumentCollector(argumentTypes, providedArguments);
+        List<Integer> args = Arrays.asList(2, 3, 4);
+        List collectedArgs = collector.collectArguments(args, null);
+        assertEquals(2, collectedArgs.size());
+        assertTrue(collectedArgs.get(1).getClass().isArray());
+        assertEquals(((Integer[])collectedArgs.get(1))[0].getClass(), Integer.class);
+        assertEquals(((Integer[])collectedArgs.get(1))[1].getClass(), Integer.class);
+    }
+
+    @Test
+    void varargsTypeString() {
+        List providedArguments = Arrays.asList("arg", "*varargs");
+        Class<?>[] argumentTypes = new Class[] { String.class, String[].class};
+        IArgumentCollector collector = new ArgumentCollector(argumentTypes, providedArguments);
+        List<String> args = Arrays.asList("2", "3", "4");
+        List collectedArgs = collector.collectArguments(args, null);
+        assertEquals(2, collectedArgs.size());
+        assertTrue(collectedArgs.get(1).getClass().isArray());
+        assertEquals(String.class, ((Object[])collectedArgs.get(1))[0].getClass());
+        assertEquals(String.class, ((Object[])collectedArgs.get(1))[1].getClass());
+    }
 }

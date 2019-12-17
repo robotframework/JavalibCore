@@ -1,24 +1,30 @@
 package org.robotframework.javalib.reflection;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
-import org.jmock.MockObjectTestCase;
+import org.junit.jupiter.api.Test;
 import org.robotframework.javalib.keyword.AnnotatedKeywords;
-import org.robotframework.javalib.util.ArrayUtil;
+
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 
-public class KeywordInvokerIntegrationTest extends MockObjectTestCase {
+public class KeywordInvokerIntegrationTest {
+
+    @Test
     public void testReturnsParameterNames() throws Exception {
-        String[] expectedParameterNames = new String [] { "arg" };
-        ArrayUtil.assertArraysEquals(expectedParameterNames, getParameterNamesFromMethod("keywordThatReturnsItsArguments"));
+        List expectedParameterNames = Arrays.asList("arg" );
+        assertIterableEquals(expectedParameterNames, getParameterNamesFromMethod("keywordThatReturnsItsArguments"));
     }
 
+    @Test
     public void testFindsKeywordArgumentsWithKeywordArgumentsAnnotation() throws Exception {
-        String[] expectedParameterNames = new String [] { "overridenArgumentName" };
-        ArrayUtil.assertArraysEquals(expectedParameterNames, getParameterNamesFromMethod("someKeyword"));
+        List expectedParameterNames = Arrays.asList("overridenArgumentName" );
+        assertIterableEquals(expectedParameterNames, getParameterNamesFromMethod("someKeyword"));
     }
 
-    private String[] getParameterNamesFromMethod(String string) throws NoSuchMethodException {
+    private List getParameterNamesFromMethod(String string) throws NoSuchMethodException {
         IKeywordInvoker keywordInvoker = createKeywordInvoker(string);
         return keywordInvoker.getParameterNames();
     }

@@ -17,51 +17,42 @@
 
 package org.robotframework.javalib.reflection;
 
-import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
-import org.jmock.Mock;
-import org.robotframework.javalib.util.ArrayUtil;
+import org.junit.jupiter.api.Test;
 
-public class KeywordInvokerGroupingArgumentsTest extends KeywordInvokerTestCase {
-    private Mock argumentGrouper;
-    
-    protected void setUp() throws Exception {
-        argumentGrouper = mock(IArgumentGrouper.class);
-    }
-    
-    public void testGroupsRestOfTheArgumentsIfProvidedArgumentCountIsGreaterThanActualArgumentCount() throws Exception {
-        Object[] providedArguments = new Object[] { "arg1", "arg2", "arg3" };
-        Object[] groupedArguments = new Object[] { "arg1", new String[] { "arg2", "arg3" }};
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.mockito.Mockito.*;
 
-        argumentGrouper.expects(once()).method("groupArguments")
-            .with(same(providedArguments))
-            .will(returnValue(groupedArguments));
-        
-        IKeywordInvoker invoker = createKeywordInvokerWithMockArgumentGrouper("someMethod");
+public class KeywordInvokerGroupingArgumentsTest {
+    private static TestKeywordInvoker testKeywordInvoker = new TestKeywordInvoker();
 
-        invoker.invoke(providedArguments);
-        ArrayUtil.assertArraysEquals((Object[]) groupedArguments[1], restOfArgs);
-    }
-    
-    public void testProvidesEmptyArgumentIfNoArgumentsProvided() throws Exception {
-        Object[] providedArguments = new Object[0];
-        Object[] emptyArgument = new Object[] { new String[0] };
+    @Test
+    public void testGroupsRestOfTheArgumentsIfProvidedArgumentCountIsGreaterThanActualArgumentCount() {
+        List providedArguments = Arrays.asList("arg1", "arg2", "arg3");
+        List groupedArguments = Arrays.asList("arg1", new String[] { "arg2", "arg3" });
 
-        argumentGrouper.expects(once()).method("groupArguments")
-            .with(same(providedArguments))
-            .will(returnValue(emptyArgument));
+        KeywordInvoker spyInvoker = spy(new KeywordInvoker(testKeywordInvoker, testKeywordInvoker.getMethod("someMethod")));
+        ArgumentCollector spyCollector = spy(new ArgumentCollector(null, null));
+        when(spyCollector.collectArguments(providedArguments, null)).thenReturn(groupedArguments);
+        when(spyInvoker.createArgumentCollector()).thenReturn(spyCollector);
 
-        IKeywordInvoker invoker = createKeywordInvokerWithMockArgumentGrouper("keywordWithVariableArgCount");
-
-        invoker.invoke(providedArguments);
+        spyInvoker.invoke(providedArguments, null);
+        assertIterableEquals(Arrays.asList((Object[]) groupedArguments.get(1)), Arrays.asList(testKeywordInvoker.restOfArgs));
     }
 
-    private IKeywordInvoker createKeywordInvokerWithMockArgumentGrouper(String methodName) {
-        Method method = getMethod(methodName);
-        return new KeywordInvoker(this, method) {
-            IArgumentGrouper createArgumentGrouper() {
-                return (IArgumentGrouper) argumentGrouper.proxy();
-            }
-        };
+    @Test
+    public void testProvidesEmptyArgumentIfNoArgumentsProvided() {
+        List providedArguments = Arrays.asList();
+        List groupedArguments = Arrays.asList(new String[1]);
+
+        KeywordInvoker spyInvoker = spy(new KeywordInvoker(testKeywordInvoker, testKeywordInvoker.getMethod("keywordWithVariableArgCount")));
+        ArgumentCollector spyCollector = spy(new ArgumentCollector(null, null));
+        when(spyCollector.collectArguments(providedArguments, null)).thenReturn(groupedArguments);
+        when(spyInvoker.createArgumentCollector()).thenReturn(spyCollector);
+
+        spyInvoker.invoke(providedArguments, null);
     }
+
 }

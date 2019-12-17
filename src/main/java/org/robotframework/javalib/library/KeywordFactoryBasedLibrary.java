@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,9 @@
 
 package org.robotframework.javalib.library;
 
+import java.util.List;
+import java.util.Map;
+
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.Keyword;
 
@@ -25,24 +28,32 @@ import org.robotframework.javalib.keyword.Keyword;
  * keyword. Subclasses must implement factory method
  * {@link #createKeywordFactory()}.
  */
-public abstract class KeywordFactoryBasedLibrary<T extends Keyword> implements RobotJavaLibrary {
+public abstract class KeywordFactoryBasedLibrary<T extends Keyword> implements RobotFrameworkDynamicAPI {
     private KeywordFactory<T> keywordFactory;
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
     /**
-     * @see RobotJavaLibrary#runKeyword(String, Object[])
+     * @see RobotFrameworkDynamicAPI#runKeyword(String, List, Map)
      */
-    public Object runKeyword(String keywordName, Object[] args) {
+    public Object runKeyword(String keywordName, List args, Map kwargs) {
         Keyword keyword = getKeywordFactory().createKeyword(keywordName);
-        return keyword.execute(args);
+        return keyword.execute(args, kwargs);
+    }
+
+    public Object runKeyword(String keywordName, List args) {
+        return this.runKeyword(keywordName, args, null);
     }
 
     /**
-     * @see RobotJavaLibrary#getKeywordNames()
+     * @see RobotFrameworkDynamicAPI#getKeywordNames()
      */
-    public String[] getKeywordNames() {
+    public List<String> getKeywordNames() {
         return getKeywordFactory().getKeywordNames();
     }
+
+//    public List<String> getKeywordTypes(String keywordName) {
+//        return createKeywordFactory().createKeyword(keywordName).getArgumentTypes();
+//    }
 
     /**
      * Gets the classloader. Simply a property that the subclasses can use
@@ -68,7 +79,8 @@ public abstract class KeywordFactoryBasedLibrary<T extends Keyword> implements R
     /**
      * Creates a keyword factory. Must be implemented by subclasses.
      * The keyword factory is created lazily, when either
-     * {@link #getKeywordNames()} or {@link #runKeyword(String, Object[])}
+     * {@link #getKeywordNames()}, {@link #runKeyword(String, List)} 
+     * or {@link #runKeyword(String, List, Map)}
      * is called for the first time.
      *
      * @return keyword factory

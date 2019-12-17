@@ -1,24 +1,22 @@
 package org.robotframework.javalib.beans.classpath;
 
-import org.robotframework.javalib.beans.classpath.InterfaceBasedKeywordFilter;
+import org.junit.jupiter.api.Test;
 import org.robotframework.javalib.beans.common.IClassFilter;
 import org.robotframework.javalib.keyword.EmptyKeyword;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+public class InterfaceBasedKeywordFilterTest {
+    private IClassFilter keywordFilter = new InterfaceBasedKeywordFilter();;
 
-public class InterfaceBasedKeywordFilterTest extends TestCase {
-    private IClassFilter keywordFilter;
-
-    protected void setUp() throws Exception {
-        keywordFilter = new InterfaceBasedKeywordFilter();
-    }
-
-    public void testIgnoresClassesThatAreNotKeywords() throws Exception {
+    @Test
+    public void testIgnoresClassesThatAreNotKeywords() {
         assertFalse(keywordFilter.accept(Object.class));
     }
 
-    public void testIdentifiesKeywordClass() throws Exception {
+    @Test
+    public void testIdentifiesKeywordClass() {
         assertTrue(keywordFilter.accept(EmptyKeyword.class));
     }
 }

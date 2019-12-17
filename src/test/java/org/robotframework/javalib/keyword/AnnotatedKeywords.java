@@ -1,7 +1,9 @@
 package org.robotframework.javalib.keyword;
 
-import junit.framework.AssertionFailedError;
+import java.util.List;
+import java.util.Map;
 
+import org.opentest4j.AssertionFailedError;
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.annotation.RobotKeywordOverload;
@@ -47,6 +49,21 @@ public class AnnotatedKeywords {
     @RobotKeyword("This is a keyword with variable argument count")
     public Object[] keywordWithVariableArgumentCount(String someArgument, String... restOfTheArguments) {
         return restOfTheArguments;
+    }
+
+    @RobotKeyword
+    public void variousArgs(String arg, List<String> varargs, Map<String, Object> kwargs) {
+        System.out.println("arg: " + arg);
+        for (String varg: varargs)
+            System.out.println("vararg: " + varg);
+        for (String key: kwargs.keySet())
+            System.out.println("kwarg: " + key + " " + kwargs.get(key));
+    }
+
+    @RobotKeyword
+    @ArgumentNames({ "firstArg", "secondArg=two", "thirdArg=three" })
+    public String defaultValues(String first, String second, String third) {
+        return String.format("%s %s %s", first, second, third);
     }
 
     @RobotKeyword("This is a keyword with numeric arguments. The keyword will fail unless all are 42.")

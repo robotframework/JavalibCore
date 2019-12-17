@@ -4,7 +4,7 @@ Library    org.robotframework.javalib.library.AnnotationLibrary    org/robotfram
 
 *** Test Cases ***
 ClassPathLibrary Example
-     Interface Based Keyword				
-					
+     Interface Based Keyword
+
 AnnotationLibrary Example
      Annotation Based Keyword

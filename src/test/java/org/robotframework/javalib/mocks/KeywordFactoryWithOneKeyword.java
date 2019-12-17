@@ -1,5 +1,8 @@
 package org.robotframework.javalib.mocks;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.Keyword;
 
@@ -15,7 +18,7 @@ public class KeywordFactoryWithOneKeyword implements KeywordFactory {
         this.keywordName = keywordname;
         this.keywordInstance = keyword;
     }
-    
+
     public Keyword createKeyword(String keywordName) {
         keywordCreated = true;
         createKeywordArgument = keywordName;
@@ -26,8 +29,8 @@ public class KeywordFactoryWithOneKeyword implements KeywordFactory {
         }
     }
 
-    public String[] getKeywordNames() {
+    public List getKeywordNames() {
         keywordNamesRetrieved = true;
-        return new String[] { keywordName };
+        return Arrays.asList(keywordName);
     }
 }

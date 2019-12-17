@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,11 +21,11 @@ import org.robotframework.javalib.beans.common.BasicKeywordFilter.Condition;
 import org.robotframework.javalib.keyword.Keyword;
 
 /**
- * A filter that only accepts classes that<br/>
- *     - implement the {@link Keyword} interface<br/>
- *  - are public<br/>
- *  - are not abstract<br/>
- *  - have a default constructor<br/>
+ * A filter that only accepts classes that<br>
+ *     - implement the {@link Keyword} interface<br>
+ *  - are public<br>
+ *  - are not abstract<br>
+ *  - have a default constructor<br>
  */
 public class InterfaceBasedKeywordFilter extends BasicKeywordFilter {
     public InterfaceBasedKeywordFilter() {

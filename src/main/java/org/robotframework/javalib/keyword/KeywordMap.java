@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,13 +16,15 @@
 
 package org.robotframework.javalib.keyword;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.functors.NotNullPredicate;
-import org.apache.commons.collections.functors.TruePredicate;
-import org.apache.commons.collections.functors.UniquePredicate;
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.collections.map.PredicatedMap;
+import org.apache.commons.collections4.functors.NotNullPredicate;
+import org.apache.commons.collections4.functors.TruePredicate;
+import org.apache.commons.collections4.functors.UniquePredicate;
+import org.apache.commons.collections4.map.HashedMap;
+import org.apache.commons.collections4.map.PredicatedMap;
 
 /**
  * A data structure for keywords and related values, such as instances or
@@ -34,35 +36,35 @@ public class KeywordMap {
 
     public KeywordMap() {
         map = new HashedMap();
-        map = PredicatedMap.decorate(map, UniquePredicate.getInstance(), TruePredicate.INSTANCE);
-        map = PredicatedMap.decorate(map, NotNullPredicate.INSTANCE, NotNullPredicate.INSTANCE);
+        map = PredicatedMap.predicatedMap(map, UniquePredicate.uniquePredicate(), TruePredicate.INSTANCE);
+        map = PredicatedMap.predicatedMap(map, NotNullPredicate.INSTANCE, NotNullPredicate.INSTANCE);
     }
 
     /**
      * Adds a keyword to the map. Name will be normalized.
-     * 
+     *
      * @param keywordName name to be added
      * @param value associated value
      */
     public void add(String keywordName, Object value) {
         map.put(normalizeKeywordName(keywordName), value);
     }
-    
+
     /**
      * Gets the value associated with given keyword name. Keyword name
      * is normalized before searching.
-     * 
+     *
      * @param keywordName keyword name
      * @return associated value
      */
     public Object get(String keywordName) {
         return map.get(normalizeKeywordName(keywordName));
     }
-    
+
     /**
      * Normalizes a keyword name. Removes spaces and special characters.
      * Converts all letters to lower case.
-     * 
+     *
      * @param keywordName keyword name
      * @return normalized keyword name
      */
@@ -78,28 +80,28 @@ public class KeywordMap {
         keywordName = keywordName.replaceAll("\n", "");
         return keywordName;
     }
-    
+
     /**
      * Amount of pairs in map
-     * 
+     *
      * @return amount of pairs in map
      */
     public int size() {
         return map.size();
     }
-    
+
     /**
      * Returns the keyword names. Similar to {@link Map#keySet()}.
-     * 
+     *
      * @return array of keyword names
      */
-    public String[] getKeywordNames() {
-        return (String[]) map.keySet().toArray(new String[0]);
+    public List<String> getKeywordNames() {
+        return new ArrayList<String>(map.keySet());
     }
-    
+
     /**
      * Checks whether map contains a pair with given keyword name
-     * 
+     *
      * @param keywordName keyword name
      * @return true if pair exists, false otherwise
      */
@@ -109,7 +111,7 @@ public class KeywordMap {
 
     /**
      * Returns the underlying Map instance.
-     * 
+     *
      * @return underlying predicated HashedMap
      */
     protected Map getUnderlyingMap() {

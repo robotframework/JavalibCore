@@ -106,14 +106,15 @@ public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyw
         }
     }
 
-    public String[] getKeywordArguments(String keywordName) {
-        return createKeywordFactory().createKeyword(keywordName).getArgumentNames();
+    public List<String> getKeywordArguments(String keywordName) {
+        List<String> argumentNames = createKeywordFactory().createKeyword(keywordName).getArgumentNames();
+        return argumentNames;
     }
 
     /**
      * This method should be overridden in the Library implementation including
      * the equals comparison for '__intro__'.
-     * 
+     *
      * Default implementation returns empty String for the '__intro__'.
      */
     public String getKeywordDocumentation(String keywordName) {
@@ -123,7 +124,16 @@ public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyw
     }
 
     @Override
-    public Object runKeyword(String keywordName, Object[] args) {
+    public Object runKeyword(String keywordName, List args, Map kwargs) {
+        try {
+            return super.runKeyword(keywordName, args, kwargs);
+        } catch (RuntimeException e) {
+            throw retrieveInnerException(e);
+        }
+    }
+
+    @Override
+    public Object runKeyword(String keywordName, List args) {
         try {
             return super.runKeyword(keywordName, args);
         } catch (RuntimeException e) {

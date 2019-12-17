@@ -1,27 +1,26 @@
 package org.robotframework.javalib.reflection;
 
-public class KeywordInvokerHandlingInvocationsTest extends KeywordInvokerTestCase {
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class KeywordInvokerHandlingInvocationsTest {
     private KeywordInvoker keywordInvoker;
 
-    protected void setUp() throws Exception {
-        keywordInvoker = new KeywordInvoker(this, getMethod("someMethod"));
-    }
-    
-    public void testInvokesWrappedMethod() throws Exception {
-        Object[] args = new String[] { "someArg", "moreArgs" };
-        assertEquals("someArg", keywordInvoker.invoke(args));
+    @BeforeEach
+    protected void setUp() {
+        keywordInvoker = new KeywordInvoker(this, new TestKeywordInvoker().getMethod("someMethod"));
     }
 
-    public void testThrowsRuntimeExceptionInCaseOfException() throws Exception {
-        try {
-            keywordInvoker.invoke(null);
-            fail();
-        } catch (RuntimeException e) {
-            //Expected
-        }
+    public void testInvokesWrappedMethod() {
+        List args = Arrays.asList("someArg", "moreArgs");
+        assertEquals("someArg", keywordInvoker.invoke(args, null));
     }
 
-    public void testGetsAnnotationValue() throws Exception {
+    public void testGetsAnnotationValue() {
         assertEquals("documentation", keywordInvoker.getDocumentation());
     }
 }

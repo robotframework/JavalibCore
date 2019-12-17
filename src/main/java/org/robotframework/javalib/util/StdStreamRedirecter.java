@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,7 +35,7 @@ public class StdStreamRedirecter {
      * {@link #redirectStdStreams()} must be called before calling this method.
      * After each call to this method, the internal buffer containing STDERR as
      * string is emptied.
-     * 
+     *
      * @return STDERR as string
      */
     public String getStdErrAsString() {
@@ -47,7 +47,7 @@ public class StdStreamRedirecter {
      * {@link #redirectStdStreams()} must be called before calling this method.
      * After each call to this method, the internal buffer containing STDOUT as
      * string is emptied.
-     * 
+     *
      * @return STDOUT as string
      */
     public String getStdOutAsString() {

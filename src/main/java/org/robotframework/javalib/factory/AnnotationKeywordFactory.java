@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,7 +39,7 @@ public class AnnotationKeywordFactory implements KeywordFactory<DocumentedKeywor
 
     public AnnotationKeywordFactory(List<Map> keywordBeansMaps) {
     	for (Map<String, Object> keywordBeansMap : keywordBeansMaps) {
-        	extractKeywordsFromKeywordBeans(keywordBeansMap);			
+        	extractKeywordsFromKeywordBeans(keywordBeansMap);
 		}
     }
 
@@ -48,8 +48,8 @@ public class AnnotationKeywordFactory implements KeywordFactory<DocumentedKeywor
         return keywords.get(normalizedKeywordName);
     }
 
-    public String[] getKeywordNames() {
-        return (String[]) keywordNames.toArray(new String[0]);
+    public List<String> getKeywordNames() {
+        return keywordNames;
     }
 
     protected void extractKeywordsFromKeywordBeans(Map<String, Object> keywordBeansMap) {
@@ -79,7 +79,7 @@ public class AnnotationKeywordFactory implements KeywordFactory<DocumentedKeywor
     		throw new RuntimeException("Two keywords with name '"+ keywordName + "' found!");
         }
     }
-    
+
     private void addKeywordNames(Map<String, DocumentedKeyword> extractedKeywords) {
         keywordNames.addAll(extractedKeywords.keySet());
     }

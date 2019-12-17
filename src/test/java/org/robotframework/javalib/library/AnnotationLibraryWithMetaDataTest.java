@@ -1,21 +1,27 @@
 package org.robotframework.javalib.library;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
-import org.robotframework.javalib.library.AnnotationLibrary;
-import org.robotframework.javalib.util.ArrayUtil;
 
 
-public class AnnotationLibraryWithMetaDataTest extends MockObjectTestCase {
-    private String keywordName = "somekeyword";
-    private String keywordDocumentation = "documentation";
-    private AnnotationLibrary annotationLibrary;
-    private String[] keywordArguments = new String[] { "someArgument" };
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
-    @Override
-    protected void setUp() throws Exception {
+
+public class AnnotationLibraryWithMetaDataTest {
+    private static String keywordName = "somekeyword";
+    private static String keywordDocumentation = "documentation";
+    private static AnnotationLibrary annotationLibrary;
+    private static List keywordArguments = Arrays.asList("someArgument");
+
+    @BeforeAll
+    public static void setUp() {
         final KeywordFactory<DocumentedKeyword> keywordFactory = createKeywordFactory();
         annotationLibrary = new AnnotationLibrary() {
             @Override
@@ -25,26 +31,23 @@ public class AnnotationLibraryWithMetaDataTest extends MockObjectTestCase {
         };
     }
 
-    public void testGetsKeywordDocumentationFromKeywordFactory() throws Exception {
+    @Test
+    public void testGetsKeywordDocumentationFromKeywordFactory() {
         assertEquals(keywordDocumentation, annotationLibrary.getKeywordDocumentation(keywordName));
     }
 
-    public void testGetsKeywordArgumentsFromKeywordFactory() throws Exception {
-        ArrayUtil.assertArraysEquals(keywordArguments, annotationLibrary.getKeywordArguments(keywordName));
+    @Test
+    public void testGetsKeywordArgumentsFromKeywordFactory() {
+        assertIterableEquals(keywordArguments, annotationLibrary.getKeywordArguments(keywordName));
     }
 
-    private KeywordFactory<DocumentedKeyword> createKeywordFactory() {
-        Mock documentedKeyword = mock(DocumentedKeyword.class);
-        documentedKeyword.stubs().method("getDocumentation")
-            .will(returnValue(keywordDocumentation));
-        documentedKeyword.stubs().method("getArgumentNames")
-            .will(returnValue(keywordArguments));
+    private static KeywordFactory<DocumentedKeyword> createKeywordFactory() {
+        DocumentedKeyword documentedKeywordSpy = Mockito.spy(DocumentedKeyword.class);
+        when(documentedKeywordSpy.getArgumentNames()).thenReturn(keywordArguments);
+        when(documentedKeywordSpy.getDocumentation()).thenReturn(keywordDocumentation);
 
-        Mock keywordFactory = mock(KeywordFactory.class);
-        keywordFactory.expects(once()).method("createKeyword")
-            .with(eq(keywordName))
-            .will(returnValue(documentedKeyword.proxy()));
-
-        return (KeywordFactory<DocumentedKeyword>) keywordFactory.proxy();
+        KeywordFactory keywordFactorySpy = Mockito.spy(KeywordFactory.class);
+        when(keywordFactorySpy.createKeyword(keywordName)).thenReturn(documentedKeywordSpy);
+        return keywordFactorySpy;
     }
 }

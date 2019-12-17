@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,9 @@
 
 package org.robotframework.javalib.keyword;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * If a keyword name collision is detected, an instance of this class will
  * be associated with the colliding name. Execution of this keyword will
@@ -28,7 +31,7 @@ public class CollisionKeyword implements Keyword {
 
     /**
      * Creates a collision keyword
-     * 
+     *
      * @param implementingClassName1 name of first class with colliding
      *                               keyword name
      * @param implementingClassName2 name of second class with colliding
@@ -43,10 +46,16 @@ public class CollisionKeyword implements Keyword {
      * Throws a {@link KeywordNameCollisionException} with an error
      * message notifying the user of the collision and classes causing
      * the collision.
-     * 
+     *
      * @throws KeywordNameCollisionException always throws this exception
      */
-    public Object execute(Object[] arguments) {
+    public Object execute(List arguments, Map kwargs) {
         throw new KeywordNameCollisionException("Two keywords with same name not allowed. Alternative implementations available from " + implementingClassName1 + " and " + implementingClassName2 + ".");
+    }
+
+    @Override
+    public List<String> getArgumentTypes() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

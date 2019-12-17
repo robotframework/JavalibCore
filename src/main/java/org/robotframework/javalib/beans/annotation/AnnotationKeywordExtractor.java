@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,7 +17,9 @@
 package org.robotframework.javalib.beans.annotation;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.robotframework.javalib.annotation.RobotKeyword;
@@ -30,6 +32,8 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
     public Map<String, DocumentedKeyword> extractKeywords(final Object keywordBean) {
         Map<String, DocumentedKeyword> extractedKeywords = new HashMap<String, DocumentedKeyword>();
         Method[] methods = keywordBean.getClass().getMethods();
+        // Sorting method list as previous returned order might be incorrect
+        Arrays.sort(methods, (m1, m2) -> -Integer.compare(m1.getParameterCount(), m2.getParameterCount()));
         for (final Method method : methods) {
             if (method.isAnnotationPresent(RobotKeyword.class) || method.isAnnotationPresent(RobotKeywordOverload.class)) {
                 createOrAddKeyword(extractedKeywords, keywordBean, method);
@@ -58,16 +62,20 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
 
     private DocumentedKeyword createKeyword(final IKeywordInvoker keywordInvoker) {
         return new DocumentedKeyword() {
-            public Object execute(Object[] arguments) {
-                return keywordInvoker.invoke(arguments);
+            public Object execute(List arguments, Map kwargs) {
+                return keywordInvoker.invoke(arguments, kwargs);
             }
 
-            public String[] getArgumentNames() {
+            public List<String> getArgumentNames() {
                 return keywordInvoker.getParameterNames();
             }
 
             public String getDocumentation() {
                 return keywordInvoker.getDocumentation();
+            }
+
+            public List<String> getArgumentTypes() {
+                return keywordInvoker.getParameterTypes();
             }
         };
     }
@@ -79,14 +87,14 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
             throw new AssertionError("Method definition should not have both RobotKeyword and RobotKeywordOverload annotations");
         final int parameterTypesLength = method.getParameterTypes().length;
         return new DocumentedKeyword() {
-            public Object execute(Object[] arguments) {
-                if(parameterTypesLength == arguments.length){
-                    return other.execute(arguments);
+            public Object execute(List arguments, Map kwargs) {
+                if(parameterTypesLength == arguments.size()){
+                    return other.execute(arguments, kwargs);
                 }
-                return original.execute(arguments);
+                return original.execute(arguments, kwargs);
             }
 
-            public String[] getArgumentNames() {
+            public List<String> getArgumentNames() {
                 if(isOverload){
                     return original.getArgumentNames();
                 }
@@ -98,6 +106,13 @@ public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedK
                     return original.getDocumentation();
                 }
                 return other.getDocumentation();
+            }
+
+            public List<String> getArgumentTypes() {
+                if(isOverload){
+                    return original.getArgumentTypes();
+                }
+                return other.getArgumentTypes();
             }
         };
     }

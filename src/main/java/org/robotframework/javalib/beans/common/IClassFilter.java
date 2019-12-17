@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Nokia Solutions and Networks Oyj
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,7 +22,7 @@ package org.robotframework.javalib.beans.common;
 public interface IClassFilter {
     /**
      * Checks whether the provided class matches some conditions.
-     * 
+     *
      * @param clazz class to check
      * @return true if it matches, false otherwise
      */

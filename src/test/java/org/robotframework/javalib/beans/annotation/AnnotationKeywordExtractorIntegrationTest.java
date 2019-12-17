@@ -1,50 +1,46 @@
 package org.robotframework.javalib.beans.annotation;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
+import org.junit.jupiter.api.Test;
 import org.robotframework.javalib.keyword.AnnotatedKeywords;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
 import org.robotframework.javalib.keyword.Keyword;
-import org.robotframework.javalib.util.ArrayUtil;
+
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class AnnotationKeywordExtractorIntegrationTest extends TestCase {
+public class AnnotationKeywordExtractorIntegrationTest {
     private IKeywordExtractor<DocumentedKeyword> extractor = new AnnotationKeywordExtractor();
-    private Map<String, DocumentedKeyword> extractedKeywords;
+    private Map<String, DocumentedKeyword> extractedKeywords = extractor.extractKeywords(new AnnotatedKeywords());
 
-    @Override
-    protected void setUp() throws Exception {
-        extractedKeywords = extractor.extractKeywords(new AnnotatedKeywords());
-    }
-
-    public void testReturnsKeywordNamesInCamelCase() throws Exception {
+    @Test
+    public void testReturnsKeywordNamesInCamelCase() {
         assertTrue(extractedKeywords.keySet().contains("someKeyword"));
     }
 
-    public void testExtractsKeywordArguments() throws Exception {
-        DocumentedKeyword keywordThatReturnsItsArguments = (DocumentedKeyword) extractedKeywords.get("keywordThatReturnsItsArguments");
-        DocumentedKeyword someKeyword = (DocumentedKeyword) extractedKeywords.get("someKeyword");
-        assertArraysEquals(new String[] { "arg" }, keywordThatReturnsItsArguments.getArgumentNames());
-        assertArraysEquals(new String[] { "overridenArgumentName" }, someKeyword.getArgumentNames());
+    @Test
+    public void testExtractsKeywordArguments() {
+        DocumentedKeyword keywordThatReturnsItsArguments = extractedKeywords.get("keywordThatReturnsItsArguments");
+        DocumentedKeyword someKeyword =extractedKeywords.get("someKeyword");
+        assertIterableEquals(Arrays.asList("arg"), keywordThatReturnsItsArguments.getArgumentNames());
+        assertIterableEquals(Arrays.asList("overridenArgumentName"), someKeyword.getArgumentNames());
     }
 
-    public void testExtractsKeywordsThatHandleVariableArgumentCount() throws Exception {
-        Keyword keyword = (Keyword) extractedKeywords.get("keywordWithVariableArgumentCount");
+    @Test
+    public void testExtractsKeywordsThatHandleVariableArgumentCount() {
+        Keyword keyword = extractedKeywords.get("keywordWithVariableArgumentCount");
 
-        assertLeftoverArgumentsAreCorrectlyGrouped(keyword, new String[] { "arg1", "arg2", "arg3", "arg4" });
-        assertLeftoverArgumentsAreCorrectlyGrouped(keyword, new String[] { "arg1", "arg2", "arg3" });
-        assertLeftoverArgumentsAreCorrectlyGrouped(keyword, new String[] { "arg1" });
+        assertLeftoverArgumentsAreCorrectlyGrouped(keyword, Arrays.asList("arg1", "arg2", "arg3", "arg4"));
+        assertLeftoverArgumentsAreCorrectlyGrouped(keyword, Arrays.asList( "arg1", "arg2", "arg3"));
+        assertLeftoverArgumentsAreCorrectlyGrouped(keyword, Arrays.asList( "arg1" ));
     }
 
-    private void assertArraysEquals(String[] expected, String[] actual) {
-        assertTrue(Arrays.equals(expected, actual));
-    }
-    
-    private void assertLeftoverArgumentsAreCorrectlyGrouped(Keyword keyword, String[] arguments) {
-        Object[] expected = ArrayUtil.copyOfRange(arguments, 1, arguments.length);
-        ArrayUtil.assertArraysEquals(expected, (Object[]) keyword.execute(arguments));
+    private void assertLeftoverArgumentsAreCorrectlyGrouped(Keyword keyword, List arguments) {
+        List expected = arguments.subList(1, arguments.size());
+        assertIterableEquals(expected, Arrays.asList((Object[])keyword.execute(arguments, null)));
     }
 }

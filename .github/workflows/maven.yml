@@ -11,9 +11,9 @@ jobs:
         java: [ 8, 11 ]
     name: Test with Java ${{ matrix.java }}
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up JDK ${{ matrix.java }}
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v1.2.0
       with:
         java-version: ${{ matrix.java }}
     - name: Build with Maven
@@ -24,15 +24,16 @@ jobs:
     runs-on: ubuntu-latest
     name: Release package
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up JDK
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v1.2.0
       with:
         java-version: 8
     - name: Release Maven package
-      uses: samuelmeuli/action-maven-publish@v1
+      uses: samuelmeuli/action-maven-publish@1221d1fa792cab948a772c5e7c1f3abe84aec3bf
       with:
         gpg_private_key: ${{ secrets.gpg_private_key }}
         gpg_passphrase: ${{ secrets.gpg_passphrase }}
         nexus_username: ${{ secrets.nexus_username }}
         nexus_password: ${{ secrets.nexus_password }}
+        maven_args: -DskipTests

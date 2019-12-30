@@ -79,13 +79,14 @@ public class KeywordInvoker implements IKeywordInvoker {
             // Marking varargs and kwargs correctly for RF
             if (method.getParameterCount() > 0) {
                 int lastParameterIndex = method.getParameterCount() - 1;
-                if (method.getParameters()[lastParameterIndex].getType().equals(List.class)
-                        || method.getParameters()[lastParameterIndex].getType().isArray()) {
+                Class lastParameterType = method.getParameters()[lastParameterIndex].getType();
+                if (lastParameterType.equals(List.class)
+                        || (lastParameterType.isArray() && lastParameterType != byte[].class)) {
                     parameterNameList.set(lastParameterIndex, "*" + parameterNameList.get(lastParameterIndex));
                 } else if (method.getParameters()[lastParameterIndex].getType().equals(Map.class)) {
                     if (lastParameterIndex > 1
                             && (method.getParameters()[lastParameterIndex - 1].getType().equals(List.class)
-                            || method.getParameters()[lastParameterIndex - 1].getType().isArray())) {
+                            || (method.getParameters()[lastParameterIndex - 1].getType().isArray() && method.getParameters()[lastParameterIndex - 1].getType() != byte[].class))) {
                         parameterNameList.set(lastParameterIndex - 1, "*" + parameterNameList.get(lastParameterIndex - 1));
                     }
                     parameterNameList.set(lastParameterIndex, "**" + parameterNameList.get(lastParameterIndex));

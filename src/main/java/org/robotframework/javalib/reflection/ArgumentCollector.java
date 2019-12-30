@@ -64,10 +64,11 @@ public class ArgumentCollector implements IArgumentCollector {
     }
 
     private int getVarargsIndex() {
-        if (parameterNames.size() > 0 && parameterNames.get(parameterNames.size()-1).startsWith("*") && !parameterNames.get(parameterNames.size()-1).startsWith("**")) {
-            return parameterNames.size()-1;
-        } else if (parameterNames.size() > 0 && parameterNames.get(parameterNames.size()-1).startsWith("*") && !parameterNames.get(parameterNames.size()-1).startsWith("**")) {
-            return parameterNames.size()-2;
+        int parameterSize = parameterNames != null ? parameterNames.size(): -1;
+        if (parameterSize > 0 && parameterNames.get(parameterSize-1).startsWith("*") && !parameterNames.get(parameterSize-1).startsWith("**")) {
+            return parameterSize-1;
+        } else if (parameterSize > 1 && parameterNames.get(parameterSize-2).startsWith("*") && !parameterNames.get(parameterSize-2).startsWith("**")) {
+            return parameterSize-2;
         } else {
             return -1;
         }
@@ -98,8 +99,9 @@ public class ArgumentCollector implements IArgumentCollector {
     }
 
     private boolean keywordHasVarargs() {
-        return parameterTypes != null && parameterTypes.length > 0 &&
-                (parameterTypes[parameterTypes.length-1] == List.class || parameterTypes[parameterTypes.length-1].isArray() ||
+        int varargIndex = this.getVarargsIndex();
+        return varargIndex > -1 && parameterTypes != null && parameterTypes.length > 0 &&
+                (parameterTypes[parameterTypes.length-1] == List.class || parameterTypes[parameterTypes.length-varargIndex].isArray() ||
                         (parameterTypes.length > 1 && (parameterTypes[parameterTypes.length-2] == List.class || parameterTypes[parameterTypes.length-2].isArray())));
     }
 

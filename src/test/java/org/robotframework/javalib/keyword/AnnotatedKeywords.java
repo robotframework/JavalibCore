@@ -86,6 +86,14 @@ public class AnnotatedKeywords {
             throw new AssertionFailedError("Argument was null.");
     }
 
+    @RobotKeyword("Handle byteArray")
+    public byte[] byteArrayTest(String expectedContent, byte[] bytesIn) {
+        if (!expectedContent.equals(new String(bytesIn))) {
+            throw new AssertionFailedError("Arguments were not same");
+        }
+        return expectedContent.getBytes();
+    }
+
     public interface SomeInterface {
     }
 

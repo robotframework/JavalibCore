@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AnnotationLibraryIntegrationTest {
     private static AnnotationLibrary annotationLibrary;
     private String keywordThatReturnsItsArguments = "keywordThatReturnsItsArguments";
+    private String byteArrayTest = "byteArrayTest";
 
     @BeforeAll
     public static void setUp() {
@@ -21,7 +22,7 @@ public class AnnotationLibraryIntegrationTest {
         List keywordNames = annotationLibrary.getKeywordNames();
         List expectedKeywordNames = Arrays.asList("failingKeyword", "someKeyword", "overloaded",
                 keywordThatReturnsItsArguments, "keywordWithVariableArgumentCount", "variousArgs", "defaultValues",
-                "keywordWithObjectArgument", "getSomeObject", "keywordWithNumericArguments");
+                "keywordWithObjectArgument", "getSomeObject", "keywordWithNumericArguments", byteArrayTest );
         keywordNames.sort(Comparator.naturalOrder());
         expectedKeywordNames.sort(Comparator.naturalOrder());
         assertIterableEquals(keywordNames, expectedKeywordNames);
@@ -77,5 +78,18 @@ public class AnnotationLibraryIntegrationTest {
         } catch (RuntimeException e) {
            assertEquals("Assertion failed", e.getMessage());
         }
+    }
+
+    @Test
+    public void testByteArrayHandling() {
+        String testString = "testString";
+        annotationLibrary.runKeyword(byteArrayTest, Arrays.asList(testString, testString.getBytes()));
+    }
+
+    @Test
+    public void testByteArrayHandlingResponse() {
+        String testString = "testString";
+        Object response = annotationLibrary.runKeyword(byteArrayTest, Arrays.asList(testString, testString.getBytes()));
+        assertEquals(testString, new String((byte[]) response));
     }
 }

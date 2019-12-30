@@ -29,7 +29,7 @@ public class AnnotationLibraryMultipleKeywordsWithSameNameIntegrationTest {
         List expectedKeywordNames = Arrays.asList("failingKeyword", "someKeyword", "overloaded",
         		keywordThatReturnsItsArguments, "keywordWithVariableArgumentCount", "variousArgs", "defaultValues",
                 "keywordWithObjectArgument", "getSomeObject", "keywordWithNumericArguments",
-        		"myFailingKeyword", "myKeywordThatReturnsItsArguments");
+        		"myFailingKeyword", "myKeywordThatReturnsItsArguments", "byteArrayTest");
         keywordNames.sort(Comparator.naturalOrder());
         expectedKeywordNames.sort(Comparator.naturalOrder());
         assertIterableEquals(keywordNames, expectedKeywordNames);

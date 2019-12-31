@@ -3,6 +3,7 @@ package org.robotframework.javalib.keyword;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Assertions;
 import org.opentest4j.AssertionFailedError;
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
@@ -102,4 +103,27 @@ public class AnnotatedKeywords {
         public String value;
     }
 
+    @RobotKeyword
+    @ArgumentNames({"*Technical arguments"})
+    public String[] onlyVarargs(String[] arguments) {
+        return arguments;
+    }
+
+    @RobotKeyword
+    @ArgumentNames({"Image or text to wait", "Similarity of images=0.7", "*Technical arguments"})
+    public void defaultAndVarargs(String imageNameOrText, double similarity, String[] arguments) {
+        Assertions.assertEquals(0.7, similarity);
+    }
+
+    @RobotKeyword
+    @ArgumentNames({"port=0"})
+    public int useInt(int port) {
+        return port;
+    }
+
+    @RobotKeyword
+    @ArgumentNames({"port=0"})
+    public Integer useInteger(Integer port) {
+        return port;
+    }
 }

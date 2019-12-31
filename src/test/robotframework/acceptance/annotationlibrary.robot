@@ -49,3 +49,9 @@ Positional and kwargs
 Named and kwargs
     Various Args    arg=value      hello=world    # Logs 'arg: value' and 'kwarg: hello world'.
     Various Args    hello=world    arg=value      # Same as above. Order does not matter.
+
+Only varargs
+    Only varargs    testThing
+
+Default and varargs
+    Default and varargs    Non-default

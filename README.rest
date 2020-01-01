@@ -9,8 +9,8 @@ https://github.com/robotframework/JavalibCore/wiki
 
 Project jar can be downloaded directly from the `Maven Repository`__
 
-__ http://search.maven.org/remotecontent?filepath=org/robotframework/javalib-core/2.0.1/javalib-core-2.0.1.jar
+__ http://search.maven.org/remotecontent?filepath=org/robotframework/javalib-core/2.0.2/javalib-core-2.0.2.jar
 
-The project was orginally hosted at `Google Code`__
+The project was originally hosted at `Google Code`__
 
 __ http://code.google.com/p/robotframework-javalibcore/

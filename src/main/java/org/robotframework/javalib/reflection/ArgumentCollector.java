@@ -75,7 +75,7 @@ public class ArgumentCollector implements IArgumentCollector {
     }
 
     private Object getParameterValue(String parameterName, int i, List args, Map<String, Object> kwargs) {
-        String parameterDefaultValue = parameterName.contains("=") && parameterName.split("=").length > 1 ? parameterName.split("=")[1] : null;
+        String parameterDefaultValue = this.parameterNames.get(i).contains("=") && this.parameterNames.get(i).split("=").length > 1 ? this.parameterNames.get(i).split("=")[1] : null;
         Object value = args != null && args.size() > i ? args.get(i) : parameterDefaultValue;
         if (kwargs != null && kwargs.containsKey(parameterName)) {
             value = kwargs.get(parameterName);
@@ -101,7 +101,7 @@ public class ArgumentCollector implements IArgumentCollector {
     private boolean keywordHasVarargs() {
         int varargIndex = this.getVarargsIndex();
         return varargIndex > -1 && parameterTypes != null && parameterTypes.length > 0 &&
-                (parameterTypes[parameterTypes.length-1] == List.class || parameterTypes[parameterTypes.length-varargIndex].isArray() ||
+                (parameterTypes[parameterTypes.length-1] == List.class || parameterTypes[parameterTypes.length-1].isArray() ||
                         (parameterTypes.length > 1 && (parameterTypes[parameterTypes.length-2] == List.class || parameterTypes[parameterTypes.length-2].isArray())));
     }
 

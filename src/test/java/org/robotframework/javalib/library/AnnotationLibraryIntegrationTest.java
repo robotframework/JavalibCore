@@ -22,7 +22,8 @@ public class AnnotationLibraryIntegrationTest {
         List keywordNames = annotationLibrary.getKeywordNames();
         List expectedKeywordNames = Arrays.asList("failingKeyword", "someKeyword", "overloaded",
                 keywordThatReturnsItsArguments, "keywordWithVariableArgumentCount", "variousArgs", "defaultValues",
-                "keywordWithObjectArgument", "getSomeObject", "keywordWithNumericArguments", byteArrayTest );
+                "keywordWithObjectArgument", "getSomeObject", "keywordWithNumericArguments", byteArrayTest, "defaultAndVarargs", "onlyVarargs",
+                "useInt", "useInteger");
         keywordNames.sort(Comparator.naturalOrder());
         expectedKeywordNames.sort(Comparator.naturalOrder());
         assertIterableEquals(keywordNames, expectedKeywordNames);
@@ -91,5 +92,27 @@ public class AnnotationLibraryIntegrationTest {
         String testString = "testString";
         Object response = annotationLibrary.runKeyword(byteArrayTest, Arrays.asList(testString, testString.getBytes()));
         assertEquals(testString, new String((byte[]) response));
+    }
+
+    @Test
+    public void onlyVarargs() {
+        annotationLibrary.runKeyword("onlyVarargs", Arrays.asList("one given argument"));
+    }
+
+    @Test
+    public void defaultAndVarargs() {
+        annotationLibrary.runKeyword("defaultAndVarargs", Arrays.asList("one given argument"));
+    }
+
+    @Test
+    public void useInt() {
+        Object response = annotationLibrary.runKeyword("useInt", Arrays.asList());
+        assertEquals(0, response);
+    }
+
+    @Test
+    public void useInteger() {
+        Object response = annotationLibrary.runKeyword("useInteger", Arrays.asList());
+        assertEquals(0, response);
     }
 }

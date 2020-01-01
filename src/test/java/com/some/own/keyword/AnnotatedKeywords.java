@@ -1,7 +1,9 @@
 package com.some.own.keyword;
 
+import org.junit.jupiter.api.Assertions;
 import org.opentest4j.AssertionFailedError;
 
+import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.annotation.RobotKeywords;
 
@@ -22,5 +24,4 @@ public class AnnotatedKeywords {
     public String myKeywordThatReturnsItsArguments(String arg) {
         return arg;
     }
-
 }

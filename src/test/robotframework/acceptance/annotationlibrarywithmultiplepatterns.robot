@@ -16,3 +16,10 @@ Finds Annotated Keywords
 Extracts Inner Exception From Failing Keywords
 	runKeywordAndExpectError	Assertion failed	failingKeyword
 	runKeywordAndExpectError	Assertion failed	myFailingKeyword
+
+Test lists
+    ${returned list}    List As Argument    ${LIST}
+    Should Be Equal    ${LIST}    ${returned list}
+    ${returned list}    List As Argument    ${EMPTY LIST}
+    Should Be Equal    ${EMPTY LIST}    ${returned list}
+

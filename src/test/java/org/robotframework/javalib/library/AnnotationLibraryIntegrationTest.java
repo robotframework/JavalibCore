@@ -23,7 +23,7 @@ public class AnnotationLibraryIntegrationTest {
         List expectedKeywordNames = Arrays.asList("failingKeyword", "someKeyword", "overloaded",
                 keywordThatReturnsItsArguments, "keywordWithVariableArgumentCount", "variousArgs", "defaultValues",
                 "keywordWithObjectArgument", "getSomeObject", "keywordWithNumericArguments", byteArrayTest, "defaultAndVarargs", "onlyVarargs",
-                "useInt", "useInteger");
+                "useInt", "useInteger", "listAsArgument", "mapAsArgument");
         keywordNames.sort(Comparator.naturalOrder());
         expectedKeywordNames.sort(Comparator.naturalOrder());
         assertIterableEquals(keywordNames, expectedKeywordNames);
@@ -114,5 +114,19 @@ public class AnnotationLibraryIntegrationTest {
     public void useInteger() {
         Object response = annotationLibrary.runKeyword("useInteger", Arrays.asList());
         assertEquals(0, response);
+    }
+
+    @Test
+    public void listAsArgument() {
+        Object testList = Arrays.asList("first", 2, 4.4);
+        Object response = annotationLibrary.runKeyword("listAsArgument", Arrays.asList(testList));
+        assertEquals(testList, response);
+    }
+
+    @Test
+    public void mapAsArgument() {
+        Map testMap = Collections.singletonMap("first_key", "first_value");
+        Object response = annotationLibrary.runKeyword("mapAsArgument", Arrays.asList(testMap));
+        assertEquals(testMap, response);
     }
 }

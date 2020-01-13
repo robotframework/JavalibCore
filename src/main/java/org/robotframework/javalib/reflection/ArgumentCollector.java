@@ -99,15 +99,12 @@ public class ArgumentCollector implements IArgumentCollector {
     }
 
     private boolean keywordHasVarargs() {
-        int varargIndex = this.getVarargsIndex();
-        return varargIndex > -1 && parameterTypes != null && parameterTypes.length > 0 &&
-                (parameterTypes[parameterTypes.length-1] == List.class || parameterTypes[parameterTypes.length-1].isArray() ||
-                        (parameterTypes.length > 1 && (parameterTypes[parameterTypes.length-2] == List.class || parameterTypes[parameterTypes.length-2].isArray())));
+        return this.getVarargsIndex() > -1;
     }
 
     private boolean keywordHasKwargs() {
-        return parameterTypes != null && parameterTypes.length > 0 &&
-                (parameterTypes[parameterTypes.length-1] == Map.class);
+        return parameterNames != null && parameterNames.size() > 0 &&
+                (parameterNames.get(parameterNames.size()-1).startsWith("**"));
     }
 
     private Object convertToType(Class<?> clazz, Object object) {
@@ -128,10 +125,14 @@ public class ArgumentCollector implements IArgumentCollector {
                 return Double.valueOf(object.toString());
             } else if (clazz == String.class) {
                 return object.toString();
-            } else if (clazz.isAssignableFrom(object.getClass())) {
-                return object;
+            } else if (object.getClass().isArray() && clazz.isAssignableFrom(List.class)) {
+                //convert array to list. Needed at least with jrobotremotelibrary
+                return Arrays.asList((Object[])object);
+            } else if (List.class.isAssignableFrom(object.getClass()) && clazz.isArray()) {
+                //convert list to array. Needed at least with jrobotremotelibrary
+                return ((List)object).toArray();
             }
         }
-        return null;
+        return object;
     }
 }

@@ -30,7 +30,7 @@ public class AnnotationLibraryMultipleKeywordsWithSameNameIntegrationTest {
         		keywordThatReturnsItsArguments, "keywordWithVariableArgumentCount", "variousArgs", "defaultValues",
                 "keywordWithObjectArgument", "getSomeObject", "keywordWithNumericArguments",
         		"myFailingKeyword", "myKeywordThatReturnsItsArguments", "byteArrayTest", "defaultAndVarargs", "onlyVarargs",
-                "useInt", "useInteger");
+                "useInt", "useInteger", "listAsArgument", "mapAsArgument");
         keywordNames.sort(Comparator.naturalOrder());
         expectedKeywordNames.sort(Comparator.naturalOrder());
         assertIterableEquals(keywordNames, expectedKeywordNames);

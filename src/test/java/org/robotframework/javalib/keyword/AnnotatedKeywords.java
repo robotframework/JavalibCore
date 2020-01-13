@@ -126,4 +126,16 @@ public class AnnotatedKeywords {
     public Integer useInteger(Integer port) {
         return port;
     }
+
+    @RobotKeyword
+    @ArgumentNames("arg")
+    public List<?> listAsArgument(List<?> arg) {
+        return arg;
+    }
+
+    @RobotKeyword
+    @ArgumentNames({ "arg" })
+    public Map<Object, Object> mapAsArgument(Map<Object, Object> arg) {
+        return arg;
+    }
 }

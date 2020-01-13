@@ -9,7 +9,18 @@ https://github.com/robotframework/JavalibCore/wiki
 
 Project jar can be downloaded directly from the `Maven Repository`__
 
-__ http://search.maven.org/remotecontent?filepath=org/robotframework/javalib-core/2.0.2/javalib-core-2.0.2.jar
+__ http://search.maven.org/remotecontent?filepath=org/robotframework/javalib-core/2.0.3/javalib-core-2.0.3.jar
+
+.. code:: xml
+
+    <dependency>
+        <groupId>org.robotframework</groupId>
+        <artifactId>javalib-core</artifactId>
+        <version>2.0.3</version>
+    </dependency>
+
+
+Although it's prefered to use it as Maven dependency
 
 The project was originally hosted at `Google Code`__
 

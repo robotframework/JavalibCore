@@ -55,7 +55,8 @@ public class KeywordInvokerGroupingArgumentsTest {
 
         List collectedArgs = argumentCollector.collectArguments(args, null);
         // since the map has 3 entries
-        assertEquals(3, collectedArgs.size());
+        assertEquals(1, collectedArgs.size());
+        assertEquals(3, ((HashMap) collectedArgs.get(0)).size());
     }
 
     private Map buildHashMap() {

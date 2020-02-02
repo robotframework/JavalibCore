@@ -28,7 +28,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -55,7 +54,8 @@ public class KeywordInvokerGroupingArgumentsTest {
         ArgumentCollector argumentCollector = new ArgumentCollector(mockedMethod.getParameterTypes(), parameterNames);
 
         List collectedArgs = argumentCollector.collectArguments(args, null);
-        assertEquals(1, collectedArgs.size());
+        // since the map has 3 entries
+        assertEquals(3, collectedArgs.size());
     }
 
     private Map buildHashMap() {

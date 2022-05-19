@@ -17,16 +17,62 @@
 
 package org.robotframework.javalib.reflection;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 public class KeywordInvokerGroupingArgumentsTest {
     private static TestKeywordInvoker testKeywordInvoker = new TestKeywordInvoker();
+
+    @Test
+    public void testSingleArgumentWithMapForKeywordInvoker() {
+        Parameter mockParam = mock(Parameter.class);
+        doReturn(Map.class).when(mockParam).getType();
+        when(mockParam.getName()).thenReturn("arg0");
+        Parameter[] parameters = new Parameter[]{mockParam};
+        Method mockedMethod = mock(Method.class);
+        when(mockedMethod.getParameterCount()).thenReturn(1);
+        when(mockedMethod.getParameters()).thenReturn(parameters);
+        doReturn(new Class[]{Map.class}).when(mockedMethod).getParameterTypes();
+        KeywordInvoker keywordInvoker = new KeywordInvoker(new Object(), mockedMethod);
+        List<String> parameterNames = keywordInvoker.getParameterNames();
+        assertEquals(1, parameterNames.size());
+        assertEquals("**arg0", parameterNames.get(0));
+
+        List args = Arrays.asList(buildHashMap());
+        ArgumentCollector argumentCollector = new ArgumentCollector(mockedMethod.getParameterTypes(), parameterNames);
+
+        List collectedArgs = argumentCollector.collectArguments(args, null);
+        // since the map has 3 entries
+        assertEquals(1, collectedArgs.size());
+        assertEquals(3, ((HashMap) collectedArgs.get(0)).size());
+    }
+
+    private Map buildHashMap() {
+        Map map = new HashMap();
+        map.put("key1", "value1");
+        map.put("key2", "value2");
+        map.put("key3", "value3");
+        return map;
+    }
+
+    private Parameter[] buildParameters() {
+        Parameter mockParam = mock(Parameter.class);
+        doReturn(Map.class).when(mockParam).getType();
+        when(mockParam.getName()).thenReturn("arg0");
+        return new Parameter[]{mockParam};
+    }
 
     @Test
     public void testGroupsRestOfTheArgumentsIfProvidedArgumentCountIsGreaterThanActualArgumentCount() {

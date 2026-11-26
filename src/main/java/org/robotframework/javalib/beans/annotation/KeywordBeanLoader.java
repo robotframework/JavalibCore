@@ -19,6 +19,7 @@ package org.robotframework.javalib.beans.annotation;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -33,7 +34,6 @@ import org.robotframework.javalib.beans.common.IClassFilter;
 import org.robotframework.javalib.util.AntPathMatcher;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
 
-
 public class KeywordBeanLoader implements IBeanLoader {
     protected final String keywordPattern;
     private final ClassLoader loader;
@@ -44,6 +44,7 @@ public class KeywordBeanLoader implements IBeanLoader {
         this.loader = loader;
     }
 
+    @Override
     public Map loadBeanDefinitions(IClassFilter classFilter) {
         Map kws = new HashMap<String, Object>();
         Enumeration<URL> entries = getRootResources();
@@ -63,28 +64,28 @@ public class KeywordBeanLoader implements IBeanLoader {
         } else if (url.getProtocol().startsWith("file")) {
             addFileKeywords(classFilter, kws, url);
         } else {
-            throw new RuntimeException("Unsupported URL type "+url);
+            throw new RuntimeException("Unsupported URL type " + url);
         }
     }
 
     private void addFileKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
         File urlFile = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
         if (urlFile.isDirectory()) {
-            for (String f: getChildrenFrom(pathMatcher.getRoot(keywordPattern), urlFile)) {
+            for (String f : getChildrenFrom(pathMatcher.getRoot(keywordPattern), urlFile)) {
                 addKeyword(classFilter, kws, f);
             }
         }
     }
 
     private void addJarKeywords(IClassFilter classFilter, Map kws, URL url) throws IOException {
-        JarURLConnection connection =
-                    (JarURLConnection) url.openConnection();
+        JarURLConnection connection = (JarURLConnection) url.openConnection();
         File jar = new File(URLDecoder.decode(connection.getJarFileURL().getFile(), "UTF-8"));
-        JarInputStream is = new JarInputStream(new FileInputStream(jar));
-        JarEntry entry;
-        while( (entry = is.getNextJarEntry()) != null) {
-            if(entry.getName().endsWith(".class")) {
-                addKeyword(classFilter, kws, entry.getName());
+        try (JarInputStream is = new JarInputStream(new FileInputStream(jar))) {
+            JarEntry entry;
+            while ((entry = is.getNextJarEntry()) != null) {
+                if (entry.getName().endsWith(".class")) {
+                    addKeyword(classFilter, kws, entry.getName());
+                }
             }
         }
     }
@@ -99,8 +100,8 @@ public class KeywordBeanLoader implements IBeanLoader {
     }
 
     private ArrayList<String> getChildrenFrom(String root, File file) {
-        ArrayList<String> classes = new ArrayList<String>();
-        for (File f: file.listFiles()) {
+        ArrayList<String> classes = new ArrayList<>();
+        for (File f : file.listFiles()) {
             if (f.isFile()) {
                 if (f.getName().endsWith(".class"))
                     classes.add(root + f.getName());
@@ -111,9 +112,9 @@ public class KeywordBeanLoader implements IBeanLoader {
     }
 
     private void addKeyword(IClassFilter classFilter, Map<String, Object> kws, String className) throws IOException {
-        if (className.indexOf("$")!=-1)
+        if (className.contains("$"))
             return;
-        if (className.startsWith("java/") || className.startsWith("javax/") )
+        if (className.startsWith("java/") || className.startsWith("javax/"))
             return;
         if (!pathMatcher.match(keywordPattern, className))
             return;
@@ -125,10 +126,10 @@ public class KeywordBeanLoader implements IBeanLoader {
 
     private void putInstance(Map<String, Object> kws, String name, Class cls) {
         try {
-            kws.put(new KeywordNameNormalizer().normalize(name), cls.newInstance());
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+            Class<?> clazz = loadClass(cls.getName());
+            kws.put(new KeywordNameNormalizer().normalize(name), clazz.getDeclaredConstructor().newInstance());
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException
+                | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }

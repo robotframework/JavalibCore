@@ -17,15 +17,14 @@
 package org.robotframework.javalib.beans.classpath;
 
 import org.robotframework.javalib.beans.common.BasicKeywordFilter;
-import org.robotframework.javalib.beans.common.BasicKeywordFilter.Condition;
 import org.robotframework.javalib.keyword.Keyword;
 
 /**
  * A filter that only accepts classes that<br>
- *     - implement the {@link Keyword} interface<br>
- *  - are public<br>
- *  - are not abstract<br>
- *  - have a default constructor<br>
+ * - implement the {@link Keyword} interface<br>
+ * - are public<br>
+ * - are not abstract<br>
+ * - have a default constructor<br>
  */
 public class InterfaceBasedKeywordFilter extends BasicKeywordFilter {
     public InterfaceBasedKeywordFilter() {

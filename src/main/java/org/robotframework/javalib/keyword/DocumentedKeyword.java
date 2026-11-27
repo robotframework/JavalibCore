@@ -18,7 +18,23 @@ package org.robotframework.javalib.keyword;
 
 import java.util.List;
 
+/**
+ * Interface for documented keywords, extending the basic Keyword interface.
+ */
+
 public interface DocumentedKeyword extends Keyword {
+
+    /**
+     * Simple getter for keyword documentation
+     * 
+     * @return the documentation of the keyword as string
+     */
     String getDocumentation();
+
+    /**
+     * Simple getter for argument names
+     * 
+     * @return the argument name as a list of strings
+     */
     List<String> getArgumentNames();
 }

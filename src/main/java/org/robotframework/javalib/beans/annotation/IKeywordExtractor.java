@@ -20,6 +20,17 @@ import java.util.Map;
 
 import org.robotframework.javalib.keyword.Keyword;
 
+/**
+ * 
+ * IKeywordExtractor
+ * @param <T> extends the generic {@link Keyword}
+ */
 public interface IKeywordExtractor<T extends Keyword> {
+    /**
+     * Extracts keywords from the given keyword bean.
+     * 
+     * @param keywordBean the bean containing the keyword definitions
+     * @return a map of keyword names to their respective keyword objects
+     */
     Map<String, T> extractKeywords(Object keywordBean);
 }

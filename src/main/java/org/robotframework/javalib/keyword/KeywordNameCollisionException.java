@@ -17,13 +17,16 @@
 package org.robotframework.javalib.keyword;
 
 /**
- * Indicates that a keyword name collision occurred.
+ * Exception thrown when a collision occurs between keyword names.
+ * This indicates that multiple keyword definitions share the same name.
  */
 public class KeywordNameCollisionException extends RuntimeException {
     private static final long serialVersionUID = -4872761399948479289L;
 
     /**
-     * @param message Error message
+     * Constructs a new KeywordNameCollisionException.
+     * 
+     * @param message the error message
      */
     public KeywordNameCollisionException(String message) {
         super(message);

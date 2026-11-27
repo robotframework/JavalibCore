@@ -16,7 +16,16 @@
 
 package org.robotframework.javalib.util;
 
+/**
+ * Implementation if the {@link IKeywordNameNormalizer}
+ */
 public class KeywordNameNormalizer implements IKeywordNameNormalizer {
+
+    /**
+     * Normalization of keyword names handler
+     */
+    public KeywordNameNormalizer() {}
+
     /**
      * Normalizes a keyword name. Removes spaces and special characters.
      * Converts all letters to lower case.

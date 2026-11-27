@@ -22,6 +22,9 @@ import org.robotframework.javalib.keyword.Keyword;
 
 /**
  * Creates instances of keywords.
+ * 
+ * @param <T> keyword type implemented by this factory,
+ *            extending the generic {@link Keyword}
  */
 public interface KeywordFactory<T extends Keyword> {
     /**
@@ -29,7 +32,7 @@ public interface KeywordFactory<T extends Keyword> {
      * name
      *
      * @param keywordName keyword name (will be normalized, so pretty much
-     *                       any formatting will do)
+     *                    any formatting will do)
      * @return keyword instance
      */
     T createKeyword(String keywordName);

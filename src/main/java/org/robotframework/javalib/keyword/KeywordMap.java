@@ -34,6 +34,9 @@ import org.apache.commons.collections4.map.PredicatedMap;
 public class KeywordMap {
     private Map map;
 
+        /**
+     * Constructs a new KeywordMap.
+     */
     public KeywordMap() {
         map = new HashedMap();
         map = PredicatedMap.predicatedMap(map, UniquePredicate.uniquePredicate(), TruePredicate.INSTANCE);

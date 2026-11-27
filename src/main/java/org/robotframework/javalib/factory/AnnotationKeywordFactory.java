@@ -28,21 +28,41 @@ import org.robotframework.javalib.keyword.DocumentedKeyword;
 import org.robotframework.javalib.util.IKeywordNameNormalizer;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
 
+/**
+ * Factory for creating documented keywords from annotated classes.
+ */
+
 public class AnnotationKeywordFactory implements KeywordFactory<DocumentedKeyword> {
     private Map<String, DocumentedKeyword> keywords = new HashMap<String, DocumentedKeyword>();
     private IKeywordNameNormalizer keywordNameNormalizer = new KeywordNameNormalizer();
     private List<String> keywordNames = new ArrayList<String>();
 
+    /**
+     * AnnotationKeywordFactory
+     * @param keywordBeansMap map of keywords
+     */
     public AnnotationKeywordFactory(Map<String, Object> keywordBeansMap) {
         extractKeywordsFromKeywordBeans(keywordBeansMap);
     }
 
+    /**
+     * Constructs a new AnnotationKeywordFactory.
+     * 
+     * @param keywordBeansMaps a list of maps containing keyword beans to extract
+     */
     public AnnotationKeywordFactory(List<Map> keywordBeansMaps) {
     	for (Map<String, Object> keywordBeansMap : keywordBeansMaps) {
         	extractKeywordsFromKeywordBeans(keywordBeansMap);
 		}
     }
 
+    /**
+     * Creates a documented keyword instance.
+     * 
+     * @param keywordName the name of the keyword to create
+     * @return a documented keyword instance
+     */
+    @Override
     public DocumentedKeyword createKeyword(String keywordName) {
         String normalizedKeywordName = keywordNameNormalizer.normalize(keywordName);
         return keywords.get(normalizedKeywordName);
@@ -52,6 +72,11 @@ public class AnnotationKeywordFactory implements KeywordFactory<DocumentedKeywor
         return keywordNames;
     }
 
+    /**
+     * Extracts keywords from the provided keyword beans.
+     * 
+     * @param keywordBeansMap a map containing keyword beans to process
+     */
     protected void extractKeywordsFromKeywordBeans(Map<String, Object> keywordBeansMap) {
         Collection<Object> keywordBeanValues = keywordBeansMap.values();
         IKeywordExtractor<DocumentedKeyword> keywordExtractor = createKeywordExtractor();

@@ -4,15 +4,23 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Argument collector class for gathering keyword arguments
+ */
 public class ArgumentCollector implements IArgumentCollector {
     private final Class<?>[] parameterTypes;
     private final List<String> parameterNames;
 
+    /**
+     * Constructs a new ArgumentCollector.
+     * 
+     * @param parameterTypes the types of the parameters
+     * @param parameterNames the names of the parameters
+     */
     public ArgumentCollector(Class<?>[] parameterTypes, List<String> parameterNames) {
         this.parameterNames = parameterNames;
         this.parameterTypes = parameterTypes;
     }
-
 
     @Override
     public List collectArguments(List args, Map<String, Object> kwargs) {
@@ -24,7 +32,8 @@ public class ArgumentCollector implements IArgumentCollector {
         boolean hasVarargs = this.keywordHasVarargs();
         boolean hasKwargs = this.keywordHasKwargs();
         if (parameterNames != null && parameterNames.size() > 0) {
-            List filteredList = parameterNames.stream().filter(line -> !line.contains("*")).collect(Collectors.toList());
+            List filteredList = parameterNames.stream().filter(line -> !line.contains("*"))
+                    .collect(Collectors.toList());
             for (int i = 0; i < filteredList.size(); i++) {
                 collectedArguments.add(null);
             }
@@ -48,7 +57,7 @@ public class ArgumentCollector implements IArgumentCollector {
                 }
             }
             if (hasVarargs && args != null && args.size() > filteredList.size()) {
-                for (int i = filteredList.size()+1; i < args.size(); i++) {
+                for (int i = filteredList.size() + 1; i < args.size(); i++) {
                     varargs.add(args.get(i));
                 }
             }
@@ -64,18 +73,21 @@ public class ArgumentCollector implements IArgumentCollector {
     }
 
     private int getVarargsIndex() {
-        int parameterSize = parameterNames != null ? parameterNames.size(): -1;
-        if (parameterSize > 0 && parameterNames.get(parameterSize-1).startsWith("*") && !parameterNames.get(parameterSize-1).startsWith("**")) {
-            return parameterSize-1;
-        } else if (parameterSize > 1 && parameterNames.get(parameterSize-2).startsWith("*") && !parameterNames.get(parameterSize-2).startsWith("**")) {
-            return parameterSize-2;
+        int parameterSize = parameterNames != null ? parameterNames.size() : -1;
+        if (parameterSize > 0 && parameterNames.get(parameterSize - 1).startsWith("*")
+                && !parameterNames.get(parameterSize - 1).startsWith("**")) {
+            return parameterSize - 1;
+        } else if (parameterSize > 1 && parameterNames.get(parameterSize - 2).startsWith("*")
+                && !parameterNames.get(parameterSize - 2).startsWith("**")) {
+            return parameterSize - 2;
         } else {
             return -1;
         }
     }
 
     private Object getParameterValue(String parameterName, int i, List args, Map<String, Object> kwargs) {
-        String parameterDefaultValue = this.parameterNames.get(i).contains("=") && this.parameterNames.get(i).split("=").length > 1 ? this.parameterNames.get(i).split("=")[1] : null;
+        String parameterDefaultValue = this.parameterNames.get(i).contains("=")
+                && this.parameterNames.get(i).split("=").length > 1 ? this.parameterNames.get(i).split("=")[1] : null;
         Object value = args != null && args.size() > i ? args.get(i) : parameterDefaultValue;
         if (kwargs != null && kwargs.containsKey(parameterName)) {
             value = kwargs.get(parameterName);
@@ -104,7 +116,7 @@ public class ArgumentCollector implements IArgumentCollector {
 
     private boolean keywordHasKwargs() {
         return parameterNames != null && parameterNames.size() > 0 &&
-                (parameterNames.get(parameterNames.size()-1).startsWith("**"));
+                (parameterNames.get(parameterNames.size() - 1).startsWith("**"));
     }
 
     private Object convertToType(Class<?> clazz, Object object) {
@@ -126,11 +138,11 @@ public class ArgumentCollector implements IArgumentCollector {
             } else if (clazz == String.class) {
                 return object.toString();
             } else if (object.getClass().isArray() && clazz.isAssignableFrom(List.class)) {
-                //convert array to list. Needed at least with jrobotremotelibrary
-                return Arrays.asList((Object[])object);
+                // convert array to list. Needed at least with jrobotremotelibrary
+                return Arrays.asList((Object[]) object);
             } else if (List.class.isAssignableFrom(object.getClass()) && clazz.isArray()) {
-                //convert list to array. Needed at least with jrobotremotelibrary
-                return ((List)object).toArray();
+                // convert list to array. Needed at least with jrobotremotelibrary
+                return ((List) object).toArray();
             }
         }
         return object;

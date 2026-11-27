@@ -24,7 +24,6 @@ import org.robotframework.javalib.factory.ClassPathKeywordFactory;
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.Keyword;
 
-
 /**
  * <p>
  * A Robot keyword library that finds keywords dynamically from the
@@ -65,8 +64,16 @@ import org.robotframework.javalib.keyword.Keyword;
 public class ClassPathLibrary extends KeywordFactoryBasedLibrary<Keyword> {
     private String keywordPattern = null;
 
-    public ClassPathLibrary() { }
+    /**
+     * Constructs a new ClassPathLibrary.
+     */
+    public ClassPathLibrary() {
+    }
 
+    /**
+     * Override constructor
+     * @param keywordPattern the keyword pattern to be set
+     */
     public ClassPathLibrary(String keywordPattern) {
         setKeywordPattern(keywordPattern);
     }

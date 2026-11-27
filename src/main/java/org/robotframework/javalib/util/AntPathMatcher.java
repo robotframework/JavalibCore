@@ -55,6 +55,11 @@ public class AntPathMatcher {
 
 	private String pathSeparator = DEFAULT_PATH_SEPARATOR;
 
+	/**
+	 * Internal path matcher default constructor
+	 */
+	public AntPathMatcher() {}
+
 
 	/** Set the path separator to use for pattern parsing. Default is "/", as in Ant. 
 	 * @param pathSeparator Path separator to use
@@ -64,17 +69,37 @@ public class AntPathMatcher {
 	}
 
 
-	public boolean isPattern(String path) {
-		return (path.indexOf('*') != -1 || path.indexOf('?') != -1);
-	}
+	    /**
+     * Determines if the given path contains a wildcard pattern.
+     * 
+     * @param path the path to check
+     * @return true if the path contains a wildcard (* or ?)
+     */
+    public boolean isPattern(String path) {
+        return (path.indexOf('*') != -1 || path.indexOf('?') != -1);
+    }
 
-	public boolean match(String pattern, String path) {
-		return doMatch(pattern, path, true, null);
-	}
+	    /**
+     * Determines if the given path matches the pattern.
+     * 
+     * @param pattern the pattern to match
+     * @param path the path to check
+     * @return true if the pattern matches the path
+     */
+    public boolean match(String pattern, String path) {
+        return doMatch(pattern, path, true, null);
+    }
 
-	public boolean matchStart(String pattern, String path) {
-		return doMatch(pattern, path, false, null);
-	}
+	    /**
+     * Determines if the beginning of the given path matches the pattern.
+     * 
+     * @param pattern the pattern to match
+     * @param path the path to check
+     * @return true if the beginning of the path matches the pattern
+     */
+    public boolean matchStart(String pattern, String path) {
+        return doMatch(pattern, path, false, null);
+    }
 
     /**
      * Borrowed from PathMatchingResourcePatternResolver
@@ -288,18 +313,26 @@ public class AntPathMatcher {
 		return builder.toString();
 	}
 
-	public Map<String, String> extractUriTemplateVariables(String pattern, String path) {
-		Map<String, String> variables = new LinkedHashMap<String, String>();
-		boolean result = doMatch(pattern, path, true, variables);
-		return variables;
-	}
+	    /**
+     * Extracts URI template variables from the given pattern and path.
+     * 
+     * @param pattern the pattern to match
+     * @param path the path to analyze
+     * @return a map of variable names to their values
+     */
+    public Map<String, String> extractUriTemplateVariables(String pattern, String path) {
+        Map<String, String> variables = new LinkedHashMap<String, String>();
+        boolean result = doMatch(pattern, path, true, variables);
+        return variables;
+    }
 
+	
 	/**
 	 * Combines two patterns into a new pattern that is returned.
 	 * <p>This implementation simply concatenates the two patterns, unless the first pattern
 	 * contains a file extension match (such as {@code *.html}. In that case, the second pattern
 	 * should be included in the first, or an {@code IllegalArgumentException} is thrown.
-	 * <p>For example: <table summary="Example">
+	 * <p>For example: <table>
 	 * <tr><th>Pattern 1</th><th>Pattern 2</th><th>Result</th></tr> <tr><td>/hotels</td><td>{@code
 	 * null}</td><td>/hotels</td></tr> <tr><td>{@code null}</td><td>/hotels</td><td>/hotels</td></tr>
 	 * <tr><td>/hotels</td><td>/bookings</td><td>/hotels/bookings</td></tr> <tr><td>/hotels</td><td>bookings</td><td>/hotels/bookings</td></tr>
@@ -307,7 +340,7 @@ public class AntPathMatcher {
 	 * <tr><td>/hotels</td><td>{hotel}</td><td>/hotels/{hotel}</td></tr> <tr><td>/hotels/*</td><td>{hotel}</td><td>/hotels/{hotel}</td></tr>
 	 * <tr><td>/hotels/&#42;&#42;</td><td>{hotel}</td><td>/hotels/&#42;&#42;/{hotel}</td></tr>
 	 * <tr><td>/*.html</td><td>/hotels.html</td><td>/hotels.html</td></tr> <tr><td>/*.html</td><td>/hotels</td><td>/hotels.html</td></tr>
-	 * <tr><td>/*.html</td><td>/*.txt</td><td>IllegalArgumentException</td></tr> </table>
+	 * <tr><td>/*.html</td><td>/*.txt</td><td>IllegalArgumentException</td></tr><caption>Pattern combination examples</caption></table>
 	 * @param pattern1 the first pattern
 	 * @param pattern2 the second pattern
 	 * @return the combination of the two patterns

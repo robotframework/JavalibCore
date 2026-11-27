@@ -27,12 +27,17 @@ public interface Keyword {
      * Execute method is called when the keyword is executed in a Robot
      * test case.
      *
-     * @param args arguments from Robot
+     * @param args   arguments from Robot
      * @param kwargs named arguments from Robot
      * @return keyword return value. If the keyword isn't suppose to
-     * return anything useful, use Boolean.TRUE.
+     *         return anything useful, use Boolean.TRUE.
      */
     Object execute(List args, Map kwargs);
 
+    /**
+     * Simple getter for argument types
+     * 
+     * @return the argument types as a list of strings
+     */
     List<String> getArgumentTypes();
 }

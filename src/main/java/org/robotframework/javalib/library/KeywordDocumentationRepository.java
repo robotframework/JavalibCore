@@ -18,7 +18,23 @@ package org.robotframework.javalib.library;
 
 import java.util.List;
 
+/**
+ * Repository interface for accessing documentation of keywords.
+ */
+
 public interface KeywordDocumentationRepository {
+    /**
+     * Retrieves the documentation for the specified keyword.
+     * 
+     * @param keywordName the name of the keyword
+     * @return the documentation string
+     */
     String getKeywordDocumentation(String keywordName);
+    /**
+     * Retrieves the arguments for the specified keyword.
+     * 
+     * @param keywordName the name of the keyword
+     * @return a list of argument names
+     */
     List<String> getKeywordArguments(String keywordName);
 }

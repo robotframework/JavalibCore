@@ -26,11 +26,20 @@ import java.util.Map;
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
 
+/**
+ * An implementation for keyword invocation
+ */
 public class KeywordInvoker implements IKeywordInvoker {
 
     private final Method method;
     private final Object obj;
 
+        /**
+     * Constructs a new KeywordInvoker.
+     * 
+     * @param obj the object containing the method
+     * @param method the method to invoke
+     */
     public KeywordInvoker(Object obj, Method method) {
         this.obj = obj;
         this.method = method;

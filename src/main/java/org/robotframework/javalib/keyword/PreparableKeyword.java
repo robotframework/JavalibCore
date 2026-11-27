@@ -19,7 +19,17 @@ package org.robotframework.javalib.keyword;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 
+ * PreparableKeyword
+ */
 public abstract class PreparableKeyword implements Keyword {
+
+    /**
+     * Implementation of Keyword handling object instantiation
+     */
+    public PreparableKeyword() {}
+
     public Object execute(List arguments, Map kwargs) {
         prepare(arguments);
         try {
@@ -29,7 +39,22 @@ public abstract class PreparableKeyword implements Keyword {
         }
     }
 
+    /**
+     * Argument light preprocessor
+     * @param arguments keyword arguments to be processed
+     */
     protected void prepare(List arguments) {}
+    
+    /**
+     * Argument light post-processor
+     * @param arguments keyword arguments to be processed
+     */
     protected void finish(List arguments) {}
+
+    /**
+     * Argument light operator
+     * @param arguments keyword arguments to be processed
+     * @return the object with its arguments
+     */
     protected abstract Object operate(List arguments);
 }

@@ -28,7 +28,28 @@ import org.robotframework.javalib.keyword.DocumentedKeyword;
 import org.robotframework.javalib.reflection.IKeywordInvoker;
 import org.robotframework.javalib.reflection.KeywordInvoker;
 
+/**
+ * Extracts {@link DocumentedKeyword} objects from annotated classes.
+ * 
+ * This extractor scans for methods annotated with {@link RobotKeyword} or
+ * {@link RobotKeywordOverload} and creates corresponding keyword instances.
+ * 
+ * <p>For each method found, the extractor creates a {@link DocumentedKeyword} object
+ * that wraps the method and provides access to its parameters, documentation, and
+ * execution logic.</p>
+ */
 public class AnnotationKeywordExtractor implements IKeywordExtractor<DocumentedKeyword> {
+    
+    /**
+     * Default constructor
+     */
+    public AnnotationKeywordExtractor() {}
+    
+    /**
+     * Keyword extractor
+     * @param keywordBean the bean of the target keyword
+     * @return map of extracted keywords with name and documentation as Map
+     */
     public Map<String, DocumentedKeyword> extractKeywords(final Object keywordBean) {
         Map<String, DocumentedKeyword> extractedKeywords = new HashMap<String, DocumentedKeyword>();
         Method[] methods = keywordBean.getClass().getMethods();

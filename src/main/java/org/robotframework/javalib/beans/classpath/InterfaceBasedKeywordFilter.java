@@ -20,18 +20,31 @@ import org.robotframework.javalib.beans.common.BasicKeywordFilter;
 import org.robotframework.javalib.keyword.Keyword;
 
 /**
- * A filter that only accepts classes that<br>
- * - implement the {@link Keyword} interface<br>
- * - are public<br>
- * - are not abstract<br>
- * - have a default constructor<br>
+ * A filter for classes that implement the {@link Keyword} interface.
+ * This filter extends the basic keyword filter and adds a condition to check
+ * for the implementation of the Keyword interface.
  */
+
 public class InterfaceBasedKeywordFilter extends BasicKeywordFilter {
+    /**
+     * Constructs a new InterfaceBasedKeywordFilter.
+     * Adds a condition to check if the class implements the Keyword interface.
+     */
     public InterfaceBasedKeywordFilter() {
         addCondition(new ImplementsKeywordInterfaceCondition());
     }
 
+    /**
+     * Checks if a class implements the Keyword interface.
+     */
     private class ImplementsKeywordInterfaceCondition implements Condition {
+
+        /**
+         * Determines if the class implements the Keyword interface.
+         * 
+         * @param clazz the class to check
+         * @return true if the class implements Keyword
+         */
         public boolean check(Class clazz) {
             return Keyword.class.isAssignableFrom(clazz);
         }

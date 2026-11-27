@@ -21,8 +21,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * 
+ * RobotKeyword<br>
+ * Default RobotKeyword interface
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface RobotKeyword {
+
+    /**
+     * Returns the name of the keyword
+     * @return name of the keyword, defaults to an empty string
+     */
     String value() default "";
 }

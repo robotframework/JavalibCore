@@ -34,11 +34,30 @@ import org.robotframework.javalib.beans.common.IClassFilter;
 import org.robotframework.javalib.util.AntPathMatcher;
 import org.robotframework.javalib.util.KeywordNameNormalizer;
 
+/**
+ * Loads keyword bean definitions from classpath resources.
+ * 
+ * This class scans classpath resources for classes annotated with RobotFramework
+ * annotations, loads them, and provides bean definitions for keyword extraction.
+ */
+
 public class KeywordBeanLoader implements IBeanLoader {
+        /**
+     * The keyword pattern used to match and load keyword definitions.
+     */
     protected final String keywordPattern;
+    /**
+     * The class loader used to load classes from classpath resources.
+     */
     private final ClassLoader loader;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
+    /**
+     * Constructs a new KeywordBeanLoader.
+     * 
+     * @param keywordPattern the pattern used to match and load keyword definitions
+     * @param loader the class loader to use for loading classes
+     */
     public KeywordBeanLoader(String keywordPattern, ClassLoader loader) {
         this.keywordPattern = keywordPattern;
         this.loader = loader;

@@ -16,6 +16,15 @@
 
 package org.robotframework.javalib.util;
 
+/**
+ * Interface for normalizing keyword names.
+ */
+
 public interface IKeywordNameNormalizer {
+    /**
+     * Handler normalizing the keyword name
+     * @param keywordName the name of the keyword to be normalized
+     * @return the normalized keyword name as string
+     */
     String normalize(String keywordName);
 }

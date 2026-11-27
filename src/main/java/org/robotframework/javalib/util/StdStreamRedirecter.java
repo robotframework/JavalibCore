@@ -31,6 +31,11 @@ public class StdStreamRedirecter {
     private ByteArrayOutputStream redirectedSystemErr = new ByteArrayOutputStream();
 
     /**
+     * Internal stream redirecter handler
+     */
+    public StdStreamRedirecter() {}
+
+    /**
      * Retrieves everything printed to STDERR as string.
      * {@link #redirectStdStreams()} must be called before calling this method.
      * After each call to this method, the internal buffer containing STDERR as

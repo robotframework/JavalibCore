@@ -19,6 +19,15 @@ package org.robotframework.javalib.reflection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Interface for collecting arguments.
+ */
 public interface IArgumentCollector {
+    /**
+     * Argument collector with fixed (args) and variable (kwargs) arguments
+     * @param args the arguments to be collected
+     * @param kwargs the keyword arguments (variable length) to be collected
+     * @return list of the arguments as generic list and Map
+     */
     List collectArguments(List args, Map<String, Object> kwargs);
 }

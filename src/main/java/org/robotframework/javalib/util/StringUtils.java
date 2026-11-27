@@ -61,6 +61,11 @@ public abstract class StringUtils {
 
 	private static final char EXTENSION_SEPARATOR = '.';
 
+	/**
+	 * Internal string utilities handler
+	 */
+	public StringUtils() {}
+
 
 	//---------------------------------------------------------------------
 	// General convenience methods for working with Strings

@@ -20,6 +20,16 @@ import java.util.Map;
 
 import org.robotframework.javalib.beans.common.IClassFilter;
 
+/**
+ * Interface for loading bean definitions from classpath resources.
+ */
+
 public interface IBeanLoader {
+    /**
+     * Loads bean definitions from classpath resources.
+     * 
+     * @param classFilter the filter to use for determining which classes to load
+     * @return a map of bean definitions
+     */
     Map loadBeanDefinitions(IClassFilter classFilter);
 }

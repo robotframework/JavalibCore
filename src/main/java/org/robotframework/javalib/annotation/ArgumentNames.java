@@ -21,8 +21,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Argument name handler
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ArgumentNames {
+    /**
+     * Array of strings
+     * @return the argument name
+     */
     String[] value();
 }

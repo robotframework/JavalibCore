@@ -33,19 +33,43 @@ import org.robotframework.javalib.factory.AnnotationKeywordFactory;
 import org.robotframework.javalib.factory.KeywordFactory;
 import org.robotframework.javalib.keyword.DocumentedKeyword;
 
+/**
+ * A library for loading keywords annotated with RobotFramework annotations.
+ * This library uses annotation-based keyword extraction and provides access to annotated keywords.
+ */
+
 public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyword> implements
         KeywordDocumentationRepository {
+    /**
+     * List of bean loaders used to load keyword beans.
+     */
     protected List<IBeanLoader> beanLoaders = new ArrayList<IBeanLoader>();
+    /**
+     * Class filter used to filter relevant classes.
+     */
     protected IClassFilter classFilter = new AnnotationBasedKeywordFilter();
     private KeywordFactory<DocumentedKeyword> keywordFactory;
 
+    /**
+     * Constructs a new AnnotationLibrary using default settings.
+     */
     public AnnotationLibrary() {
     }
 
+    /**
+     * Constructs a new AnnotationLibrary with the specified keyword pattern.
+     * 
+     * @param keywordPattern the pattern for matching keywords
+     */
     public AnnotationLibrary(String keywordPattern) {
         addKeywordPattern(keywordPattern);
     }
 
+    /**
+     * Constructs a new AnnotationLibrary with the specified keyword patterns.
+     * 
+     * @param keywordPatterns list of patterns for matching keywords
+     */
     public AnnotationLibrary(List<String> keywordPatterns) {
         for (String pattern : keywordPatterns) {
             addKeywordPattern(pattern);
@@ -74,6 +98,12 @@ public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyw
         return keywordFactory;
     }
 
+    /**
+     * Autowires fields of the injection target using the provided injection values.
+     * 
+     * @param injectionTarget the target object to autowire
+     * @param injectionValues values to inject into the target
+     */
     protected void autowireFields(Object injectionTarget, Collection<Object> injectionValues) {
         Class<?> objectClass = injectionTarget.getClass();
         while (objectClass != null) {
@@ -141,6 +171,11 @@ public class AnnotationLibrary extends KeywordFactoryBasedLibrary<DocumentedKeyw
         }
     }
 
+    /**
+     * Adds a keyword pattern to the library.
+     * 
+     * @param keywordPattern the pattern to add
+     */
     public void addKeywordPattern(String keywordPattern) {
         beanLoaders.add(new KeywordBeanLoader(keywordPattern, Thread.currentThread().getContextClassLoader()));
     }

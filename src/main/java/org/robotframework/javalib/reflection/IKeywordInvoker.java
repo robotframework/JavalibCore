@@ -19,9 +19,33 @@ package org.robotframework.javalib.reflection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Interface for invoking keywords.
+ */
+
 public interface IKeywordInvoker {
+
+    /**
+     * Simple getter for parameter names
+     * @return list of parameter names as strings
+     */
     List<String> getParameterNames();
+
+    /**
+     * Simple getter for parameter types
+     * @return list of parameter types as strings
+     */
     List<String> getParameterTypes();
+    /**
+     * Simple invocation
+     * @param args list of arguments
+     * @param kwargs map of keyword arguments
+     * @return the invoked object
+     */
     Object invoke(List args, Map kwargs);
+    /**
+     * Documentation getter
+     * @return the string of the documentation
+     */
     String getDocumentation();
 }

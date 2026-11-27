@@ -19,7 +19,18 @@ package org.robotframework.javalib.beans.annotation;
 import org.robotframework.javalib.annotation.RobotKeywords;
 import org.robotframework.javalib.beans.common.BasicKeywordFilter;
 
+/**
+ * A filter for keywords annotated with @RobotKeywords.
+ * This filter ensures that only classes annotated with @RobotKeywords are considered.
+ * 
+ * <p>This class extends {@link BasicKeywordFilter} and adds a condition to check for the presence
+ * of the RobotKeywords annotation.</p>
+ */
 public class AnnotationBasedKeywordFilter extends BasicKeywordFilter {
+        /**
+     * Constructs a new AnnotationBasedKeywordFilter.
+     * Adds a condition to check for the RobotKeywords annotation.
+     */
     public AnnotationBasedKeywordFilter() {
         addCondition(new HasKeywordAnnotationCondition());
     }

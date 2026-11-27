@@ -16,6 +16,10 @@
 
 package org.robotframework.javalib.keyword;
 
+/**
+ * Interface for keywords that are aware of expected argument counts.
+ */
+
 public interface ExpectedArgumentCountAware {
 
     /**
